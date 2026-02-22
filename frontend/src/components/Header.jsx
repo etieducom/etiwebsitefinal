@@ -169,6 +169,14 @@ const Header = () => {
                     <Calendar className="w-4 h-4" />
                     Events
                   </Link>
+                  <Link to="/blogs" className="dropdown-item flex items-center gap-2">
+                    <FileText className="w-4 h-4" />
+                    Blogs
+                  </Link>
+                  <Link to="/faq" className="dropdown-item flex items-center gap-2">
+                    <HelpCircle className="w-4 h-4" />
+                    FAQ
+                  </Link>
                 </div>
               </div>
 
