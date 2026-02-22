@@ -69,6 +69,8 @@ const AdminPage = () => {
   const [seoSettings, setSeoSettings] = useState([]);
   const [franchiseEnquiries, setFranchiseEnquiries] = useState([]);
   const [counsellingLeads, setCounsellingLeads] = useState([]);
+  const [summerLeads, setSummerLeads] = useState([]);
+  const [quickEnquiries, setQuickEnquiries] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Modal states
@@ -100,13 +102,48 @@ const AdminPage = () => {
   // Submitting states
   const [submitting, setSubmitting] = useState(false);
 
+  // Check login status on mount
   useEffect(() => {
-    fetchData();
+    const token = localStorage.getItem('adminToken');
+    if (token) {
+      setIsLoggedIn(true);
+      fetchData();
+    } else {
+      setLoading(false);
+    }
   }, []);
+
+  // Admin login handler
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoggingIn(true);
+    setLoginError("");
+    try {
+      const response = await axios.post(`${API}/admin/login`, { password });
+      if (response.data.success) {
+        localStorage.setItem('adminToken', response.data.token);
+        setIsLoggedIn(true);
+        fetchData();
+        toast.success("Login successful!");
+      } else {
+        setLoginError("Invalid password");
+      }
+    } catch (error) {
+      setLoginError("Login failed. Please try again.");
+    } finally {
+      setLoggingIn(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('adminToken');
+    setIsLoggedIn(false);
+    toast.success("Logged out successfully");
+  };
 
   const fetchData = async () => {
     try {
-      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes] = await Promise.all([
+      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes] = await Promise.all([
         axios.get(`${API}/events?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/jobs?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/reviews?active_only=false`).catch(() => ({ data: [] })),
@@ -116,7 +153,9 @@ const AdminPage = () => {
         axios.get(`${API}/faqs?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/seo`).catch(() => ({ data: [] })),
         axios.get(`${API}/franchise-enquiry`).catch(() => ({ data: [] })),
-        axios.get(`${API}/counselling-leads`).catch(() => ({ data: [] }))
+        axios.get(`${API}/counselling-leads`).catch(() => ({ data: [] })),
+        axios.get(`${API}/summer-training-leads`).catch(() => ({ data: [] })),
+        axios.get(`${API}/quick-enquiry`).catch(() => ({ data: [] }))
       ]);
       setEvents(eventsRes.data);
       setJobs(jobsRes.data);
