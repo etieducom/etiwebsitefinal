@@ -844,6 +844,62 @@ const AdminPage = () => {
               )}
             </TabsContent>
 
+            {/* Technical SEO Tab */}
+            <TabsContent value="techseo">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-xl font-bold text-[#1a1a1a]">Technical SEO Settings</h2>
+                <Button className="btn-primary" onClick={() => setShowTechSeoModal(true)} data-testid="edit-techseo-btn">
+                  <Plus className="w-4 h-4" /> Edit Settings
+                </Button>
+              </div>
+              <Card className="card-default">
+                <CardContent className="p-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <h3 className="font-semibold text-[#1a1a1a] mb-4">Analytics & Tracking</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center p-3 bg-[#f8f9fa] rounded-lg">
+                          <span className="text-sm text-[#4a4a4a]">Google Analytics ID</span>
+                          <Badge variant={technicalSeo.google_analytics_id ? "default" : "outline"}>
+                            {technicalSeo.google_analytics_id || "Not Set"}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[#f8f9fa] rounded-lg">
+                          <span className="text-sm text-[#4a4a4a]">Google Tag Manager</span>
+                          <Badge variant={technicalSeo.google_tag_manager_id ? "default" : "outline"}>
+                            {technicalSeo.google_tag_manager_id || "Not Set"}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[#f8f9fa] rounded-lg">
+                          <span className="text-sm text-[#4a4a4a]">Facebook Pixel ID</span>
+                          <Badge variant={technicalSeo.facebook_pixel_id ? "default" : "outline"}>
+                            {technicalSeo.facebook_pixel_id || "Not Set"}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-[#1a1a1a] mb-4">Sitemap & Robots</h3>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center p-3 bg-[#f8f9fa] rounded-lg">
+                          <span className="text-sm text-[#4a4a4a]">Sitemap URL</span>
+                          <Badge variant={technicalSeo.sitemap_url ? "default" : "outline"}>
+                            {technicalSeo.sitemap_url ? "Configured" : "Not Set"}
+                          </Badge>
+                        </div>
+                        <div className="flex justify-between items-center p-3 bg-[#f8f9fa] rounded-lg">
+                          <span className="text-sm text-[#4a4a4a]">Custom Head Scripts</span>
+                          <Badge variant={technicalSeo.custom_head_scripts ? "default" : "outline"}>
+                            {technicalSeo.custom_head_scripts ? "Configured" : "Not Set"}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
             {/* Enquiries Tab */}
             <TabsContent value="enquiries">
               <h2 className="text-xl font-bold text-[#1a1a1a] mb-6">Contact Enquiries</h2>
