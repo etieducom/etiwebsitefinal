@@ -100,8 +100,28 @@ const Header = () => {
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1" data-testid="desktop-nav">
               <Link to="/" className="nav-link">Home</Link>
-              <Link to="/about" className="nav-link">About</Link>
-              <Link to="/founder" className="nav-link">Founder's Desk</Link>
+              
+              {/* About Dropdown */}
+              <div 
+                className="nav-item relative"
+                onMouseEnter={() => setActiveDropdown('about')}
+                onMouseLeave={() => setActiveDropdown(null)}
+              >
+                <button className="nav-link flex items-center gap-1">
+                  About
+                  <ChevronDown className="w-4 h-4" />
+                </button>
+                <div className={`dropdown-menu ${activeDropdown === 'about' ? 'opacity-100 visible translate-y-0' : ''}`}>
+                  <Link to="/about" className="dropdown-item flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    About Us
+                  </Link>
+                  <Link to="/founder" className="dropdown-item flex items-center gap-2">
+                    <Users className="w-4 h-4" />
+                    Founder's Desk
+                  </Link>
+                </div>
+              </div>
               
               {/* Programs Mega Menu */}
               <div 
@@ -203,7 +223,6 @@ const Header = () => {
               </div>
 
               <Link to="/franchise" className="nav-link">Franchise</Link>
-              <Link to="/verify-certificate" className="nav-link">Verify Certificate</Link>
               <Link to="/contact" className="nav-link">Contact</Link>
             </nav>
 
@@ -284,7 +303,6 @@ const Header = () => {
               <Link to="/hire-from-us" className="block py-3 font-medium border-b border-[#ebebeb]">Hire From Us</Link>
               <Link to="/join-team" className="block py-3 font-medium border-b border-[#ebebeb]">Join ETI Team</Link>
               <Link to="/franchise" className="block py-3 font-medium border-b border-[#ebebeb]">Franchise</Link>
-              <Link to="/verify-certificate" className="block py-3 font-medium border-b border-[#ebebeb]">Verify Certificate</Link>
               <Link to="/contact" className="block py-3 font-medium border-b border-[#ebebeb]">Contact</Link>
             </nav>
 
