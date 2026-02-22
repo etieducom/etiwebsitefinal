@@ -1,163 +1,127 @@
-# ETI Educom® - Official Website PRD
+# ETI Educom Website - Product Requirements Document
 
-## Project Overview
-**Brand Name:** ETI Educom®  
-**Legal Entity:** ETI Learning Systems Private Limited  
-**Established:** 2017  
-**Positioning:** The Computer Career School  
-**Certification Status:** Certiport Authorized Testing Center (CATC)
+## Original Problem Statement
+Build the official website for "ETI Educom", a computer career school in India. The project is a dynamic, multi-page application with a comprehensive admin panel.
 
-## Technical Stack
-- **Frontend:** React 19, React Router, Tailwind CSS, Shadcn/UI, Framer Motion
-- **Backend:** FastAPI, Motor (async MongoDB)
-- **Database:** MongoDB
-- **AI Integration:** OpenAI GPT-5.2 via Emergent LLM Key
+## User Personas
+- **Students & Parents**: Looking for computer career education programs
+- **Franchise Partners**: Interested in starting ETI Educom centers
+- **Admins**: Managing website content, leads, and SEO settings
+
+## Core Requirements
+
+### Public Website
+- Homepage with quick enquiry form
+- Programs listing with detailed program pages
+- About Us and Founder's Desk pages
+- Events, Blogs, and FAQ sections
+- Contact page with branch info
+- Free Counselling lead capture page
+- Summer Training landing page
+- Franchise enquiry page
+- Privacy Policy page
+- Branch detail pages
+
+### Admin Panel
+- Password-protected login (etieducom@admin2025)
+- CRUD for Events, Reviews, Programs, Jobs, Blogs, FAQs
+- Page-level SEO management
+- Technical SEO settings (Google Analytics, GTM, etc.)
+- Lead management (Quick Enquiries, Counselling, Summer Training, Franchise)
 
 ---
 
 ## What's Been Implemented
 
-### Phase 1-3 - Foundation (DONE)
-- Multi-page SPA architecture
-- Programs Mega Menu with categories
-- Student Reviews Slider, Events Section
-- AI Skills Guider Chatbot
-- Admin Dashboard for Events, Reviews, Programs, Jobs
+### Phase 6 (February 22, 2026) - Latest Updates
+- **Homepage**: Changed "Certiport Authorized Testing Center" to "ETI Educom", updated "2000+ Students" to "5000+ Students"
+- **Contact Info Global Update**: Phone: 9646727676, Email: helpdesk@etieducom.com
+- **Footer Updates**: 
+  - Address: "ETI Educom, Jodhamal Colony, Dhangu Road, Pathankot"
+  - Added "Our Branches" section with Pathankot link
+  - Added "Summer Training" link under Programs
+- **Navigation**: Restructured "About" dropdown containing "About Us" and "Founder's Desk"
+- **Removed**: Certificate Verification page and functionality
+- **Contact Page**: Added Pathankot branch info (Pathankot@etieducom.com), partnerships section (partnerships@etieducom.com)
+- **About Page**: Removed milestones section
+- **Free Counselling**: Added "Click to WhatsApp" button (9646727676)
+- **Admin Panel**: Added Technical SEO management tab
+- **New Program Pages**: Digital Marketing, Ethical Hacking, Graphic Design, Data Analytics, Full Stack Web Development
+- **New Branch Page**: /branches/pathankot
 
-### Phase 4 - Content Management (DONE - Feb 22, 2026)
-- Blogs, FAQ, Privacy Policy pages
-- Franchise enquiry form (comprehensive)
+### Phase 5 - Admin Login & Summer Training
+- Implemented password-based admin login
+- Created Summer Training landing page with lead capture
+- Added hero quick enquiry form on homepage
+- Updated social media links (Facebook, Instagram, LinkedIn, YouTube)
+- Added Summer Training Leads and Quick Enquiries tabs in admin
+
+### Phase 4 - Content Pages
+- Privacy Policy page
+- Dynamic Blogs page with admin management
+- FAQ page with category filtering
 - Free Counselling landing page
-- SEO management in admin
-- Removed Emergent badge
-- Removed ETI EDUCOM text from navbar
 
-### Phase 5 - Current Implementation (DONE - Feb 22, 2026)
+### Phase 3 - AI & Advanced Features
+- AI Skills Guider chatbot (GPT-4o via Emergent LLM Key)
+- Event details modal
+- Advanced franchise enquiry form
+- Full CRUD for Blogs, FAQs, SEO in admin
 
-#### Admin Login Protection
-- ✅ Simple password-based authentication
-- ✅ Password: `etieducom@admin2025` (stored in backend/.env)
-- ✅ Token-based session management
-- ✅ Logout functionality
+### Phase 2 - Core Pages
+- Programs page with mega menu
+- Program detail pages
+- Events page
+- Contact page with form
+- Hire From Us page
+- Join ETI Team page
+- Franchise page
 
-#### Summer Training Landing Page (`/summer-training`)
-- ✅ Standalone page (no header/footer)
-- ✅ Hero section with registration form
-- ✅ 14 Trending Programs:
-  - Python Programming
-  - Web Development
-  - Digital Marketing
-  - SEO & SEM
-  - Ethical Hacking
-  - Networking (CCNA)
-  - AutoCAD
-  - Graphic Design
-  - Data Science
-  - Cloud Computing
-  - MS Office Advanced
-  - App Development
-  - AI & Machine Learning
-  - Cybersecurity
-- ✅ Duration options: 6 Weeks / 6 Months
-
-#### Homepage Quick Enquiry Form
-- ✅ Replaced hero image with Quick Enquiry form
-- ✅ Fields: Name, Phone, Interest dropdown
-- ✅ Trust badges (2000+ Students, Since 2017)
-
-#### Social Media Links (Footer)
-- ✅ Facebook: https://www.facebook.com/etieducom
-- ✅ Instagram: https://www.instagram.com/etieducom/
-- ✅ LinkedIn: https://www.linkedin.com/company/etieducom
-- ✅ YouTube: https://www.youtube.com/@ETIEducomofficial
-
-#### Admin Panel Extensions
-- ✅ Summer Training Leads tab
-- ✅ Quick Enquiries tab (homepage leads)
+### Phase 1 - Foundation
+- Homepage with hero section
+- Header with responsive navigation
+- Footer with social links
+- About Us page
+- Founder's Desk page
 
 ---
 
-## API Endpoints
+## Technical Stack
+- **Frontend**: React 18, React Router, TailwindCSS, Framer Motion, Axios
+- **Backend**: FastAPI, MongoDB, Pydantic
+- **UI Components**: Shadcn/UI
+- **AI Integration**: OpenAI GPT-4o via emergentintegrations
 
-### Authentication
-- `POST /api/admin/login` - Admin login
-- `POST /api/admin/verify` - Verify admin token
-
-### Lead Management
-- `POST/GET/DELETE /api/summer-training-leads` - Summer training leads
-- `POST/GET/DELETE /api/quick-enquiry` - Homepage quick enquiries
-- `POST/GET/DELETE /api/counselling-leads` - Free counselling leads
-- `POST/GET/DELETE /api/franchise-enquiry` - Franchise enquiries
-
-### Content Management
-- `GET/POST/DELETE /api/blogs` - Blog posts
-- `GET/POST/DELETE /api/faqs` - FAQs
-- `GET/POST /api/seo` - SEO settings
-- `GET/POST/DELETE /api/events` - Events
-- `GET/POST/DELETE /api/reviews` - Student reviews
-- `GET/POST/DELETE /api/programs` - Programs
-- `GET/POST/DELETE /api/jobs` - Job openings
-- `GET /api/contact` - Contact enquiries
-
----
+## Key API Endpoints
+- **Auth**: POST /api/admin/login
+- **CRUD**: /api/blogs, /api/faqs, /api/seo, /api/reviews, /api/programs, /api/events, /api/openings
+- **Leads**: /api/contact, /api/quick-enquiry, /api/counselling-leads, /api/summer-training-leads, /api/franchise-enquiry
+- **Technical SEO**: GET/POST /api/technical-seo
+- **AI**: POST /api/chatbot
 
 ## Database Collections
-- `summer_training_leads` - name, email, phone, program_interest, duration, status
-- `quick_enquiries` - name, phone, email, interest, source, status
-- `counselling_leads` - name, phone, education, preferred_track
-- `franchise_enquiries` - name, email, phone, city, location, experience, etc.
-- `blogs` - title, slug, excerpt, content, featured_image, category, tags
-- `faqs` - question, answer, category, order
-- `seo_settings` - page_slug, meta_title, meta_description
-- `events`, `reviews`, `programs`, `job_openings`, `contact_enquiries`
+- contacts, events, reviews, programs, openings
+- blogs, faqs, seo_settings, technical_seo
+- franchise_enquiries, counselling_leads, summer_training_leads, quick_enquiries
 
 ---
 
-## Test Results
-- ✅ Phase 3: 100% (21/21 backend, frontend verified)
-- ✅ Phase 4: 100% (21/21 backend, frontend verified)
-- ✅ Phase 5: 100% (18/18 backend, frontend verified)
-- Reports: `/app/test_reports/iteration_2.json`, `iteration_3.json`, `iteration_4.json`
+## Completed Tasks
+- [x] Homepage with ETI Educom badge and 5000+ students
+- [x] Updated contact info globally (phone, email, address)
+- [x] Footer with Our Branches and Summer Training links
+- [x] About dropdown in navigation
+- [x] Certificate verification removed
+- [x] Contact page with branch and partnership sections
+- [x] About page without milestones
+- [x] Free Counselling WhatsApp button
+- [x] Admin Technical SEO tab
+- [x] 5 new program pages created
+- [x] Pathankot branch page created
 
----
-
-## Admin Credentials
-**Password:** `etieducom@admin2025`
-
----
-
-## Backlog
-
-### P1 (High Priority)
-- [ ] Email notifications for new leads (Resend/SendGrid)
-- [ ] Edit functionality for admin items (currently create/delete only)
-- [ ] Image upload for content (instead of URLs)
-
-### P2 (Medium Priority)
-- [ ] Blog comments/engagement
-- [ ] Student success stories gallery
-- [ ] Analytics integration (Google Analytics)
-
-### P3 (Future)
-- [ ] Multi-language support (Hindi)
-- [ ] Student portal login
-- [ ] Certificate management in admin
-
----
-
-## File Structure
-```
-/app/
-├── backend/
-│   ├── .env (ADMIN_PASSWORD added)
-│   └── server.py (new auth + lead APIs)
-└── frontend/
-    ├── src/
-    │   ├── pages/
-    │   │   ├── HomePage.jsx (Quick Enquiry form)
-    │   │   ├── SummerTrainingPage.jsx (NEW)
-    │   │   ├── AdminPage.jsx (login + new tabs)
-    │   │   └── ...
-    │   └── components/
-    │       └── Footer.jsx (updated social links)
-```
+## Future/Backlog Tasks
+- [ ] Refactor AdminPage.jsx into smaller components (1000+ lines currently)
+- [ ] Add more branch pages as business expands
+- [ ] Implement certificate verification system (if requested again)
+- [ ] Add student testimonial videos section
+- [ ] Implement blog comments/reactions
