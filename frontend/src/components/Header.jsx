@@ -209,9 +209,9 @@ const Header = () => {
 
             {/* CTA Button */}
             <div className="hidden lg:block">
-              <Link to="/contact">
+              <Link to="/free-counselling">
                 <button className="btn-primary text-sm" data-testid="header-cta">
-                  Enquire Now
+                  Free Counselling
                 </button>
               </Link>
             </div>
