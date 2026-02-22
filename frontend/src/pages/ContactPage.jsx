@@ -8,7 +8,9 @@ import {
   MapPin, 
   ChevronRight, 
   Clock,
-  Send
+  Send,
+  Building2,
+  Handshake
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -63,24 +65,33 @@ const ContactPage = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Pathankot Branch Info
+  const branchInfo = {
+    name: "Pathankot (Head Office)",
+    address: "ETI Educom, Jodhamal Colony, Dhangu Road, Pathankot",
+    phone: "+91 9646727676",
+    email: "Pathankot@etieducom.com",
+    timings: "Monday - Saturday, 9:00 AM - 6:00 PM"
+  };
+
   const contactInfo = [
     {
       icon: <Phone className="w-6 h-6" />,
       title: "Phone",
-      value: "+91 XXXXX XXXXX",
+      value: "+91 9646727676",
       subtext: "Mon-Sat, 9AM-6PM"
     },
     {
       icon: <Mail className="w-6 h-6" />,
       title: "Email",
-      value: "info@etieducom.com",
+      value: "helpdesk@etieducom.com",
       subtext: "We reply within 24 hours"
     },
     {
       icon: <MapPin className="w-6 h-6" />,
-      title: "Address",
-      value: "ETI Educom® Head Office",
-      subtext: "India"
+      title: "Head Office",
+      value: "ETI Educom",
+      subtext: "Jodhamal Colony, Dhangu Road, Pathankot"
     }
   ];
 
