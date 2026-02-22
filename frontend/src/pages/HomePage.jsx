@@ -472,54 +472,51 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Career Tracks Section */}
+      {/* Career Tracks Section - Flip Cards */}
       <section className="py-20 md:py-28 section-grey" data-testid="tracks-section">
         <div className="container-main">
           <motion.div {...fadeInUp} className="text-center mb-16">
             <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">
               <BookOpen className="w-4 h-4 mr-1" />
-              Structured Learning Paths
+              Choose Your Path
             </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
               Career Tracks
             </h2>
             <p className="text-lg text-[#4a4a4a] max-w-2xl mx-auto">
-              Comprehensive career programs designed to transform learners into 
-              skilled professionals ready for the modern workforce.
+              Four specialized pathways designed for real career outcomes
             </p>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {careerTracks.map((track, index) => (
               <motion.div
                 key={track.id}
                 {...fadeInUp}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="perspective-1000"
               >
                 <Link to={`/programs/${track.id}`}>
-                  <div className="track-card h-full" data-testid={`track-card-${track.id}`}>
-                    <div className="relative h-48 overflow-hidden">
-                      <img 
-                        src={track.image} 
-                        alt={track.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                      <div className="absolute bottom-4 left-4 text-white">
-                        <div className="w-12 h-12 bg-[#1545ea] rounded-lg flex items-center justify-center mb-2">
-                          {track.icon}
-                        </div>
+                  <div className="flip-card group h-[200px] md:h-[240px]" data-testid={`track-card-${track.id}`}>
+                    {/* Front Side - Blue */}
+                    <div className="flip-card-front bg-[#1545ea] rounded-xl p-6 flex flex-col items-center justify-center text-center text-white">
+                      <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+                        {track.icon}
                       </div>
-                    </div>
-                    <div className="p-6">
-                      <h3 className="text-xl font-bold text-[#1a1a1a] mb-2 font-['Poppins']">
+                      <h3 className="text-lg md:text-xl font-bold font-['Poppins']">
                         {track.title}
                       </h3>
-                      <p className="text-[#4a4a4a] text-sm mb-4">
-                        {track.description}
+                      <p className="text-blue-100 text-sm mt-2 hidden md:block">
+                        {track.shortDesc}
                       </p>
-                      <span className="text-[#1545ea] font-semibold text-sm flex items-center gap-1">
-                        Learn More <ArrowRight className="w-4 h-4" />
+                    </div>
+                    {/* Back Side - Grey */}
+                    <div className="flip-card-back bg-[#2a2a2a] rounded-xl p-6 flex flex-col items-center justify-center text-center text-white">
+                      <p className="text-sm md:text-base leading-relaxed mb-4">
+                        {track.fullDesc}
+                      </p>
+                      <span className="text-[#1545ea] bg-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-1">
+                        Explore <ArrowRight className="w-4 h-4" />
                       </span>
                     </div>
                   </div>
