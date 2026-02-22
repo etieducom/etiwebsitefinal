@@ -94,12 +94,7 @@ const Header = () => {
                 src={LOGO_BLUE} 
                 alt="ETI Educom" 
                 className="h-14 w-auto object-contain"
-                onError={(e) => {
-                  e.target.style.display = 'none';
-                  e.target.nextSibling.style.display = 'flex';
-                }}
               />
-              <TextLogo />
             </Link>
 
             {/* Desktop Navigation */}
