@@ -101,6 +101,14 @@ const AdminPage = () => {
   const [seoForm, setSeoForm] = useState({
     page_slug: "", meta_title: "", meta_description: "", meta_keywords: "", og_title: "", og_description: "", og_image: ""
   });
+  const [techSeoForm, setTechSeoForm] = useState({
+    google_analytics_id: "",
+    google_tag_manager_id: "",
+    facebook_pixel_id: "",
+    sitemap_url: "",
+    robots_txt: "",
+    custom_head_scripts: ""
+  });
   
   // Submitting states
   const [submitting, setSubmitting] = useState(false);
