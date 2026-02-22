@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -9,17 +9,21 @@ from pydantic import BaseModel, Field, ConfigDict, EmailStr
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
+from emergentintegrations.llm.chat import LlmChat, UserMessage
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[os.environ.get('DB_NAME', 'test_database')]
+
+# LLM Key
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 
 # Create the main app
-app = FastAPI(title="ETI Educom API", version="2.0.0")
+app = FastAPI(title="ETI Educom API", version="3.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -115,6 +119,115 @@ class EventResponse(BaseModel):
     created_at: str
 
 
+# Student Review Models
+class Review(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    student_name: str
+    course: str
+    review_text: str
+    photo_url: Optional[str] = None
+    rating: int = 5
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ReviewCreate(BaseModel):
+    student_name: str = Field(..., min_length=2, max_length=100)
+    course: str = Field(..., min_length=2, max_length=200)
+    review_text: str = Field(..., min_length=10, max_length=1000)
+    photo_url: Optional[str] = None
+    rating: int = Field(default=5, ge=1, le=5)
+
+
+class ReviewUpdate(BaseModel):
+    student_name: Optional[str] = None
+    course: Optional[str] = None
+    review_text: Optional[str] = None
+    photo_url: Optional[str] = None
+    rating: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
+class ReviewResponse(BaseModel):
+    id: str
+    student_name: str
+    course: str
+    review_text: str
+    photo_url: Optional[str]
+    rating: int
+    is_active: bool
+    created_at: str
+
+
+# Program/Track Models
+class Program(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    slug: str
+    description: str
+    category: str  # career_tracks, short_term, skill_development, corporate_training
+    duration: str
+    outcomes: List[str]
+    suitable_for: str
+    certifications: List[str]
+    modules: List[str]
+    image_url: Optional[str] = None
+    icon: str = "Monitor"
+    is_active: bool = True
+    order: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ProgramCreate(BaseModel):
+    title: str = Field(..., min_length=3, max_length=200)
+    slug: str = Field(..., min_length=3, max_length=100)
+    description: str = Field(..., min_length=10, max_length=2000)
+    category: str = Field(..., pattern="^(career_tracks|short_term|skill_development|corporate_training)$")
+    duration: str
+    outcomes: List[str]
+    suitable_for: str
+    certifications: List[str]
+    modules: List[str]
+    image_url: Optional[str] = None
+    icon: str = "Monitor"
+    order: int = 0
+
+
+class ProgramUpdate(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    category: Optional[str] = None
+    duration: Optional[str] = None
+    outcomes: Optional[List[str]] = None
+    suitable_for: Optional[str] = None
+    certifications: Optional[List[str]] = None
+    modules: Optional[List[str]] = None
+    image_url: Optional[str] = None
+    icon: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
+class ProgramResponse(BaseModel):
+    id: str
+    title: str
+    slug: str
+    description: str
+    category: str
+    duration: str
+    outcomes: List[str]
+    suitable_for: str
+    certifications: List[str]
+    modules: List[str]
+    image_url: Optional[str]
+    icon: str
+    is_active: bool
+    order: int
+    created_at: str
+
+
 # Job Opening Models
 class JobOpening(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -122,7 +235,7 @@ class JobOpening(BaseModel):
     title: str
     department: str
     location: str
-    type: str  # Full-time, Part-time, Contract
+    type: str
     description: str
     requirements: List[str]
     is_active: bool = True
@@ -138,6 +251,16 @@ class JobOpeningCreate(BaseModel):
     requirements: List[str]
 
 
+class JobOpeningUpdate(BaseModel):
+    title: Optional[str] = None
+    department: Optional[str] = None
+    location: Optional[str] = None
+    type: Optional[str] = None
+    description: Optional[str] = None
+    requirements: Optional[List[str]] = None
+    is_active: Optional[bool] = None
+
+
 class JobOpeningResponse(BaseModel):
     id: str
     title: str
@@ -147,6 +270,39 @@ class JobOpeningResponse(BaseModel):
     description: str
     requirements: List[str]
     is_active: bool
+    created_at: str
+
+
+# Job Application Models
+class JobApplication(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    job_id: str
+    name: str
+    email: EmailStr
+    phone: str
+    resume_url: Optional[str] = None
+    cover_letter: str
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class JobApplicationCreate(BaseModel):
+    job_id: str
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    phone: str
+    resume_url: Optional[str] = None
+    cover_letter: str = Field(..., min_length=20, max_length=3000)
+
+
+class JobApplicationResponse(BaseModel):
+    id: str
+    job_id: str
+    name: str
+    email: str
+    phone: str
+    resume_url: Optional[str]
+    cover_letter: str
     created_at: str
 
 
@@ -194,37 +350,19 @@ class HireRequestResponse(BaseModel):
     created_at: str
 
 
-# Job Application Models
-class JobApplication(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    job_id: str
-    name: str
-    email: EmailStr
-    phone: str
-    resume_url: Optional[str] = None
-    cover_letter: str
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+# Chatbot Models
+class ChatMessage(BaseModel):
+    session_id: str
+    message: str
 
 
-class JobApplicationCreate(BaseModel):
-    job_id: str
-    name: str = Field(..., min_length=2, max_length=100)
-    email: EmailStr
-    phone: str
-    resume_url: Optional[str] = None
-    cover_letter: str = Field(..., min_length=20, max_length=3000)
+class ChatResponse(BaseModel):
+    response: str
+    session_id: str
 
 
-class JobApplicationResponse(BaseModel):
-    id: str
-    job_id: str
-    name: str
-    email: str
-    phone: str
-    resume_url: Optional[str]
-    cover_letter: str
-    created_at: str
+# Store chat sessions in memory (for simplicity)
+chat_sessions = {}
 
 
 # ============ Routes ============
@@ -236,7 +374,7 @@ async def root():
 
 @api_router.get("/health")
 async def health_check():
-    return {"status": "healthy", "service": "ETI Educom API v2.0"}
+    return {"status": "healthy", "service": "ETI Educom API v3.0"}
 
 
 # Status Routes
@@ -269,14 +407,9 @@ async def create_contact_enquiry(input: ContactEnquiryCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.contact_enquiries.insert_one(doc)
         return ContactEnquiryResponse(
-            id=doc['id'],
-            name=doc['name'],
-            email=doc['email'],
-            phone=doc['phone'],
-            enquiry_type=doc['enquiry_type'],
-            message=doc['message'],
-            created_at=doc['created_at'],
-            status=doc['status']
+            id=doc['id'], name=doc['name'], email=doc['email'],
+            phone=doc['phone'], enquiry_type=doc['enquiry_type'],
+            message=doc['message'], created_at=doc['created_at'], status=doc['status']
         )
     except Exception as e:
         logging.error(f"Error creating contact enquiry: {e}")
@@ -288,16 +421,11 @@ async def get_contact_enquiries():
     enquiries = await db.contact_enquiries.find({}, {"_id": 0}).to_list(1000)
     return [
         ContactEnquiryResponse(
-            id=e['id'],
-            name=e['name'],
-            email=e['email'],
-            phone=e.get('phone'),
-            enquiry_type=e['enquiry_type'],
-            message=e['message'],
+            id=e['id'], name=e['name'], email=e['email'], phone=e.get('phone'),
+            enquiry_type=e['enquiry_type'], message=e['message'],
             created_at=e['created_at'] if isinstance(e['created_at'], str) else e['created_at'].isoformat(),
             status=e.get('status', 'new')
-        )
-        for e in enquiries
+        ) for e in enquiries
     ]
 
 
@@ -311,15 +439,10 @@ async def create_event(input: EventCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.events.insert_one(doc)
         return EventResponse(
-            id=doc['id'],
-            title=doc['title'],
-            description=doc['description'],
-            event_date=doc['event_date'],
-            event_time=doc['event_time'],
-            location=doc['location'],
-            image_url=doc['image_url'],
-            is_active=doc['is_active'],
-            created_at=doc['created_at']
+            id=doc['id'], title=doc['title'], description=doc['description'],
+            event_date=doc['event_date'], event_time=doc['event_time'],
+            location=doc['location'], image_url=doc['image_url'],
+            is_active=doc['is_active'], created_at=doc['created_at']
         )
     except Exception as e:
         logging.error(f"Error creating event: {e}")
@@ -327,22 +450,17 @@ async def create_event(input: EventCreate):
 
 
 @api_router.get("/events", response_model=List[EventResponse])
-async def get_events(active_only: bool = True):
+async def get_events(active_only: bool = True, limit: int = 100):
     query = {"is_active": True} if active_only else {}
-    events = await db.events.find(query, {"_id": 0}).sort("event_date", 1).to_list(100)
+    events = await db.events.find(query, {"_id": 0}).sort("event_date", 1).to_list(limit)
     return [
         EventResponse(
-            id=e['id'],
-            title=e['title'],
-            description=e['description'],
-            event_date=e['event_date'],
-            event_time=e['event_time'],
-            location=e['location'],
-            image_url=e.get('image_url'),
+            id=e['id'], title=e['title'], description=e['description'],
+            event_date=e['event_date'], event_time=e['event_time'],
+            location=e['location'], image_url=e.get('image_url'),
             is_active=e['is_active'],
             created_at=e['created_at'] if isinstance(e['created_at'], str) else e['created_at'].isoformat()
-        )
-        for e in events
+        ) for e in events
     ]
 
 
@@ -352,13 +470,9 @@ async def get_event(event_id: str):
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
     return EventResponse(
-        id=event['id'],
-        title=event['title'],
-        description=event['description'],
-        event_date=event['event_date'],
-        event_time=event['event_time'],
-        location=event['location'],
-        image_url=event.get('image_url'),
+        id=event['id'], title=event['title'], description=event['description'],
+        event_date=event['event_date'], event_time=event['event_time'],
+        location=event['location'], image_url=event.get('image_url'),
         is_active=event['is_active'],
         created_at=event['created_at'] if isinstance(event['created_at'], str) else event['created_at'].isoformat()
     )
@@ -372,18 +486,7 @@ async def update_event(event_id: str, input: EventUpdate):
     result = await db.events.update_one({"id": event_id}, {"$set": update_data})
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Event not found")
-    event = await db.events.find_one({"id": event_id}, {"_id": 0})
-    return EventResponse(
-        id=event['id'],
-        title=event['title'],
-        description=event['description'],
-        event_date=event['event_date'],
-        event_time=event['event_time'],
-        location=event['location'],
-        image_url=event.get('image_url'),
-        is_active=event['is_active'],
-        created_at=event['created_at'] if isinstance(event['created_at'], str) else event['created_at'].isoformat()
-    )
+    return await get_event(event_id)
 
 
 @api_router.delete("/events/{event_id}")
@@ -392,6 +495,155 @@ async def delete_event(event_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Event not found")
     return {"message": "Event deleted successfully"}
+
+
+# Review Routes
+@api_router.post("/reviews", response_model=ReviewResponse)
+async def create_review(input: ReviewCreate):
+    try:
+        review_dict = input.model_dump()
+        review_obj = Review(**review_dict)
+        doc = review_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.reviews.insert_one(doc)
+        return ReviewResponse(
+            id=doc['id'], student_name=doc['student_name'], course=doc['course'],
+            review_text=doc['review_text'], photo_url=doc['photo_url'],
+            rating=doc['rating'], is_active=doc['is_active'], created_at=doc['created_at']
+        )
+    except Exception as e:
+        logging.error(f"Error creating review: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create review")
+
+
+@api_router.get("/reviews", response_model=List[ReviewResponse])
+async def get_reviews(active_only: bool = True):
+    query = {"is_active": True} if active_only else {}
+    reviews = await db.reviews.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return [
+        ReviewResponse(
+            id=r['id'], student_name=r['student_name'], course=r['course'],
+            review_text=r['review_text'], photo_url=r.get('photo_url'),
+            rating=r['rating'], is_active=r['is_active'],
+            created_at=r['created_at'] if isinstance(r['created_at'], str) else r['created_at'].isoformat()
+        ) for r in reviews
+    ]
+
+
+@api_router.put("/reviews/{review_id}", response_model=ReviewResponse)
+async def update_review(review_id: str, input: ReviewUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.reviews.update_one({"id": review_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    review = await db.reviews.find_one({"id": review_id}, {"_id": 0})
+    return ReviewResponse(
+        id=review['id'], student_name=review['student_name'], course=review['course'],
+        review_text=review['review_text'], photo_url=review.get('photo_url'),
+        rating=review['rating'], is_active=review['is_active'],
+        created_at=review['created_at'] if isinstance(review['created_at'], str) else review['created_at'].isoformat()
+    )
+
+
+@api_router.delete("/reviews/{review_id}")
+async def delete_review(review_id: str):
+    result = await db.reviews.delete_one({"id": review_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Review not found")
+    return {"message": "Review deleted successfully"}
+
+
+# Program Routes
+@api_router.post("/programs", response_model=ProgramResponse)
+async def create_program(input: ProgramCreate):
+    try:
+        program_dict = input.model_dump()
+        program_obj = Program(**program_dict)
+        doc = program_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.programs.insert_one(doc)
+        return ProgramResponse(
+            id=doc['id'], title=doc['title'], slug=doc['slug'],
+            description=doc['description'], category=doc['category'],
+            duration=doc['duration'], outcomes=doc['outcomes'],
+            suitable_for=doc['suitable_for'], certifications=doc['certifications'],
+            modules=doc['modules'], image_url=doc['image_url'],
+            icon=doc['icon'], is_active=doc['is_active'],
+            order=doc['order'], created_at=doc['created_at']
+        )
+    except Exception as e:
+        logging.error(f"Error creating program: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create program")
+
+
+@api_router.get("/programs", response_model=List[ProgramResponse])
+async def get_programs(category: Optional[str] = None, active_only: bool = True):
+    query = {}
+    if active_only:
+        query["is_active"] = True
+    if category:
+        query["category"] = category
+    programs = await db.programs.find(query, {"_id": 0}).sort("order", 1).to_list(100)
+    return [
+        ProgramResponse(
+            id=p['id'], title=p['title'], slug=p['slug'],
+            description=p['description'], category=p['category'],
+            duration=p['duration'], outcomes=p['outcomes'],
+            suitable_for=p['suitable_for'], certifications=p['certifications'],
+            modules=p['modules'], image_url=p.get('image_url'),
+            icon=p.get('icon', 'Monitor'), is_active=p['is_active'],
+            order=p.get('order', 0),
+            created_at=p['created_at'] if isinstance(p['created_at'], str) else p['created_at'].isoformat()
+        ) for p in programs
+    ]
+
+
+@api_router.get("/programs/{program_slug}", response_model=ProgramResponse)
+async def get_program(program_slug: str):
+    program = await db.programs.find_one({"slug": program_slug}, {"_id": 0})
+    if not program:
+        raise HTTPException(status_code=404, detail="Program not found")
+    return ProgramResponse(
+        id=program['id'], title=program['title'], slug=program['slug'],
+        description=program['description'], category=program['category'],
+        duration=program['duration'], outcomes=program['outcomes'],
+        suitable_for=program['suitable_for'], certifications=program['certifications'],
+        modules=program['modules'], image_url=program.get('image_url'),
+        icon=program.get('icon', 'Monitor'), is_active=program['is_active'],
+        order=program.get('order', 0),
+        created_at=program['created_at'] if isinstance(program['created_at'], str) else program['created_at'].isoformat()
+    )
+
+
+@api_router.put("/programs/{program_id}", response_model=ProgramResponse)
+async def update_program(program_id: str, input: ProgramUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.programs.update_one({"id": program_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Program not found")
+    program = await db.programs.find_one({"id": program_id}, {"_id": 0})
+    return ProgramResponse(
+        id=program['id'], title=program['title'], slug=program['slug'],
+        description=program['description'], category=program['category'],
+        duration=program['duration'], outcomes=program['outcomes'],
+        suitable_for=program['suitable_for'], certifications=program['certifications'],
+        modules=program['modules'], image_url=program.get('image_url'),
+        icon=program.get('icon', 'Monitor'), is_active=program['is_active'],
+        order=program.get('order', 0),
+        created_at=program['created_at'] if isinstance(program['created_at'], str) else program['created_at'].isoformat()
+    )
+
+
+@api_router.delete("/programs/{program_id}")
+async def delete_program(program_id: str):
+    result = await db.programs.delete_one({"id": program_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Program not found")
+    return {"message": "Program deleted successfully"}
 
 
 # Job Openings Routes
@@ -404,15 +656,9 @@ async def create_job(input: JobOpeningCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.job_openings.insert_one(doc)
         return JobOpeningResponse(
-            id=doc['id'],
-            title=doc['title'],
-            department=doc['department'],
-            location=doc['location'],
-            type=doc['type'],
-            description=doc['description'],
-            requirements=doc['requirements'],
-            is_active=doc['is_active'],
-            created_at=doc['created_at']
+            id=doc['id'], title=doc['title'], department=doc['department'],
+            location=doc['location'], type=doc['type'], description=doc['description'],
+            requirements=doc['requirements'], is_active=doc['is_active'], created_at=doc['created_at']
         )
     except Exception as e:
         logging.error(f"Error creating job: {e}")
@@ -425,17 +671,11 @@ async def get_jobs(active_only: bool = True):
     jobs = await db.job_openings.find(query, {"_id": 0}).to_list(100)
     return [
         JobOpeningResponse(
-            id=j['id'],
-            title=j['title'],
-            department=j['department'],
-            location=j['location'],
-            type=j['type'],
-            description=j['description'],
-            requirements=j['requirements'],
-            is_active=j['is_active'],
+            id=j['id'], title=j['title'], department=j['department'],
+            location=j['location'], type=j['type'], description=j['description'],
+            requirements=j['requirements'], is_active=j['is_active'],
             created_at=j['created_at'] if isinstance(j['created_at'], str) else j['created_at'].isoformat()
-        )
-        for j in jobs
+        ) for j in jobs
     ]
 
 
@@ -445,16 +685,22 @@ async def get_job(job_id: str):
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return JobOpeningResponse(
-        id=job['id'],
-        title=job['title'],
-        department=job['department'],
-        location=job['location'],
-        type=job['type'],
-        description=job['description'],
-        requirements=job['requirements'],
-        is_active=job['is_active'],
+        id=job['id'], title=job['title'], department=job['department'],
+        location=job['location'], type=job['type'], description=job['description'],
+        requirements=job['requirements'], is_active=job['is_active'],
         created_at=job['created_at'] if isinstance(job['created_at'], str) else job['created_at'].isoformat()
     )
+
+
+@api_router.put("/jobs/{job_id}", response_model=JobOpeningResponse)
+async def update_job(job_id: str, input: JobOpeningUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.job_openings.update_one({"id": job_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Job not found")
+    return await get_job(job_id)
 
 
 @api_router.delete("/jobs/{job_id}")
@@ -475,14 +721,9 @@ async def create_application(input: JobApplicationCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.job_applications.insert_one(doc)
         return JobApplicationResponse(
-            id=doc['id'],
-            job_id=doc['job_id'],
-            name=doc['name'],
-            email=doc['email'],
-            phone=doc['phone'],
-            resume_url=doc['resume_url'],
-            cover_letter=doc['cover_letter'],
-            created_at=doc['created_at']
+            id=doc['id'], job_id=doc['job_id'], name=doc['name'],
+            email=doc['email'], phone=doc['phone'], resume_url=doc['resume_url'],
+            cover_letter=doc['cover_letter'], created_at=doc['created_at']
         )
     except Exception as e:
         logging.error(f"Error creating application: {e}")
@@ -494,16 +735,11 @@ async def get_applications():
     apps = await db.job_applications.find({}, {"_id": 0}).to_list(1000)
     return [
         JobApplicationResponse(
-            id=a['id'],
-            job_id=a['job_id'],
-            name=a['name'],
-            email=a['email'],
-            phone=a['phone'],
-            resume_url=a.get('resume_url'),
+            id=a['id'], job_id=a['job_id'], name=a['name'],
+            email=a['email'], phone=a['phone'], resume_url=a.get('resume_url'),
             cover_letter=a['cover_letter'],
             created_at=a['created_at'] if isinstance(a['created_at'], str) else a['created_at'].isoformat()
-        )
-        for a in apps
+        ) for a in apps
     ]
 
 
@@ -517,13 +753,9 @@ async def create_hire_request(input: HireRequestCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.hire_requests.insert_one(doc)
         return HireRequestResponse(
-            id=doc['id'],
-            company_name=doc['company_name'],
-            contact_person=doc['contact_person'],
-            email=doc['email'],
-            phone=doc['phone'],
-            requirements=doc['requirements'],
-            created_at=doc['created_at']
+            id=doc['id'], company_name=doc['company_name'],
+            contact_person=doc['contact_person'], email=doc['email'],
+            phone=doc['phone'], requirements=doc['requirements'], created_at=doc['created_at']
         )
     except Exception as e:
         logging.error(f"Error creating hire request: {e}")
@@ -535,28 +767,21 @@ async def get_hire_requests():
     requests = await db.hire_requests.find({}, {"_id": 0}).to_list(1000)
     return [
         HireRequestResponse(
-            id=r['id'],
-            company_name=r['company_name'],
-            contact_person=r['contact_person'],
-            email=r['email'],
-            phone=r['phone'],
-            requirements=r['requirements'],
+            id=r['id'], company_name=r['company_name'],
+            contact_person=r['contact_person'], email=r['email'],
+            phone=r['phone'], requirements=r['requirements'],
             created_at=r['created_at'] if isinstance(r['created_at'], str) else r['created_at'].isoformat()
-        )
-        for r in requests
+        ) for r in requests
     ]
 
 
 # Certificate Verification Route
 @api_router.post("/verify-certificate", response_model=CertificateResponse)
 async def verify_certificate(input: CertificateVerify):
-    # Look up certificate in database
     certificate = await db.certificates.find_one({"certificate_id": input.certificate_id}, {"_id": 0})
-    
     if certificate:
         return CertificateResponse(
-            verified=True,
-            certificate_id=input.certificate_id,
+            verified=True, certificate_id=input.certificate_id,
             student_name=certificate.get('student_name'),
             course_name=certificate.get('course_name'),
             issue_date=certificate.get('issue_date'),
@@ -564,9 +789,56 @@ async def verify_certificate(input: CertificateVerify):
         )
     else:
         return CertificateResponse(
-            verified=False,
-            certificate_id=input.certificate_id,
+            verified=False, certificate_id=input.certificate_id,
             message="Certificate not found in our records. Please check the certificate ID and try again."
+        )
+
+
+# AI Chatbot Route
+@api_router.post("/chat", response_model=ChatResponse)
+async def chat_with_ai(input: ChatMessage):
+    try:
+        session_id = input.session_id
+        
+        # Get or create chat session
+        if session_id not in chat_sessions:
+            chat_sessions[session_id] = LlmChat(
+                api_key=EMERGENT_LLM_KEY,
+                session_id=session_id,
+                system_message="""You are an AI Career Counselor for ETI Educom®, India's premier Computer Career School. 
+Your role is to help students find the right career track based on their background, interests, and goals.
+
+Available Career Tracks:
+1. Computer Career Foundation (3-6 months) - For beginners, covers digital literacy, MS Office, basic IT
+2. Digital Design & Marketing (6-12 months) - For creative people, covers Adobe tools, UI/UX, digital marketing
+3. IT Support, Networking & Cybersecurity (6-12 months) - For technical people, covers hardware, networking, security
+4. Software Development (9-18 months) - For aspiring developers, covers programming, web development
+
+Short Term Programs are also available for specific skills.
+
+When chatting:
+1. First, ask about their educational background
+2. Then ask about their interests (creative, technical, business, etc.)
+3. Ask about their career goals
+4. Based on their responses, recommend the most suitable track with reasons
+5. Be friendly, professional, and encouraging
+
+Keep responses concise but helpful. Use simple language."""
+            ).with_model("openai", "gpt-5.2")
+        
+        chat = chat_sessions[session_id]
+        
+        # Send message and get response
+        user_message = UserMessage(text=input.message)
+        response = await chat.send_message(user_message)
+        
+        return ChatResponse(response=response, session_id=session_id)
+    
+    except Exception as e:
+        logging.error(f"Chat error: {e}")
+        return ChatResponse(
+            response="I apologize, but I'm having trouble processing your request. Please try again or contact our team directly.",
+            session_id=input.session_id
         )
 
 
