@@ -264,8 +264,15 @@ const Header = () => {
             
             <nav className="space-y-1">
               <Link to="/" className="block py-3 font-medium border-b border-[#ebebeb]">Home</Link>
-              <Link to="/about" className="block py-3 font-medium border-b border-[#ebebeb]">About</Link>
-              <Link to="/founder" className="block py-3 font-medium border-b border-[#ebebeb]">Founder's Desk</Link>
+              
+              {/* About in Mobile */}
+              <div className="py-3 border-b border-[#ebebeb]">
+                <p className="font-semibold text-[#1545ea] mb-3">About</p>
+                <div className="pl-4 space-y-2">
+                  <Link to="/about" className="block text-sm text-[#717171] py-1" onClick={() => setMobileMenuOpen(false)}>About Us</Link>
+                  <Link to="/founder" className="block text-sm text-[#717171] py-1" onClick={() => setMobileMenuOpen(false)}>Founder's Desk</Link>
+                </div>
+              </div>
               
               {/* Programs in Mobile */}
               <div className="py-3 border-b border-[#ebebeb]">
