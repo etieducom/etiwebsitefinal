@@ -842,6 +842,516 @@ Keep responses concise but helpful. Use simple language."""
         )
 
 
+# ============ Blog Models ============
+
+class Blog(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    slug: str
+    excerpt: str
+    content: str
+    featured_image: Optional[str] = None
+    category: str
+    tags: List[str] = []
+    author: str
+    author_image: Optional[str] = None
+    read_time: int = 5
+    is_published: bool = True
+    is_featured: bool = False
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class BlogCreate(BaseModel):
+    title: str = Field(..., min_length=5, max_length=200)
+    slug: str = Field(..., min_length=3, max_length=100)
+    excerpt: str = Field(..., min_length=10, max_length=500)
+    content: str = Field(..., min_length=50)
+    featured_image: Optional[str] = None
+    category: str = Field(..., min_length=2)
+    tags: List[str] = []
+    author: str = Field(..., min_length=2, max_length=100)
+    author_image: Optional[str] = None
+    read_time: int = 5
+    is_featured: bool = False
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+
+
+class BlogUpdate(BaseModel):
+    title: Optional[str] = None
+    excerpt: Optional[str] = None
+    content: Optional[str] = None
+    featured_image: Optional[str] = None
+    category: Optional[str] = None
+    tags: Optional[List[str]] = None
+    author: Optional[str] = None
+    author_image: Optional[str] = None
+    read_time: Optional[int] = None
+    is_published: Optional[bool] = None
+    is_featured: Optional[bool] = None
+    meta_title: Optional[str] = None
+    meta_description: Optional[str] = None
+
+
+class BlogResponse(BaseModel):
+    id: str
+    title: str
+    slug: str
+    excerpt: str
+    content: str
+    featured_image: Optional[str]
+    category: str
+    tags: List[str]
+    author: str
+    author_image: Optional[str]
+    read_time: int
+    is_published: bool
+    is_featured: bool
+    meta_title: Optional[str]
+    meta_description: Optional[str]
+    created_at: str
+    updated_at: str
+
+
+# ============ Franchise Enquiry Models ============
+
+class FranchiseEnquiry(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    phone: str
+    location: str
+    city: str
+    experience: str
+    resume_url: Optional[str] = None
+    investment_budget: str
+    why_franchise: str
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class FranchiseEnquiryCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    phone: str = Field(..., min_length=10)
+    location: str = Field(..., min_length=2)
+    city: str = Field(..., min_length=2)
+    experience: str = Field(..., min_length=10)
+    resume_url: Optional[str] = None
+    investment_budget: str = Field(..., min_length=2)
+    why_franchise: str = Field(..., min_length=50, max_length=2000)
+
+
+class FranchiseEnquiryResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    phone: str
+    location: str
+    city: str
+    experience: str
+    resume_url: Optional[str]
+    investment_budget: str
+    why_franchise: str
+    status: str
+    created_at: str
+
+
+# ============ Counselling Lead Models ============
+
+class CounsellingLead(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    phone: str
+    education: str
+    preferred_track: str
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CounsellingLeadCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    phone: str = Field(..., min_length=10)
+    education: str = Field(..., min_length=2)
+    preferred_track: str = Field(..., min_length=2)
+
+
+class CounsellingLeadResponse(BaseModel):
+    id: str
+    name: str
+    phone: str
+    education: str
+    preferred_track: str
+    status: str
+    created_at: str
+
+
+# ============ FAQ Models ============
+
+class FAQ(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    question: str
+    answer: str
+    category: str
+    order: int = 0
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class FAQCreate(BaseModel):
+    question: str = Field(..., min_length=10, max_length=500)
+    answer: str = Field(..., min_length=20, max_length=2000)
+    category: str = Field(..., min_length=2)
+    order: int = 0
+
+
+class FAQUpdate(BaseModel):
+    question: Optional[str] = None
+    answer: Optional[str] = None
+    category: Optional[str] = None
+    order: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
+class FAQResponse(BaseModel):
+    id: str
+    question: str
+    answer: str
+    category: str
+    order: int
+    is_active: bool
+    created_at: str
+
+
+# ============ SEO Settings Models ============
+
+class SEOSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    page_slug: str
+    meta_title: str
+    meta_description: str
+    meta_keywords: Optional[str] = None
+    og_title: Optional[str] = None
+    og_description: Optional[str] = None
+    og_image: Optional[str] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class SEOSettingsCreate(BaseModel):
+    page_slug: str = Field(..., min_length=1)
+    meta_title: str = Field(..., min_length=5, max_length=70)
+    meta_description: str = Field(..., min_length=10, max_length=160)
+    meta_keywords: Optional[str] = None
+    og_title: Optional[str] = None
+    og_description: Optional[str] = None
+    og_image: Optional[str] = None
+
+
+class SEOSettingsResponse(BaseModel):
+    id: str
+    page_slug: str
+    meta_title: str
+    meta_description: str
+    meta_keywords: Optional[str]
+    og_title: Optional[str]
+    og_description: Optional[str]
+    og_image: Optional[str]
+    updated_at: str
+
+
+# ============ Blog Routes ============
+
+@api_router.post("/blogs", response_model=BlogResponse)
+async def create_blog(input: BlogCreate):
+    try:
+        blog_dict = input.model_dump()
+        blog_obj = Blog(**blog_dict)
+        doc = blog_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.blogs.insert_one(doc)
+        return BlogResponse(**{**doc, 'created_at': doc['created_at'], 'updated_at': doc['updated_at']})
+    except Exception as e:
+        logging.error(f"Error creating blog: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create blog")
+
+
+@api_router.get("/blogs", response_model=List[BlogResponse])
+async def get_blogs(published_only: bool = True, featured_only: bool = False, limit: int = 100):
+    query = {}
+    if published_only:
+        query["is_published"] = True
+    if featured_only:
+        query["is_featured"] = True
+    blogs = await db.blogs.find(query, {"_id": 0}).sort("created_at", -1).to_list(limit)
+    return [
+        BlogResponse(
+            id=b['id'], title=b['title'], slug=b['slug'], excerpt=b['excerpt'],
+            content=b['content'], featured_image=b.get('featured_image'),
+            category=b['category'], tags=b.get('tags', []), author=b['author'],
+            author_image=b.get('author_image'), read_time=b.get('read_time', 5),
+            is_published=b['is_published'], is_featured=b.get('is_featured', False),
+            meta_title=b.get('meta_title'), meta_description=b.get('meta_description'),
+            created_at=b['created_at'] if isinstance(b['created_at'], str) else b['created_at'].isoformat(),
+            updated_at=b['updated_at'] if isinstance(b['updated_at'], str) else b['updated_at'].isoformat()
+        ) for b in blogs
+    ]
+
+
+@api_router.get("/blogs/{blog_slug}", response_model=BlogResponse)
+async def get_blog(blog_slug: str):
+    blog = await db.blogs.find_one({"slug": blog_slug}, {"_id": 0})
+    if not blog:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return BlogResponse(
+        id=blog['id'], title=blog['title'], slug=blog['slug'], excerpt=blog['excerpt'],
+        content=blog['content'], featured_image=blog.get('featured_image'),
+        category=blog['category'], tags=blog.get('tags', []), author=blog['author'],
+        author_image=blog.get('author_image'), read_time=blog.get('read_time', 5),
+        is_published=blog['is_published'], is_featured=blog.get('is_featured', False),
+        meta_title=blog.get('meta_title'), meta_description=blog.get('meta_description'),
+        created_at=blog['created_at'] if isinstance(blog['created_at'], str) else blog['created_at'].isoformat(),
+        updated_at=blog['updated_at'] if isinstance(blog['updated_at'], str) else blog['updated_at'].isoformat()
+    )
+
+
+@api_router.put("/blogs/{blog_id}", response_model=BlogResponse)
+async def update_blog(blog_id: str, input: BlogUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    result = await db.blogs.update_one({"id": blog_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return await get_blog_by_id(blog_id)
+
+
+async def get_blog_by_id(blog_id: str):
+    blog = await db.blogs.find_one({"id": blog_id}, {"_id": 0})
+    if not blog:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return BlogResponse(
+        id=blog['id'], title=blog['title'], slug=blog['slug'], excerpt=blog['excerpt'],
+        content=blog['content'], featured_image=blog.get('featured_image'),
+        category=blog['category'], tags=blog.get('tags', []), author=blog['author'],
+        author_image=blog.get('author_image'), read_time=blog.get('read_time', 5),
+        is_published=blog['is_published'], is_featured=blog.get('is_featured', False),
+        meta_title=blog.get('meta_title'), meta_description=blog.get('meta_description'),
+        created_at=blog['created_at'] if isinstance(blog['created_at'], str) else blog['created_at'].isoformat(),
+        updated_at=blog['updated_at'] if isinstance(blog['updated_at'], str) else blog['updated_at'].isoformat()
+    )
+
+
+@api_router.delete("/blogs/{blog_id}")
+async def delete_blog(blog_id: str):
+    result = await db.blogs.delete_one({"id": blog_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Blog not found")
+    return {"message": "Blog deleted successfully"}
+
+
+# ============ Franchise Enquiry Routes ============
+
+@api_router.post("/franchise-enquiry", response_model=FranchiseEnquiryResponse)
+async def create_franchise_enquiry(input: FranchiseEnquiryCreate):
+    try:
+        enquiry_dict = input.model_dump()
+        enquiry_obj = FranchiseEnquiry(**enquiry_dict)
+        doc = enquiry_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.franchise_enquiries.insert_one(doc)
+        return FranchiseEnquiryResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating franchise enquiry: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit franchise enquiry")
+
+
+@api_router.get("/franchise-enquiry", response_model=List[FranchiseEnquiryResponse])
+async def get_franchise_enquiries():
+    enquiries = await db.franchise_enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return [
+        FranchiseEnquiryResponse(
+            id=e['id'], name=e['name'], email=e['email'], phone=e['phone'],
+            location=e['location'], city=e['city'], experience=e['experience'],
+            resume_url=e.get('resume_url'), investment_budget=e['investment_budget'],
+            why_franchise=e['why_franchise'], status=e.get('status', 'new'),
+            created_at=e['created_at'] if isinstance(e['created_at'], str) else e['created_at'].isoformat()
+        ) for e in enquiries
+    ]
+
+
+@api_router.delete("/franchise-enquiry/{enquiry_id}")
+async def delete_franchise_enquiry(enquiry_id: str):
+    result = await db.franchise_enquiries.delete_one({"id": enquiry_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return {"message": "Franchise enquiry deleted successfully"}
+
+
+# ============ Counselling Lead Routes ============
+
+@api_router.post("/counselling-leads", response_model=CounsellingLeadResponse)
+async def create_counselling_lead(input: CounsellingLeadCreate):
+    try:
+        lead_dict = input.model_dump()
+        lead_obj = CounsellingLead(**lead_dict)
+        doc = lead_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.counselling_leads.insert_one(doc)
+        return CounsellingLeadResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating counselling lead: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit lead")
+
+
+@api_router.get("/counselling-leads", response_model=List[CounsellingLeadResponse])
+async def get_counselling_leads():
+    leads = await db.counselling_leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return [
+        CounsellingLeadResponse(
+            id=l['id'], name=l['name'], phone=l['phone'], education=l['education'],
+            preferred_track=l['preferred_track'], status=l.get('status', 'new'),
+            created_at=l['created_at'] if isinstance(l['created_at'], str) else l['created_at'].isoformat()
+        ) for l in leads
+    ]
+
+
+@api_router.delete("/counselling-leads/{lead_id}")
+async def delete_counselling_lead(lead_id: str):
+    result = await db.counselling_leads.delete_one({"id": lead_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    return {"message": "Lead deleted successfully"}
+
+
+# ============ FAQ Routes ============
+
+@api_router.post("/faqs", response_model=FAQResponse)
+async def create_faq(input: FAQCreate):
+    try:
+        faq_dict = input.model_dump()
+        faq_obj = FAQ(**faq_dict)
+        doc = faq_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.faqs.insert_one(doc)
+        return FAQResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating FAQ: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create FAQ")
+
+
+@api_router.get("/faqs", response_model=List[FAQResponse])
+async def get_faqs(active_only: bool = True, category: Optional[str] = None):
+    query = {}
+    if active_only:
+        query["is_active"] = True
+    if category:
+        query["category"] = category
+    faqs = await db.faqs.find(query, {"_id": 0}).sort("order", 1).to_list(100)
+    return [
+        FAQResponse(
+            id=f['id'], question=f['question'], answer=f['answer'],
+            category=f['category'], order=f.get('order', 0), is_active=f['is_active'],
+            created_at=f['created_at'] if isinstance(f['created_at'], str) else f['created_at'].isoformat()
+        ) for f in faqs
+    ]
+
+
+@api_router.put("/faqs/{faq_id}", response_model=FAQResponse)
+async def update_faq(faq_id: str, input: FAQUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.faqs.update_one({"id": faq_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ not found")
+    faq = await db.faqs.find_one({"id": faq_id}, {"_id": 0})
+    return FAQResponse(
+        id=faq['id'], question=faq['question'], answer=faq['answer'],
+        category=faq['category'], order=faq.get('order', 0), is_active=faq['is_active'],
+        created_at=faq['created_at'] if isinstance(faq['created_at'], str) else faq['created_at'].isoformat()
+    )
+
+
+@api_router.delete("/faqs/{faq_id}")
+async def delete_faq(faq_id: str):
+    result = await db.faqs.delete_one({"id": faq_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="FAQ not found")
+    return {"message": "FAQ deleted successfully"}
+
+
+# ============ SEO Settings Routes ============
+
+@api_router.post("/seo", response_model=SEOSettingsResponse)
+async def upsert_seo_settings(input: SEOSettingsCreate):
+    try:
+        existing = await db.seo_settings.find_one({"page_slug": input.page_slug})
+        seo_dict = input.model_dump()
+        seo_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        if existing:
+            await db.seo_settings.update_one(
+                {"page_slug": input.page_slug},
+                {"$set": seo_dict}
+            )
+            seo = await db.seo_settings.find_one({"page_slug": input.page_slug}, {"_id": 0})
+        else:
+            seo_obj = SEOSettings(**seo_dict)
+            doc = seo_obj.model_dump()
+            doc['updated_at'] = doc['updated_at'].isoformat() if not isinstance(doc['updated_at'], str) else doc['updated_at']
+            await db.seo_settings.insert_one(doc)
+            seo = doc
+        
+        return SEOSettingsResponse(
+            id=seo['id'], page_slug=seo['page_slug'], meta_title=seo['meta_title'],
+            meta_description=seo['meta_description'], meta_keywords=seo.get('meta_keywords'),
+            og_title=seo.get('og_title'), og_description=seo.get('og_description'),
+            og_image=seo.get('og_image'),
+            updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
+        )
+    except Exception as e:
+        logging.error(f"Error saving SEO settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save SEO settings")
+
+
+@api_router.get("/seo", response_model=List[SEOSettingsResponse])
+async def get_all_seo_settings():
+    settings = await db.seo_settings.find({}, {"_id": 0}).to_list(100)
+    return [
+        SEOSettingsResponse(
+            id=s['id'], page_slug=s['page_slug'], meta_title=s['meta_title'],
+            meta_description=s['meta_description'], meta_keywords=s.get('meta_keywords'),
+            og_title=s.get('og_title'), og_description=s.get('og_description'),
+            og_image=s.get('og_image'),
+            updated_at=s['updated_at'] if isinstance(s['updated_at'], str) else s['updated_at'].isoformat()
+        ) for s in settings
+    ]
+
+
+@api_router.get("/seo/{page_slug}", response_model=SEOSettingsResponse)
+async def get_seo_settings(page_slug: str):
+    seo = await db.seo_settings.find_one({"page_slug": page_slug}, {"_id": 0})
+    if not seo:
+        raise HTTPException(status_code=404, detail="SEO settings not found for this page")
+    return SEOSettingsResponse(
+        id=seo['id'], page_slug=seo['page_slug'], meta_title=seo['meta_title'],
+        meta_description=seo['meta_description'], meta_keywords=seo.get('meta_keywords'),
+        og_title=seo.get('og_title'), og_description=seo.get('og_description'),
+        og_image=seo.get('og_image'),
+        updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
+    )
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
