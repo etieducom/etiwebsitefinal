@@ -13,6 +13,15 @@ import {
 
 const LOGO_WHITE = "https://customer-assets.emergentagent.com/job_career-tracks-hub/artifacts/guxbyjtl_etilogo%20white.png";
 
+// Text logo fallback
+const TextLogoWhite = () => (
+  <div className="flex items-center">
+    <span className="text-2xl font-bold text-white font-['Manrope']">ETI</span>
+    <span className="text-2xl font-bold text-white/80 font-['Manrope'] ml-1">EDUCOM</span>
+    <span className="text-white text-sm ml-0.5">®</span>
+  </div>
+);
+
 const Footer = () => {
   const quickLinks = [
     { label: "About Us", href: "/about" },
@@ -45,8 +54,13 @@ const Footer = () => {
             <img 
               src={LOGO_WHITE} 
               alt="ETI Educom" 
-              className="h-16 mb-6"
+              className="h-16 mb-6 object-contain"
+              onError={(e) => {
+                e.target.style.display = 'none';
+                e.target.nextSibling.style.display = 'flex';
+              }}
             />
+            <TextLogoWhite />
             <p className="text-[#b0b0b0] text-sm leading-relaxed mb-6 max-w-sm">
               ETI Educom® is India's leading Computer Career School, offering structured 
               career pathways through certified training programs since 2017.
