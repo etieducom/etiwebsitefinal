@@ -592,6 +592,9 @@ const AdminPage = () => {
               <TabsTrigger value="seo" className="flex items-center gap-1 text-xs">
                 <Globe className="w-3 h-3" /> SEO ({seoSettings.length})
               </TabsTrigger>
+              <TabsTrigger value="techseo" className="flex items-center gap-1 text-xs">
+                <Code className="w-3 h-3" /> Tech SEO
+              </TabsTrigger>
               <TabsTrigger value="enquiries" className="flex items-center gap-1 text-xs">
                 <Users className="w-3 h-3" /> Enquiries ({enquiries.length})
               </TabsTrigger>
