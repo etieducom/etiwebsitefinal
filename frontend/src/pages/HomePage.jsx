@@ -127,14 +127,14 @@ const stats = [
   { value: "100%", label: "Structured Learning", icon: <Target className="w-6 h-6" /> }
 ];
 
-// Placement Partners
+// Placement Partners - Using text-based logos for reliability
 const placementPartners = [
-  { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg" },
-  { name: "Infosys", logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" },
-  { name: "Wipro", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg" },
-  { name: "HCL", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f4/HCL_Technologies_logo.svg" },
-  { name: "Tech Mahindra", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Tech_Mahindra_Logo.svg" },
-  { name: "Accenture", logo: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg" }
+  { name: "TCS", color: "#1a73e8" },
+  { name: "Infosys", color: "#007bff" },
+  { name: "Wipro", color: "#412b8f" },
+  { name: "HCL", color: "#0077c8" },
+  { name: "Tech M", color: "#c42426" },
+  { name: "Accenture", color: "#a100ff" }
 ];
 
 const partners = [
