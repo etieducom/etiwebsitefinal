@@ -895,6 +895,68 @@ const AdminPage = () => {
                 </div>
               )}
             </TabsContent>
+
+            {/* Summer Training Tab */}
+            <TabsContent value="summer">
+              <h2 className="text-xl font-bold text-[#1a1a1a] mb-6">Summer Training Leads</h2>
+              {summerLeads.length === 0 ? (
+                <Card className="card-default"><CardContent className="p-8 text-center">
+                  <Sun className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
+                  <p className="text-[#717171]">No summer training leads yet</p>
+                </CardContent></Card>
+              ) : (
+                <div className="space-y-4">
+                  {summerLeads.map((lead) => (
+                    <Card key={lead.id} className="card-default">
+                      <CardContent className="p-4 flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-[#1a1a1a]">{lead.name}</h3>
+                          <p className="text-sm text-[#717171]">{lead.email} | {lead.phone}</p>
+                          <p className="text-sm text-[#1545ea]">{lead.program_interest} | {lead.duration}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{lead.status || 'new'}</Badge>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteSummerLead(lead.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Quick Enquiries Tab */}
+            <TabsContent value="quick">
+              <h2 className="text-xl font-bold text-[#1a1a1a] mb-6">Quick Enquiries (Homepage)</h2>
+              {quickEnquiries.length === 0 ? (
+                <Card className="card-default"><CardContent className="p-8 text-center">
+                  <MessageSquare className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
+                  <p className="text-[#717171]">No quick enquiries yet</p>
+                </CardContent></Card>
+              ) : (
+                <div className="space-y-4">
+                  {quickEnquiries.map((enquiry) => (
+                    <Card key={enquiry.id} className="card-default">
+                      <CardContent className="p-4 flex items-center justify-between">
+                        <div>
+                          <h3 className="font-semibold text-[#1a1a1a]">{enquiry.name}</h3>
+                          <p className="text-sm text-[#717171]">{enquiry.phone} {enquiry.email && `| ${enquiry.email}`}</p>
+                          <p className="text-sm text-[#1545ea]">Interested in: {enquiry.interest}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Badge variant="outline">{enquiry.status || 'new'}</Badge>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteQuickEnquiry(enquiry.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </div>
       </section>
