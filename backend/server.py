@@ -1218,10 +1218,10 @@ async def get_counselling_leads():
     leads = await db.counselling_leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
     return [
         CounsellingLeadResponse(
-            id=l['id'], name=l['name'], phone=l['phone'], education=l['education'],
-            preferred_track=l['preferred_track'], status=l.get('status', 'new'),
-            created_at=l['created_at'] if isinstance(l['created_at'], str) else l['created_at'].isoformat()
-        ) for l in leads
+            id=lead['id'], name=lead['name'], phone=lead['phone'], education=lead['education'],
+            preferred_track=lead['preferred_track'], status=lead.get('status', 'new'),
+            created_at=lead['created_at'] if isinstance(lead['created_at'], str) else lead['created_at'].isoformat()
+        ) for lead in leads
     ]
 
 
