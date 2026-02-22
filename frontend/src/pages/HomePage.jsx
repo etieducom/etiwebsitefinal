@@ -748,41 +748,51 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Why ETI Section */}
-      <section className="py-20 md:py-28 section-grey" data-testid="why-section">
+      {/* Why ETI Section - Creative */}
+      <section className="py-20 md:py-28 bg-[#0a0a0a] text-white overflow-hidden" data-testid="why-section">
         <div className="container-main">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
             <motion.div {...fadeInUp}>
-              <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-6">
-                Why Choose ETI Educom®
+              <Badge className="bg-white/10 text-white mb-6 border-0">
+                <Sparkles className="w-4 h-4 mr-1" />
+                Why ETI Educom
               </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-6 font-['Poppins']">
-                Institution-Grade Computer Education
+              <h2 className="text-3xl md:text-5xl font-bold mb-6 font-['Poppins'] leading-tight">
+                We Don't Just Teach.<br/>
+                <span className="text-[#1545ea]">We Transform Careers.</span>
               </h2>
-              <p className="text-[#4a4a4a] mb-8 leading-relaxed">
-                We operate through defined Career Tracks, not disconnected courses. 
-                Our structured academic framework ensures consistent, quality education 
-                with centralized governance and career-focused outcomes.
+              <p className="text-gray-400 mb-10 text-lg leading-relaxed">
+                While others offer courses, we build complete career trajectories. 
+                Our students don't just learn — they evolve into industry-ready professionals.
               </p>
               
-              <div className="space-y-4">
-                {[
-                  "Certiport Authorized Testing Center (CATC)",
-                  "Structured Career Pathways",
-                  "Industry-Aligned Curriculum",
-                  "Centralized Academic Governance"
-                ].map((item, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#1545ea] mt-0.5 flex-shrink-0" />
-                    <span className="text-[#1a1a1a]">{item}</span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-2 gap-6">
+                <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-[#1545ea]/50 transition-colors">
+                  <Rocket className="w-8 h-8 text-[#1545ea] mb-3" />
+                  <h4 className="font-semibold text-white mb-1">Career-First Approach</h4>
+                  <p className="text-sm text-gray-400">Every module designed for job outcomes</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-[#1545ea]/50 transition-colors">
+                  <Globe className="w-8 h-8 text-[#1545ea] mb-3" />
+                  <h4 className="font-semibold text-white mb-1">Global Certifications</h4>
+                  <p className="text-sm text-gray-400">Microsoft, Adobe, Google certified</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-[#1545ea]/50 transition-colors">
+                  <Target className="w-8 h-8 text-[#1545ea] mb-3" />
+                  <h4 className="font-semibold text-white mb-1">Structured Tracks</h4>
+                  <p className="text-sm text-gray-400">Clear pathways, not random courses</p>
+                </div>
+                <div className="bg-white/5 rounded-xl p-5 border border-white/10 hover:border-[#1545ea]/50 transition-colors">
+                  <Briefcase className="w-8 h-8 text-[#1545ea] mb-3" />
+                  <h4 className="font-semibold text-white mb-1">Placement Support</h4>
+                  <p className="text-sm text-gray-400">From training to job placement</p>
+                </div>
               </div>
 
-              <div className="mt-8">
+              <div className="mt-10">
                 <Link to="/about">
-                  <Button className="btn-secondary">
-                    Learn More About Us
+                  <Button className="bg-[#1545ea] hover:bg-[#0d36c4] text-white px-8">
+                    Discover Our Story
                     <ChevronRight className="w-5 h-5" />
                   </Button>
                 </Link>
@@ -792,13 +802,26 @@ const HomePage = () => {
             <motion.div 
               {...fadeInUp}
               transition={{ duration: 0.5, delay: 0.2 }}
+              className="relative"
             >
-              <div className="rounded-2xl overflow-hidden shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=800"
-                  alt="Professional team"
-                  className="w-full h-auto object-cover"
-                />
+              {/* Stats Display */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gradient-to-br from-[#1545ea] to-[#0d36c4] rounded-2xl p-8 text-center">
+                  <p className="text-5xl md:text-6xl font-bold mb-2">5K+</p>
+                  <p className="text-blue-100">Students Trained</p>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-8 text-center border border-white/10">
+                  <p className="text-5xl md:text-6xl font-bold text-[#1545ea] mb-2">8+</p>
+                  <p className="text-gray-400">Years Experience</p>
+                </div>
+                <div className="bg-white/5 rounded-2xl p-8 text-center border border-white/10">
+                  <p className="text-5xl md:text-6xl font-bold text-[#1545ea] mb-2">4</p>
+                  <p className="text-gray-400">Career Tracks</p>
+                </div>
+                <div className="bg-gradient-to-br from-[#1545ea] to-[#0d36c4] rounded-2xl p-8 text-center">
+                  <p className="text-5xl md:text-6xl font-bold mb-2">95%</p>
+                  <p className="text-blue-100">Success Rate</p>
+                </div>
               </div>
             </motion.div>
           </div>
