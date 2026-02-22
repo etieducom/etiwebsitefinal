@@ -445,7 +445,8 @@ const AdminPage = () => {
     { value: "faq", label: "FAQ Page" },
     { value: "contact", label: "Contact Page" },
     { value: "franchise", label: "Franchise Page" },
-    { value: "founder", label: "Founder's Desk" }
+    { value: "founder", label: "Founder's Desk" },
+    { value: "summer-training", label: "Summer Training" }
   ];
 
   if (loading) {
@@ -456,12 +457,56 @@ const AdminPage = () => {
     );
   }
 
+  // Login Screen
+  if (!isLoggedIn) {
+    return (
+      <div className="pt-[72px] min-h-screen flex items-center justify-center bg-[#ebebeb]" data-testid="admin-login">
+        <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-[#1545ea] rounded-full flex items-center justify-center mx-auto mb-4">
+              <Lock className="w-8 h-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-[#1a1a1a] font-['Poppins']">Admin Login</h1>
+            <p className="text-[#717171] text-sm mt-2">Enter your password to access the admin panel</p>
+          </div>
+
+          <form onSubmit={handleLogin} className="space-y-4">
+            <Input
+              type="password"
+              placeholder="Enter Admin Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-input h-12"
+              required
+              data-testid="admin-password"
+            />
+            {loginError && (
+              <p className="text-red-500 text-sm text-center">{loginError}</p>
+            )}
+            <Button 
+              type="submit" 
+              className="btn-primary w-full h-12"
+              disabled={loggingIn}
+              data-testid="admin-login-btn"
+            >
+              {loggingIn ? "Logging in..." : "Login"}
+            </Button>
+          </form>
+
+          <p className="text-xs text-center text-[#717171] mt-6">
+            Contact administrator if you forgot the password
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-[72px]" data-testid="admin-page">
       {/* Page Header */}
       <section className="page-header">
         <div className="container-main">
-          <motion.div {...fadeInUp} className="text-center">
+          <motion.div {...fadeInUp} className="text-center relative">
             <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">
               <Shield className="w-4 h-4 mr-1" />
               Admin Panel
@@ -469,6 +514,16 @@ const AdminPage = () => {
             <h1 className="text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
               Admin Dashboard
             </h1>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleLogout}
+              className="absolute right-0 top-0"
+              data-testid="admin-logout"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
           </motion.div>
         </div>
       </section>
