@@ -1467,6 +1467,64 @@ async def get_seo_settings(page_slug: str):
     )
 
 
+# ============ Technical SEO Routes ============
+
+@api_router.post("/technical-seo", response_model=TechnicalSEOResponse)
+async def upsert_technical_seo(input: TechnicalSEOCreate):
+    try:
+        existing = await db.technical_seo.find_one({})
+        seo_dict = input.model_dump()
+        seo_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        if existing:
+            await db.technical_seo.update_one(
+                {"id": existing['id']},
+                {"$set": seo_dict}
+            )
+            seo = await db.technical_seo.find_one({"id": existing['id']}, {"_id": 0})
+        else:
+            seo_obj = TechnicalSEO(**seo_dict)
+            doc = seo_obj.model_dump()
+            doc['updated_at'] = doc['updated_at'].isoformat() if not isinstance(doc['updated_at'], str) else doc['updated_at']
+            await db.technical_seo.insert_one(doc)
+            seo = doc
+        
+        return TechnicalSEOResponse(
+            id=seo['id'],
+            google_analytics_id=seo.get('google_analytics_id'),
+            google_tag_manager_id=seo.get('google_tag_manager_id'),
+            facebook_pixel_id=seo.get('facebook_pixel_id'),
+            sitemap_url=seo.get('sitemap_url'),
+            robots_txt=seo.get('robots_txt'),
+            custom_head_scripts=seo.get('custom_head_scripts'),
+            updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
+        )
+    except Exception as e:
+        logging.error(f"Error saving Technical SEO settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save Technical SEO settings")
+
+
+@api_router.get("/technical-seo", response_model=TechnicalSEOResponse)
+async def get_technical_seo():
+    seo = await db.technical_seo.find_one({}, {"_id": 0})
+    if not seo:
+        return TechnicalSEOResponse(
+            id="", google_analytics_id=None, google_tag_manager_id=None,
+            facebook_pixel_id=None, sitemap_url=None, robots_txt=None,
+            custom_head_scripts=None, updated_at=datetime.now(timezone.utc).isoformat()
+        )
+    return TechnicalSEOResponse(
+        id=seo['id'],
+        google_analytics_id=seo.get('google_analytics_id'),
+        google_tag_manager_id=seo.get('google_tag_manager_id'),
+        facebook_pixel_id=seo.get('facebook_pixel_id'),
+        sitemap_url=seo.get('sitemap_url'),
+        robots_txt=seo.get('robots_txt'),
+        custom_head_scripts=seo.get('custom_head_scripts'),
+        updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
+    )
+
+
 # ============ Admin Auth Routes ============
 
 @api_router.post("/admin/login", response_model=AdminLoginResponse)
