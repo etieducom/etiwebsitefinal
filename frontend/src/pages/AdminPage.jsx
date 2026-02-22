@@ -422,8 +422,6 @@ const AdminPage = () => {
       toast.error("Failed to delete");
     }
   };
-    }
-  };
 
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
