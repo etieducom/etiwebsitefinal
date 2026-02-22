@@ -6,13 +6,14 @@ import { Toaster } from "sonner";
 // Layout
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Chatbot from "./components/Chatbot";
 
 // Pages
 import HomePage from "./pages/HomePage";
 import AboutPage from "./pages/AboutPage";
 import FounderPage from "./pages/FounderPage";
-import CareerTracksPage from "./pages/CareerTracksPage";
-import TrackDetailPage from "./pages/TrackDetailPage";
+import ProgramsPage from "./pages/ProgramsPage";
+import ProgramDetailPage from "./pages/ProgramDetailPage";
 import EventsPage from "./pages/EventsPage";
 import HireFromUsPage from "./pages/HireFromUsPage";
 import JoinTeamPage from "./pages/JoinTeamPage";
@@ -32,8 +33,11 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/founder" element={<FounderPage />} />
-            <Route path="/career-tracks" element={<CareerTracksPage />} />
-            <Route path="/career-tracks/:trackId" element={<TrackDetailPage />} />
+            <Route path="/programs" element={<ProgramsPage />} />
+            <Route path="/programs/:programId" element={<ProgramDetailPage />} />
+            {/* Legacy routes - redirect to programs */}
+            <Route path="/career-tracks" element={<ProgramsPage />} />
+            <Route path="/career-tracks/:trackId" element={<ProgramDetailPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/hire-from-us" element={<HireFromUsPage />} />
             <Route path="/join-team" element={<JoinTeamPage />} />
@@ -44,6 +48,7 @@ function App() {
           </Routes>
         </main>
         <Footer />
+        <Chatbot />
       </BrowserRouter>
     </div>
   );
