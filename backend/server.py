@@ -1148,6 +1148,40 @@ class SEOSettingsResponse(BaseModel):
     updated_at: str
 
 
+# ============ Technical SEO Models ============
+
+class TechnicalSEO(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    google_analytics_id: Optional[str] = None
+    google_tag_manager_id: Optional[str] = None
+    facebook_pixel_id: Optional[str] = None
+    sitemap_url: Optional[str] = None
+    robots_txt: Optional[str] = None
+    custom_head_scripts: Optional[str] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TechnicalSEOCreate(BaseModel):
+    google_analytics_id: Optional[str] = None
+    google_tag_manager_id: Optional[str] = None
+    facebook_pixel_id: Optional[str] = None
+    sitemap_url: Optional[str] = None
+    robots_txt: Optional[str] = None
+    custom_head_scripts: Optional[str] = None
+
+
+class TechnicalSEOResponse(BaseModel):
+    id: str
+    google_analytics_id: Optional[str]
+    google_tag_manager_id: Optional[str]
+    facebook_pixel_id: Optional[str]
+    sitemap_url: Optional[str]
+    robots_txt: Optional[str]
+    custom_head_scripts: Optional[str]
+    updated_at: str
+
+
 # ============ Blog Routes ============
 
 @api_router.post("/blogs", response_model=BlogResponse)
