@@ -401,6 +401,30 @@ const AdminPage = () => {
     }
   };
 
+  const handleDeleteSummerLead = async (id) => {
+    if (!window.confirm("Delete this summer training lead?")) return;
+    try {
+      await axios.delete(`${API}/summer-training-leads/${id}`);
+      toast.success("Lead deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleDeleteQuickEnquiry = async (id) => {
+    if (!window.confirm("Delete this enquiry?")) return;
+    try {
+      await axios.delete(`${API}/quick-enquiry/${id}`);
+      toast.success("Enquiry deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+    }
+  };
+
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
     formSetter({ ...currentForm, [field]: [...currentForm[field], ""] });
