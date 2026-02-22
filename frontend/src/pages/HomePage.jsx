@@ -536,30 +536,6 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-20 bg-white" data-testid="stats-section">
-        <div className="container-main">
-          <motion.div 
-            {...fadeInUp}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"
-          >
-            {stats.map((stat, index) => (
-              <div 
-                key={stat.label}
-                className="stat-box-blue"
-                data-testid={`stat-${index}`}
-              >
-                <div className="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mx-auto mb-3">
-                  {stat.icon}
-                </div>
-                <p className="text-3xl md:text-4xl font-bold mb-1">{stat.value}</p>
-                <p className="text-blue-100 text-sm">{stat.label}</p>
-              </div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
       {/* Student Reviews Slider */}
       <section className="py-20 md:py-28 section-grey" data-testid="reviews-section">
         <div className="container-main">
