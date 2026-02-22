@@ -24,7 +24,14 @@ import {
   Quote,
   User,
   FileText,
-  Send
+  Send,
+  TrendingUp,
+  Zap,
+  Globe,
+  Rocket,
+  Sparkles,
+  GraduationCap,
+  Briefcase
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
@@ -51,31 +58,65 @@ const fadeInUp = {
 const careerTracks = [
   {
     id: "computer-foundation",
-    title: "Computer Career Foundation",
-    description: "Build essential digital literacy and computing fundamentals for a strong career start.",
-    icon: <Monitor className="w-8 h-8" />,
-    image: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=600"
+    title: "Computer Foundation",
+    shortDesc: "Digital Literacy & Office",
+    fullDesc: "Master essential computing skills, MS Office, and digital fundamentals for career readiness.",
+    icon: <Monitor className="w-6 h-6" />
   },
   {
     id: "digital-design",
-    title: "Digital Design & Marketing",
-    description: "Master creative design tools and digital marketing strategies for business success.",
-    icon: <Palette className="w-8 h-8" />,
-    image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=600"
+    title: "Design & Marketing",
+    shortDesc: "Creative + Digital Strategy",
+    fullDesc: "Learn Adobe tools, UI/UX design, SEO, and digital marketing for creative careers.",
+    icon: <Palette className="w-6 h-6" />
   },
   {
     id: "it-networking",
-    title: "IT Support & Cybersecurity",
-    description: "Develop expertise in IT infrastructure, networks, and security protocols.",
-    icon: <Network className="w-8 h-8" />,
-    image: "https://images.unsplash.com/photo-1558494949-ef010c89b20c?auto=format&fit=crop&q=80&w=600"
+    title: "IT & Cybersecurity",
+    shortDesc: "Networks + Security",
+    fullDesc: "Build expertise in IT support, networking, and cybersecurity protocols.",
+    icon: <Network className="w-6 h-6" />
   },
   {
     id: "software-development",
     title: "Software Development",
-    description: "Learn programming, development frameworks, and software engineering principles.",
-    icon: <Code className="w-8 h-8" />,
-    image: "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=600"
+    shortDesc: "Code + Build Apps",
+    fullDesc: "Master programming, web development, and software engineering principles.",
+    icon: <Code className="w-6 h-6" />
+  }
+];
+
+// Trending Skills / Hot Courses
+const trendingSkills = [
+  {
+    id: "digital-marketing",
+    title: "Digital Marketing",
+    tag: "High Demand",
+    icon: <TrendingUp className="w-5 h-5" />
+  },
+  {
+    id: "ethical-hacking",
+    title: "Ethical Hacking",
+    tag: "Hot",
+    icon: <Shield className="w-5 h-5" />
+  },
+  {
+    id: "graphic-design",
+    title: "Graphic Design",
+    tag: "Creative",
+    icon: <Palette className="w-5 h-5" />
+  },
+  {
+    id: "data-analytics",
+    title: "Data Analytics",
+    tag: "Trending",
+    icon: <Monitor className="w-5 h-5" />
+  },
+  {
+    id: "full-stack-web-development",
+    title: "Full Stack Development",
+    tag: "In Demand",
+    icon: <Code className="w-5 h-5" />
   }
 ];
 
@@ -84,6 +125,16 @@ const stats = [
   { value: "2017", label: "Established", icon: <Building2 className="w-6 h-6" /> },
   { value: "4", label: "Career Tracks", icon: <BookOpen className="w-6 h-6" /> },
   { value: "100%", label: "Structured Learning", icon: <Target className="w-6 h-6" /> }
+];
+
+// Placement Partners
+const placementPartners = [
+  { name: "TCS", logo: "https://upload.wikimedia.org/wikipedia/commons/b/b1/Tata_Consultancy_Services_Logo.svg" },
+  { name: "Infosys", logo: "https://upload.wikimedia.org/wikipedia/commons/9/95/Infosys_logo.svg" },
+  { name: "Wipro", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a0/Wipro_Primary_Logo_Color_RGB.svg" },
+  { name: "HCL", logo: "https://upload.wikimedia.org/wikipedia/commons/f/f4/HCL_Technologies_logo.svg" },
+  { name: "Tech Mahindra", logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Tech_Mahindra_Logo.svg" },
+  { name: "Accenture", logo: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Accenture.svg" }
 ];
 
 const partners = [
