@@ -68,32 +68,40 @@ const Footer = () => {
             {/* Social Links */}
             <div className="flex gap-3 mt-6">
               <a 
-                href="#" 
+                href={SOCIAL_LINKS.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#333] flex items-center justify-center text-[#b0b0b0] hover:bg-[#1545ea] hover:text-white transition-all"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
               </a>
               <a 
-                href="#" 
+                href={SOCIAL_LINKS.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#333] flex items-center justify-center text-[#b0b0b0] hover:bg-[#1545ea] hover:text-white transition-all"
-                aria-label="Twitter"
+                aria-label="Instagram"
               >
-                <Twitter className="w-4 h-4" />
+                <Instagram className="w-4 h-4" />
               </a>
               <a 
-                href="#" 
+                href={SOCIAL_LINKS.linkedin}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#333] flex items-center justify-center text-[#b0b0b0] hover:bg-[#1545ea] hover:text-white transition-all"
                 aria-label="LinkedIn"
               >
                 <Linkedin className="w-4 h-4" />
               </a>
               <a 
-                href="#" 
+                href={SOCIAL_LINKS.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-[#333] flex items-center justify-center text-[#b0b0b0] hover:bg-[#1545ea] hover:text-white transition-all"
-                aria-label="Instagram"
+                aria-label="YouTube"
               >
-                <Instagram className="w-4 h-4" />
+                <Youtube className="w-4 h-4" />
               </a>
             </div>
           </div>
