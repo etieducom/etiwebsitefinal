@@ -24,6 +24,7 @@ import FranchisePage from "./pages/FranchisePage";
 import VerifyCertificatePage from "./pages/VerifyCertificatePage";
 import ContactPage from "./pages/ContactPage";
 import FreeCounsellingPage from "./pages/FreeCounsellingPage";
+import SummerTrainingPage from "./pages/SummerTrainingPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AdminPage from "./pages/AdminPage";
 
@@ -33,8 +34,9 @@ function App() {
       <Toaster position="top-right" richColors />
       <BrowserRouter>
         <Routes>
-          {/* Free Counselling - No header/footer for landing page */}
+          {/* Landing pages - No header/footer */}
           <Route path="/free-counselling" element={<FreeCounsellingPage />} />
+          <Route path="/summer-training" element={<SummerTrainingPage />} />
           
           {/* All other routes with header/footer */}
           <Route path="/*" element={
