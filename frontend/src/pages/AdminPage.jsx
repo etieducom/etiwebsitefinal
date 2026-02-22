@@ -14,9 +14,12 @@ import {
   FileText,
   HelpCircle,
   Globe,
-  Settings,
   Building2,
-  GraduationCap
+  GraduationCap,
+  Sun,
+  MessageSquare,
+  Lock,
+  LogOut
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -49,6 +52,13 @@ const fadeInUp = {
 };
 
 const AdminPage = () => {
+  // Auth state
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
+  const [loggingIn, setLoggingIn] = useState(false);
+
+  // Data states
   const [events, setEvents] = useState([]);
   const [jobs, setJobs] = useState([]);
   const [reviews, setReviews] = useState([]);
