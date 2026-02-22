@@ -120,13 +120,6 @@ const trendingSkills = [
   }
 ];
 
-const stats = [
-  { value: "5000+", label: "Students Trained", icon: <Users className="w-6 h-6" /> },
-  { value: "2017", label: "Established", icon: <Building2 className="w-6 h-6" /> },
-  { value: "4", label: "Career Tracks", icon: <BookOpen className="w-6 h-6" /> },
-  { value: "100%", label: "Structured Learning", icon: <Target className="w-6 h-6" /> }
-];
-
 // Placement Partners - Using text-based logos for reliability
 const placementPartners = [
   { name: "TCS", color: "#1a73e8" },
