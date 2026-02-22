@@ -15,11 +15,16 @@ import FounderPage from "./pages/FounderPage";
 import ProgramsPage from "./pages/ProgramsPage";
 import ProgramDetailPage from "./pages/ProgramDetailPage";
 import EventsPage from "./pages/EventsPage";
+import BlogsPage from "./pages/BlogsPage";
+import BlogDetailPage from "./pages/BlogDetailPage";
+import FAQPage from "./pages/FAQPage";
 import HireFromUsPage from "./pages/HireFromUsPage";
 import JoinTeamPage from "./pages/JoinTeamPage";
 import FranchisePage from "./pages/FranchisePage";
 import VerifyCertificatePage from "./pages/VerifyCertificatePage";
 import ContactPage from "./pages/ContactPage";
+import FreeCounsellingPage from "./pages/FreeCounsellingPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AdminPage from "./pages/AdminPage";
 
 function App() {
@@ -27,28 +32,42 @@ function App() {
     <div className="App">
       <Toaster position="top-right" richColors />
       <BrowserRouter>
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/founder" element={<FounderPage />} />
-            <Route path="/programs" element={<ProgramsPage />} />
-            <Route path="/programs/:programId" element={<ProgramDetailPage />} />
-            {/* Legacy routes - redirect to programs */}
-            <Route path="/career-tracks" element={<ProgramsPage />} />
-            <Route path="/career-tracks/:trackId" element={<ProgramDetailPage />} />
-            <Route path="/events" element={<EventsPage />} />
-            <Route path="/hire-from-us" element={<HireFromUsPage />} />
-            <Route path="/join-team" element={<JoinTeamPage />} />
-            <Route path="/franchise" element={<FranchisePage />} />
-            <Route path="/verify-certificate" element={<VerifyCertificatePage />} />
-            <Route path="/contact" element={<ContactPage />} />
-            <Route path="/admin" element={<AdminPage />} />
-          </Routes>
-        </main>
-        <Footer />
-        <Chatbot />
+        <Routes>
+          {/* Free Counselling - No header/footer for landing page */}
+          <Route path="/free-counselling" element={<FreeCounsellingPage />} />
+          
+          {/* All other routes with header/footer */}
+          <Route path="/*" element={
+            <>
+              <Header />
+              <main>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/founder" element={<FounderPage />} />
+                  <Route path="/programs" element={<ProgramsPage />} />
+                  <Route path="/programs/:programId" element={<ProgramDetailPage />} />
+                  {/* Legacy routes - redirect to programs */}
+                  <Route path="/career-tracks" element={<ProgramsPage />} />
+                  <Route path="/career-tracks/:trackId" element={<ProgramDetailPage />} />
+                  <Route path="/events" element={<EventsPage />} />
+                  <Route path="/blogs" element={<BlogsPage />} />
+                  <Route path="/blogs/:slug" element={<BlogDetailPage />} />
+                  <Route path="/faq" element={<FAQPage />} />
+                  <Route path="/hire-from-us" element={<HireFromUsPage />} />
+                  <Route path="/join-team" element={<JoinTeamPage />} />
+                  <Route path="/franchise" element={<FranchisePage />} />
+                  <Route path="/verify-certificate" element={<VerifyCertificatePage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                  <Route path="/admin" element={<AdminPage />} />
+                </Routes>
+              </main>
+              <Footer />
+              <Chatbot />
+            </>
+          } />
+        </Routes>
       </BrowserRouter>
     </div>
   );
