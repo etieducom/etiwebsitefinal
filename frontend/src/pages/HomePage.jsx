@@ -880,38 +880,48 @@ const HomePage = () => {
       </section>
 
       {/* Cyber Warriors Section */}
-      <section className="py-20 bg-gradient-to-br from-[#0a1628] to-[#1a2d4a] text-white" data-testid="cyber-warriors-section">
-        <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="py-20 relative overflow-hidden" data-testid="cyber-warriors-section">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a] via-[#1e293b] to-[#0f172a]"></div>
+        <div className="absolute inset-0 opacity-20" style={{backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(59,130,246,0.3) 1px, transparent 0)', backgroundSize: '32px 32px'}}></div>
+        
+        <div className="container-main relative z-10">
+          <div className="max-w-4xl mx-auto text-center">
             <motion.div {...fadeInUp}>
-              <Badge className="bg-[#1545ea]/20 text-[#6b9fff] border-0 mb-4">
-                <Shield className="w-4 h-4 mr-1" />
-                An Initiative by ETI Educom
-              </Badge>
-              <h2 className="text-3xl md:text-4xl font-bold mb-4 font-['Poppins']">
+              <div className="inline-flex items-center gap-2 bg-red-500/10 border border-red-500/20 rounded-full px-4 py-2 mb-6">
+                <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                <span className="text-red-400 text-sm font-medium">Cyber Safety Initiative</span>
+              </div>
+              
+              <h2 className="text-3xl md:text-5xl font-bold text-white mb-4 font-['Poppins']">
                 Cyber Warriors
               </h2>
-              <p className="text-gray-300 mb-6 leading-relaxed">
-                Safeguarding citizens of India from online threats through awareness programs. 
-                Join us in creating a safer digital landscape for everyone.
+              <p className="text-lg text-gray-400 mb-8 max-w-2xl mx-auto">
+                Protecting India's digital citizens from online threats through awareness, 
+                education, and community empowerment programs.
               </p>
+              
+              <div className="flex flex-wrap justify-center gap-6 mb-10">
+                <div className="flex items-center gap-2 text-gray-300">
+                  <Shield className="w-5 h-5 text-[#1545ea]" />
+                  <span>Fraud Prevention</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-300">
+                  <Users className="w-5 h-5 text-[#1545ea]" />
+                  <span>Community Training</span>
+                </div>
+                <div className="flex items-center gap-2 text-gray-300">
+                  <Award className="w-5 h-5 text-[#1545ea]" />
+                  <span>Free Sessions</span>
+                </div>
+              </div>
+
               <Link to="/cyber-warriors">
-                <Button className="bg-[#1545ea] hover:bg-[#0d36c4] text-white">
-                  Know More
+                <Button className="bg-[#1545ea] hover:bg-[#0d36c4] text-white px-8 py-3 text-lg">
+                  Join the Mission
                   <ChevronRight className="w-5 h-5" />
                 </Button>
               </Link>
-            </motion.div>
-            <motion.div 
-              {...fadeInUp}
-              transition={{ delay: 0.2 }}
-              className="flex justify-center"
-            >
-              <img 
-                src="https://customer-assets.emergentagent.com/job_a7e86cb7-9664-465e-9ee0-aab3368ca51d/artifacts/8vl4eoeh_cyber%20warriros.png"
-                alt="Cyber Warriors"
-                className="max-w-[250px] h-auto"
-              />
             </motion.div>
           </div>
         </div>
