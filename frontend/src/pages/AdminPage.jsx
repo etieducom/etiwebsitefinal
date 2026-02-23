@@ -73,6 +73,8 @@ const AdminPage = () => {
   const [summerLeads, setSummerLeads] = useState([]);
   const [quickEnquiries, setQuickEnquiries] = useState([]);
   const [technicalSeo, setTechnicalSeo] = useState({});
+  const [cyberWarriorsEvents, setCyberWarriorsEvents] = useState([]);
+  const [cyberWarriorsRegistrations, setCyberWarriorsRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   
   // Modal states
