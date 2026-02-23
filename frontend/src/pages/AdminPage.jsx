@@ -86,6 +86,7 @@ const AdminPage = () => {
   const [showFaqModal, setShowFaqModal] = useState(false);
   const [showSeoModal, setShowSeoModal] = useState(false);
   const [showTechSeoModal, setShowTechSeoModal] = useState(false);
+  const [showCwEventModal, setShowCwEventModal] = useState(false);
 
   // Form states
   const [eventForm, setEventForm] = useState({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
