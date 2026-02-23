@@ -471,6 +471,45 @@ const AdminPage = () => {
     }
   };
 
+  // Cyber Warriors handlers
+  const handleCwEventSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await axios.post(`${API}/cyber-warriors/events`, cwEventForm);
+      toast.success("Event created successfully!");
+      setShowCwEventModal(false);
+      setCwEventForm({ title: "", description: "", image: "", date: "" });
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to create event");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteCwEvent = async (id) => {
+    if (!window.confirm("Delete this Cyber Warriors event?")) return;
+    try {
+      await axios.delete(`${API}/cyber-warriors/events/${id}`);
+      toast.success("Event deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  const handleDeleteCwRegistration = async (id) => {
+    if (!window.confirm("Delete this registration?")) return;
+    try {
+      await axios.delete(`${API}/cyber-warriors/registrations/${id}`);
+      toast.success("Registration deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
     formSetter({ ...currentForm, [field]: [...currentForm[field], ""] });
