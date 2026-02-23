@@ -158,7 +158,7 @@ const AdminPage = () => {
 
   const fetchData = async () => {
     try {
-      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes] = await Promise.all([
+      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes, cwEventsRes, cwRegsRes] = await Promise.all([
         axios.get(`${API}/events?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/jobs?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/reviews?active_only=false`).catch(() => ({ data: [] })),
@@ -171,7 +171,9 @@ const AdminPage = () => {
         axios.get(`${API}/counselling-leads`).catch(() => ({ data: [] })),
         axios.get(`${API}/summer-training-leads`).catch(() => ({ data: [] })),
         axios.get(`${API}/quick-enquiry`).catch(() => ({ data: [] })),
-        axios.get(`${API}/technical-seo`).catch(() => ({ data: {} }))
+        axios.get(`${API}/technical-seo`).catch(() => ({ data: {} })),
+        axios.get(`${API}/cyber-warriors/events?active_only=false`).catch(() => ({ data: [] })),
+        axios.get(`${API}/cyber-warriors/registrations`).catch(() => ({ data: [] }))
       ]);
       setEvents(eventsRes.data);
       setJobs(jobsRes.data);
@@ -186,6 +188,8 @@ const AdminPage = () => {
       setSummerLeads(summerRes.data);
       setQuickEnquiries(quickRes.data);
       setTechnicalSeo(techSeoRes.data || {});
+      setCyberWarriorsEvents(cwEventsRes.data);
+      setCyberWarriorsRegistrations(cwRegsRes.data);
       // Pre-populate form if data exists
       if (techSeoRes.data && Object.keys(techSeoRes.data).length > 0) {
         setTechSeoForm({
