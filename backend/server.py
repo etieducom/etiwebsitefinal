@@ -442,6 +442,76 @@ class ChatResponse(BaseModel):
     session_id: str
 
 
+# ============ Cyber Warriors Models ============
+
+class CyberWarriorsEvent(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    image: str
+    date: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CyberWarriorsEventCreate(BaseModel):
+    title: str = Field(..., min_length=3, max_length=200)
+    description: str = Field(..., min_length=10, max_length=3000)
+    image: str
+    date: Optional[str] = None
+
+
+class CyberWarriorsEventResponse(BaseModel):
+    id: str
+    title: str
+    description: str
+    image: str
+    date: Optional[str]
+    is_active: bool
+    created_at: str
+
+
+class CyberWarriorsRegistration(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    registration_type: str  # "self" or "organization"
+    name: str
+    organization_name: Optional[str] = None
+    organization_type: Optional[str] = None  # "school", "college", "other"
+    contact_number: str
+    email: str
+    preferred_date: Optional[str] = None
+    message: Optional[str] = None
+    status: str = "pending"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CyberWarriorsRegistrationCreate(BaseModel):
+    registration_type: str
+    name: str = Field(..., min_length=2, max_length=100)
+    organization_name: Optional[str] = None
+    organization_type: Optional[str] = None
+    contact_number: str
+    email: str
+    preferred_date: Optional[str] = None
+    message: Optional[str] = None
+
+
+class CyberWarriorsRegistrationResponse(BaseModel):
+    id: str
+    registration_type: str
+    name: str
+    organization_name: Optional[str]
+    organization_type: Optional[str]
+    contact_number: str
+    email: str
+    preferred_date: Optional[str]
+    message: Optional[str]
+    status: str
+    created_at: str
+
+
 # Store chat sessions in memory (for simplicity)
 chat_sessions = {}
 
