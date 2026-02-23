@@ -1595,6 +1595,80 @@ async def get_technical_seo():
     )
 
 
+# ============ Cyber Warriors Routes ============
+
+@api_router.post("/cyber-warriors/register", response_model=CyberWarriorsRegistrationResponse)
+async def create_cyber_warriors_registration(input: CyberWarriorsRegistrationCreate):
+    try:
+        reg_dict = input.model_dump()
+        reg_obj = CyberWarriorsRegistration(**reg_dict)
+        doc = reg_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.cyber_warriors_registrations.insert_one(doc)
+        return CyberWarriorsRegistrationResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating cyber warriors registration: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit registration")
+
+
+@api_router.get("/cyber-warriors/registrations", response_model=List[CyberWarriorsRegistrationResponse])
+async def get_cyber_warriors_registrations():
+    regs = await db.cyber_warriors_registrations.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return [
+        CyberWarriorsRegistrationResponse(
+            id=r['id'], registration_type=r['registration_type'], name=r['name'],
+            organization_name=r.get('organization_name'), organization_type=r.get('organization_type'),
+            contact_number=r['contact_number'], email=r['email'],
+            preferred_date=r.get('preferred_date'), message=r.get('message'),
+            status=r.get('status', 'pending'),
+            created_at=r['created_at'] if isinstance(r['created_at'], str) else r['created_at'].isoformat()
+        ) for r in regs
+    ]
+
+
+@api_router.delete("/cyber-warriors/registrations/{reg_id}")
+async def delete_cyber_warriors_registration(reg_id: str):
+    result = await db.cyber_warriors_registrations.delete_one({"id": reg_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Registration not found")
+    return {"message": "Registration deleted successfully"}
+
+
+@api_router.post("/cyber-warriors/events", response_model=CyberWarriorsEventResponse)
+async def create_cyber_warriors_event(input: CyberWarriorsEventCreate):
+    try:
+        event_dict = input.model_dump()
+        event_obj = CyberWarriorsEvent(**event_dict)
+        doc = event_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.cyber_warriors_events.insert_one(doc)
+        return CyberWarriorsEventResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating cyber warriors event: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create event")
+
+
+@api_router.get("/cyber-warriors/events", response_model=List[CyberWarriorsEventResponse])
+async def get_cyber_warriors_events(active_only: bool = True):
+    query = {"is_active": True} if active_only else {}
+    events = await db.cyber_warriors_events.find(query, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return [
+        CyberWarriorsEventResponse(
+            id=e['id'], title=e['title'], description=e['description'], image=e['image'],
+            date=e.get('date'), is_active=e.get('is_active', True),
+            created_at=e['created_at'] if isinstance(e['created_at'], str) else e['created_at'].isoformat()
+        ) for e in events
+    ]
+
+
+@api_router.delete("/cyber-warriors/events/{event_id}")
+async def delete_cyber_warriors_event(event_id: str):
+    result = await db.cyber_warriors_events.delete_one({"id": event_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Event not found")
+    return {"message": "Event deleted successfully"}
+
+
 # ============ Admin Auth Routes ============
 
 @api_router.post("/admin/login", response_model=AdminLoginResponse)
