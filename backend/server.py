@@ -1928,6 +1928,90 @@ async def get_upcoming_cyber_warriors_events():
     return upcoming
 
 
+# ============ Popup Modal Routes ============
+
+@api_router.get("/popup-modal")
+async def get_popup_modal():
+    """Get active popup modal for frontend"""
+    modal = await db.popup_modal.find_one({"is_active": True}, {"_id": 0})
+    if not modal:
+        return None
+    return PopupModalResponse(
+        id=modal['id'], title=modal['title'], body=modal['body'],
+        image_url=modal.get('image_url'), cta_text=modal.get('cta_text'),
+        cta_link=modal.get('cta_link'), delay_seconds=modal.get('delay_seconds', 4),
+        is_active=modal.get('is_active', True),
+        updated_at=modal['updated_at'] if isinstance(modal['updated_at'], str) else modal['updated_at'].isoformat()
+    )
+
+
+@api_router.get("/popup-modal/admin")
+async def get_popup_modal_admin():
+    """Get popup modal for admin (regardless of active status)"""
+    modal = await db.popup_modal.find_one({}, {"_id": 0})
+    if not modal:
+        return None
+    return PopupModalResponse(
+        id=modal['id'], title=modal['title'], body=modal['body'],
+        image_url=modal.get('image_url'), cta_text=modal.get('cta_text'),
+        cta_link=modal.get('cta_link'), delay_seconds=modal.get('delay_seconds', 4),
+        is_active=modal.get('is_active', True),
+        updated_at=modal['updated_at'] if isinstance(modal['updated_at'], str) else modal['updated_at'].isoformat()
+    )
+
+
+@api_router.post("/popup-modal", response_model=PopupModalResponse)
+async def create_or_update_popup_modal(input: PopupModalCreate):
+    """Create or update the popup modal (only one exists at a time)"""
+    try:
+        # Check if a modal already exists
+        existing = await db.popup_modal.find_one({}, {"_id": 0})
+        
+        modal_dict = input.model_dump()
+        modal_dict['is_active'] = True
+        modal_dict['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        if existing:
+            # Update existing
+            modal_dict['id'] = existing['id']
+            await db.popup_modal.update_one({"id": existing['id']}, {"$set": modal_dict})
+        else:
+            # Create new
+            modal_obj = PopupModal(**modal_dict)
+            modal_dict = modal_obj.model_dump()
+            modal_dict['updated_at'] = modal_dict['updated_at'].isoformat()
+            await db.popup_modal.insert_one(modal_dict)
+        
+        return PopupModalResponse(**modal_dict)
+    except Exception as e:
+        logging.error(f"Error saving popup modal: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save popup modal")
+
+
+@api_router.put("/popup-modal/toggle")
+async def toggle_popup_modal():
+    """Toggle the active status of the popup modal"""
+    modal = await db.popup_modal.find_one({}, {"_id": 0})
+    if not modal:
+        raise HTTPException(status_code=404, detail="No popup modal configured")
+    
+    new_status = not modal.get('is_active', True)
+    await db.popup_modal.update_one(
+        {"id": modal['id']}, 
+        {"$set": {"is_active": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": f"Popup modal {'activated' if new_status else 'deactivated'}", "is_active": new_status}
+
+
+@api_router.delete("/popup-modal")
+async def delete_popup_modal():
+    """Delete the popup modal"""
+    result = await db.popup_modal.delete_many({})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="No popup modal to delete")
+    return {"message": "Popup modal deleted successfully"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
