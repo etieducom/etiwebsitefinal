@@ -1530,6 +1530,62 @@ const AdminPage = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Announcement Modal */}
+      <Dialog open={showAnnouncementModal} onOpenChange={setShowAnnouncementModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Add Announcement</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAnnouncementSubmit} className="space-y-4">
+            <div>
+              <label className="form-label">Announcement Text *</label>
+              <Textarea 
+                placeholder="Enter your announcement message (max 200 chars)" 
+                value={announcementForm.text} 
+                onChange={(e) => setAnnouncementForm({...announcementForm, text: e.target.value})} 
+                required 
+                className="form-input" 
+                rows={2}
+                maxLength={200}
+              />
+              <p className="text-xs text-[#717171] mt-1">{announcementForm.text.length}/200 characters</p>
+            </div>
+            <div>
+              <label className="form-label">Link URL (optional)</label>
+              <Input 
+                placeholder="/programs or https://example.com" 
+                value={announcementForm.link} 
+                onChange={(e) => setAnnouncementForm({...announcementForm, link: e.target.value})} 
+                className="form-input" 
+              />
+            </div>
+            <div>
+              <label className="form-label">Link Text (optional)</label>
+              <Input 
+                placeholder="Learn More" 
+                value={announcementForm.link_text} 
+                onChange={(e) => setAnnouncementForm({...announcementForm, link_text: e.target.value})} 
+                className="form-input" 
+              />
+            </div>
+            <div>
+              <label className="form-label">Display Order</label>
+              <Input 
+                type="number" 
+                placeholder="0 = first" 
+                value={announcementForm.order} 
+                onChange={(e) => setAnnouncementForm({...announcementForm, order: parseInt(e.target.value) || 0})} 
+                className="form-input" 
+              />
+              <p className="text-xs text-[#717171] mt-1">Lower numbers appear first. Cyber Warriors events always show first.</p>
+            </div>
+            <Button type="submit" className="btn-primary w-full" disabled={submitting}>
+              {submitting ? "Creating..." : "Create Announcement"}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
