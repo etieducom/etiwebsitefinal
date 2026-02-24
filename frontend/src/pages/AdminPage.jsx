@@ -1700,6 +1700,87 @@ const AdminPage = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Popup Modal Dialog */}
+      <Dialog open={showPopupModal} onOpenChange={setShowPopupModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{popupModalData ? 'Edit Popup Modal' : 'Create Popup Modal'}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handlePopupModalSubmit} className="space-y-4">
+            <div>
+              <label className="form-label">Title *</label>
+              <Input 
+                placeholder="e.g., Limited Time Offer!" 
+                value={popupModalForm.title} 
+                onChange={(e) => setPopupModalForm({...popupModalForm, title: e.target.value})} 
+                required 
+                className="form-input" 
+                maxLength={100}
+              />
+            </div>
+            <div>
+              <label className="form-label">Body Text *</label>
+              <Textarea 
+                placeholder="Your message to visitors (max 500 chars)" 
+                value={popupModalForm.body} 
+                onChange={(e) => setPopupModalForm({...popupModalForm, body: e.target.value})} 
+                required 
+                className="form-input" 
+                rows={3}
+                maxLength={500}
+              />
+              <p className="text-xs text-[#717171] mt-1">{popupModalForm.body.length}/500 characters</p>
+            </div>
+            <div>
+              <label className="form-label">Image URL (optional)</label>
+              <Input 
+                placeholder="https://example.com/image.jpg" 
+                value={popupModalForm.image_url} 
+                onChange={(e) => setPopupModalForm({...popupModalForm, image_url: e.target.value})} 
+                className="form-input" 
+              />
+              <p className="text-xs text-[#717171] mt-1">Recommended size: 800x400px</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">CTA Button Text</label>
+                <Input 
+                  placeholder="e.g., Enroll Now" 
+                  value={popupModalForm.cta_text} 
+                  onChange={(e) => setPopupModalForm({...popupModalForm, cta_text: e.target.value})} 
+                  className="form-input" 
+                />
+              </div>
+              <div>
+                <label className="form-label">CTA Link</label>
+                <Input 
+                  placeholder="/programs or URL" 
+                  value={popupModalForm.cta_link} 
+                  onChange={(e) => setPopupModalForm({...popupModalForm, cta_link: e.target.value})} 
+                  className="form-input" 
+                />
+              </div>
+            </div>
+            <div>
+              <label className="form-label">Delay (seconds)</label>
+              <Input 
+                type="number" 
+                min={1}
+                max={30}
+                placeholder="4" 
+                value={popupModalForm.delay_seconds} 
+                onChange={(e) => setPopupModalForm({...popupModalForm, delay_seconds: parseInt(e.target.value) || 4})} 
+                className="form-input" 
+              />
+              <p className="text-xs text-[#717171] mt-1">How long to wait before showing the popup (recommended: 3-5 seconds)</p>
+            </div>
+            <Button type="submit" className="btn-primary w-full" disabled={submitting}>
+              {submitting ? "Saving..." : (popupModalData ? "Update Popup Modal" : "Create Popup Modal")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
