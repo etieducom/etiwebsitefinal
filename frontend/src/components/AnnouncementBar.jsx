@@ -3,14 +3,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { X, ChevronLeft, ChevronRight, ExternalLink, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAnnouncement } from "../context/AnnouncementContext";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const AnnouncementBar = () => {
+  const { isAnnouncementVisible, setAnnouncementVisible } = useAnnouncement();
   const [announcements, setAnnouncements] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
   useEffect(() => {
@@ -75,25 +76,17 @@ const AnnouncementBar = () => {
   }, [allAnnouncements.length]);
 
   const handleDismiss = () => {
-    setIsVisible(false);
+    setAnnouncementVisible(false);
     sessionStorage.setItem("announcement_dismissed", "true");
   };
 
-  // Check if dismissed in this session
-  useEffect(() => {
-    const dismissed = sessionStorage.getItem("announcement_dismissed");
-    if (dismissed === "true") {
-      setIsVisible(false);
-    }
-  }, []);
-
-  if (!isVisible || allAnnouncements.length === 0) return null;
+  if (!isAnnouncementVisible || allAnnouncements.length === 0) return null;
 
   const currentAnnouncement = allAnnouncements[currentIndex];
 
   return (
     <div 
-      className={`relative z-[60] ${currentAnnouncement?.isLive ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500' : 'bg-[#1545ea]'}`}
+      className={`announcement-bar-wrapper ${currentAnnouncement?.isLive ? 'bg-gradient-to-r from-red-600 via-red-500 to-orange-500' : 'bg-[#1545ea]'}`}
       data-testid="announcement-bar"
     >
       <div className="container-main">
