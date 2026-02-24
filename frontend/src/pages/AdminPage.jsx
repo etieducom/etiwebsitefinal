@@ -515,6 +515,44 @@ const AdminPage = () => {
     }
   };
 
+  // Announcement handlers
+  const handleAnnouncementSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await axios.post(`${API}/announcements`, announcementForm);
+      toast.success("Announcement created successfully!");
+      setShowAnnouncementModal(false);
+      setAnnouncementForm({ text: "", link: "", link_text: "", order: 0 });
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to create announcement");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleToggleAnnouncement = async (id, currentStatus) => {
+    try {
+      await axios.put(`${API}/announcements/${id}`, { is_active: !currentStatus });
+      toast.success(`Announcement ${!currentStatus ? 'activated' : 'deactivated'}`);
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to update announcement");
+    }
+  };
+
+  const handleDeleteAnnouncement = async (id) => {
+    if (!window.confirm("Delete this announcement?")) return;
+    try {
+      await axios.delete(`${API}/announcements/${id}`);
+      toast.success("Announcement deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
     formSetter({ ...currentForm, [field]: [...currentForm[field], ""] });
