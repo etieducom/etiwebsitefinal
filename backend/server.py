@@ -1256,6 +1256,52 @@ class AnnouncementResponse(BaseModel):
     created_at: str
 
 
+# ============ Popup Modal Models ============
+
+class PopupModal(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    body: str
+    image_url: Optional[str] = None
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    delay_seconds: int = 4
+    is_active: bool = True
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class PopupModalCreate(BaseModel):
+    title: str = Field(..., min_length=3, max_length=100)
+    body: str = Field(..., min_length=10, max_length=500)
+    image_url: Optional[str] = None
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    delay_seconds: int = 4
+
+
+class PopupModalUpdate(BaseModel):
+    title: Optional[str] = None
+    body: Optional[str] = None
+    image_url: Optional[str] = None
+    cta_text: Optional[str] = None
+    cta_link: Optional[str] = None
+    delay_seconds: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
+class PopupModalResponse(BaseModel):
+    id: str
+    title: str
+    body: str
+    image_url: Optional[str]
+    cta_text: Optional[str]
+    cta_link: Optional[str]
+    delay_seconds: int
+    is_active: bool
+    updated_at: str
+
+
 # ============ Technical SEO Models ============
 
 class TechnicalSEO(BaseModel):
