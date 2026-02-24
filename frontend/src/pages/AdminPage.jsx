@@ -571,6 +571,44 @@ const AdminPage = () => {
     }
   };
 
+  // Popup Modal handlers
+  const handlePopupModalSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      await axios.post(`${API}/popup-modal`, popupModalForm);
+      toast.success("Popup modal saved successfully!");
+      setShowPopupModal(false);
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to save popup modal");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleTogglePopupModal = async () => {
+    try {
+      const res = await axios.put(`${API}/popup-modal/toggle`);
+      toast.success(res.data.message);
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to toggle popup modal");
+    }
+  };
+
+  const handleDeletePopupModal = async () => {
+    if (!window.confirm("Delete the popup modal?")) return;
+    try {
+      await axios.delete(`${API}/popup-modal`);
+      toast.success("Popup modal deleted");
+      setPopupModalForm({ title: "", body: "", image_url: "", cta_text: "", cta_link: "", delay_seconds: 4 });
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
     formSetter({ ...currentForm, [field]: [...currentForm[field], ""] });
