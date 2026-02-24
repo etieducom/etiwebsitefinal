@@ -1218,6 +1218,44 @@ class SEOSettingsResponse(BaseModel):
     updated_at: str
 
 
+# ============ Announcement Models ============
+
+class Announcement(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    text: str
+    link: Optional[str] = None
+    link_text: Optional[str] = None
+    is_active: bool = True
+    order: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class AnnouncementCreate(BaseModel):
+    text: str = Field(..., min_length=5, max_length=200)
+    link: Optional[str] = None
+    link_text: Optional[str] = None
+    order: int = 0
+
+
+class AnnouncementUpdate(BaseModel):
+    text: Optional[str] = None
+    link: Optional[str] = None
+    link_text: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
+class AnnouncementResponse(BaseModel):
+    id: str
+    text: str
+    link: Optional[str]
+    link_text: Optional[str]
+    is_active: bool
+    order: int
+    created_at: str
+
+
 # ============ Technical SEO Models ============
 
 class TechnicalSEO(BaseModel):
