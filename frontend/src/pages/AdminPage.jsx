@@ -89,6 +89,7 @@ const AdminPage = () => {
   const [showTechSeoModal, setShowTechSeoModal] = useState(false);
   const [showCwEventModal, setShowCwEventModal] = useState(false);
   const [showAnnouncementModal, setShowAnnouncementModal] = useState(false);
+  const [showPopupModal, setShowPopupModal] = useState(false);
 
   // Form states
   const [eventForm, setEventForm] = useState({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
@@ -105,6 +106,10 @@ const AdminPage = () => {
   const [faqForm, setFaqForm] = useState({ question: "", answer: "", category: "General", order: 0 });
   const [cwEventForm, setCwEventForm] = useState({ title: "", description: "", image: "", date: "" });
   const [announcementForm, setAnnouncementForm] = useState({ text: "", link: "", link_text: "", order: 0 });
+  const [popupModalForm, setPopupModalForm] = useState({ 
+    title: "", body: "", image_url: "", cta_text: "", cta_link: "", delay_seconds: 4 
+  });
+  const [popupModalData, setPopupModalData] = useState(null);
   const [seoForm, setSeoForm] = useState({
     page_slug: "", meta_title: "", meta_description: "", meta_keywords: "", og_title: "", og_description: "", og_image: ""
   });
