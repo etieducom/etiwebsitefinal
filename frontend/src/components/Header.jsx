@@ -69,6 +69,7 @@ const Header = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [expandedCategory, setExpandedCategory] = useState(null);
   const location = useLocation();
+  const { isAnnouncementVisible } = useAnnouncement();
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -84,7 +85,7 @@ const Header = () => {
   return (
     <>
       <header 
-        className={`header-main ${scrolled ? "scrolled" : ""}`}
+        className={`header-main ${scrolled ? "scrolled" : ""} ${isAnnouncementVisible ? "with-announcement" : ""}`}
         data-testid="main-header"
       >
         <div className="container-main">
