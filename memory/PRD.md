@@ -33,7 +33,7 @@ Build the official website for "ETI Educom", a computer career school in India. 
 
 ## What's Been Implemented
 
-### Phase 7 (February 24, 2026) - Cyber Warriors Redesign & Announcement Bar
+### Phase 7 (February 24, 2026) - Cyber Warriors Redesign & Announcement Bar & Popup Modal
 - **Cyber Warriors Homepage Section Redesign**: 
   - Dark theme (#0a0a0a) with gradient orbs and grid pattern
   - Two-column layout with stats (500+, 10K+, 50+) and feature cards
@@ -48,8 +48,9 @@ Build the official website for "ETI Educom", a computer career school in India. 
   - Contact info section with phone/email
   - Past Events grid with modal view for event details
   - CTA section at bottom
-- **Announcement Bar Feature** (NEW):
-  - Global bar above navbar across all pages
+- **Announcement Bar Feature**:
+  - Fixed position above navbar across all pages (z-index: 60)
+  - Header adjusts position with `with-announcement` CSS class (top: 44px)
   - Blue background (#1545ea) with white text
   - Multiple announcements with carousel navigation (arrows + dots)
   - Auto-rotates every 5 seconds
@@ -57,14 +58,24 @@ Build the official website for "ETI Educom", a computer career school in India. 
   - Auto-detects Cyber Warriors events within 3 days with special styling
   - "LIVE TODAY" badge for same-day events (red gradient background)
   - Admin management: add, activate/deactivate, delete announcements
+- **Popup Modal Feature** (NEW):
+  - Modal that appears after visitors stay on homepage for configurable seconds (default: 4s)
+  - Only shows on homepage, not on other pages
+  - Only shows once per session (session storage flag)
+  - Admin-configurable: title, body, image, CTA button text/link, delay seconds
+  - Can be dismissed with X button or backdrop click
+  - Admin management: create/edit, activate/deactivate, delete
 - **Backend APIs**:
   - `GET/POST/PUT/DELETE /api/announcements` - Announcement management
   - `GET /api/cyber-warriors/upcoming-events` - Events within 3 days for auto-detection
-  - `GET/POST/DELETE /api/cyber-warriors/events` - Event management
-  - `POST /api/cyber-warriors/register` - Registration submission
+  - `GET/POST/PUT/DELETE /api/popup-modal` - Popup modal management
+  - `PUT /api/popup-modal/toggle` - Toggle popup active status
+- **New Frontend Components**:
+  - `AnnouncementBar.jsx` - Global announcement bar
+  - `PopupModal.jsx` - Timed popup on homepage
+  - `context/AnnouncementContext.jsx` - Shared state for visibility
 - **Admin Panel**: 
-  - Cyber Warriors section for managing events and viewing registrations
-  - Announcements tab for managing announcement bar content
+  - Announcements tab with both announcement bar and popup modal management
 - **Footer**: Added "Cyber Warriors" link
 
 ### Phase 6 (February 22, 2026) - Homepage & Contact Updates
