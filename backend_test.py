@@ -4,7 +4,7 @@ from datetime import datetime
 import json
 
 class ETIEducomAPITester:
-    def __init__(self, base_url="https://eti-educom-preview.preview.emergentagent.com"):
+    def __init__(self, base_url="https://cyber-warriors-pro.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.tests_run = 0
