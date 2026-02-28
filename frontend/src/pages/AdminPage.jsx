@@ -226,7 +226,6 @@ const AdminPage = () => {
       setPopupModalData(popupModalRes.data);
       setTeamMembers(teamRes.data);
       setBranches(branchesRes.data);
-      setNavItems(navRes.data);
       // Pre-populate popup modal form if data exists
       if (popupModalRes.data) {
         setPopupModalForm({
