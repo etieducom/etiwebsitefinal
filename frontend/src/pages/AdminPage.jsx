@@ -259,13 +259,19 @@ const AdminPage = () => {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post(`${API}/events`, eventForm);
-      toast.success("Event created successfully!");
+      if (editingEvent) {
+        await axios.put(`${API}/events/${editingEvent.id}`, eventForm);
+        toast.success("Event updated!");
+      } else {
+        await axios.post(`${API}/events`, eventForm);
+        toast.success("Event created!");
+      }
       setShowEventModal(false);
+      setEditingEvent(null);
       setEventForm({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
       fetchData();
     } catch (error) {
-      toast.error("Failed to create event");
+      toast.error("Failed to save event");
     } finally {
       setSubmitting(false);
     }
