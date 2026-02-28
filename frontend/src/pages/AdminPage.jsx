@@ -103,7 +103,6 @@ const AdminPage = () => {
   const [editingBlog, setEditingBlog] = useState(null);
   const [editingTeam, setEditingTeam] = useState(null);
   const [editingBranch, setEditingBranch] = useState(null);
-  const [editingNav, setEditingNav] = useState(null);
 
   // Form states
   const [eventForm, setEventForm] = useState({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
