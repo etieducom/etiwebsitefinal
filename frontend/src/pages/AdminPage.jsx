@@ -185,7 +185,7 @@ const AdminPage = () => {
 
   const fetchData = async () => {
     try {
-      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes, cwEventsRes, cwRegsRes, announcementsRes, popupModalRes] = await Promise.all([
+      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes, cwEventsRes, cwRegsRes, announcementsRes, popupModalRes, teamRes, branchesRes] = await Promise.all([
         axios.get(`${API}/events?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/jobs?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/reviews?active_only=false`).catch(() => ({ data: [] })),
@@ -202,7 +202,9 @@ const AdminPage = () => {
         axios.get(`${API}/cyber-warriors/events?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/cyber-warriors/registrations`).catch(() => ({ data: [] })),
         axios.get(`${API}/announcements?active_only=false`).catch(() => ({ data: [] })),
-        axios.get(`${API}/popup-modal/admin`).catch(() => ({ data: null }))
+        axios.get(`${API}/popup-modal/admin`).catch(() => ({ data: null })),
+        axios.get(`${API}/team?active_only=false`).catch(() => ({ data: [] })),
+        axios.get(`${API}/branches?active_only=false`).catch(() => ({ data: [] }))
       ]);
       setEvents(eventsRes.data);
       setJobs(jobsRes.data);
@@ -221,6 +223,8 @@ const AdminPage = () => {
       setCyberWarriorsRegistrations(cwRegsRes.data);
       setAnnouncements(announcementsRes.data);
       setPopupModalData(popupModalRes.data);
+      setTeamMembers(teamRes.data);
+      setBranches(branchesRes.data);
       // Pre-populate popup modal form if data exists
       if (popupModalRes.data) {
         setPopupModalForm({
