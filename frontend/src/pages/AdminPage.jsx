@@ -96,6 +96,7 @@ const AdminPage = () => {
   const [showPopupModal, setShowPopupModal] = useState(false);
   const [showTeamModal, setShowTeamModal] = useState(false);
   const [showBranchModal, setShowBranchModal] = useState(false);
+  const [showNavModal, setShowNavModal] = useState(false);
   
   // Edit mode states
   const [editingEvent, setEditingEvent] = useState(null);
