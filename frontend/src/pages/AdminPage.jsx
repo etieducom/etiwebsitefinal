@@ -632,6 +632,178 @@ const AdminPage = () => {
     }
   };
 
+  // Team handlers
+  const handleTeamSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      if (editingTeam) {
+        await axios.put(`${API}/team/${editingTeam.id}`, teamForm);
+        toast.success("Team member updated!");
+      } else {
+        await axios.post(`${API}/team`, teamForm);
+        toast.success("Team member added!");
+      }
+      setShowTeamModal(false);
+      setEditingTeam(null);
+      setTeamForm({ name: "", title: "", bio: "", photo_url: "", linkedin_url: "", twitter_url: "", email: "", order: 0 });
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to save team member");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEditTeam = (member) => {
+    setEditingTeam(member);
+    setTeamForm({
+      name: member.name,
+      title: member.title,
+      bio: member.bio || "",
+      photo_url: member.photo_url || "",
+      linkedin_url: member.linkedin_url || "",
+      twitter_url: member.twitter_url || "",
+      email: member.email || "",
+      order: member.order || 0
+    });
+    setShowTeamModal(true);
+  };
+
+  const handleToggleTeam = async (id, currentStatus) => {
+    try {
+      await axios.put(`${API}/team/${id}`, { is_active: !currentStatus });
+      toast.success(`Team member ${!currentStatus ? 'activated' : 'deactivated'}`);
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to update");
+    }
+  };
+
+  const handleDeleteTeam = async (id) => {
+    if (!window.confirm("Delete this team member?")) return;
+    try {
+      await axios.delete(`${API}/team/${id}`);
+      toast.success("Team member deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  // Branch handlers
+  const handleBranchSubmit = async (e) => {
+    e.preventDefault();
+    setSubmitting(true);
+    try {
+      const payload = {
+        ...branchForm,
+        facilities: branchForm.facilities ? branchForm.facilities.split(',').map(f => f.trim()).filter(f => f) : []
+      };
+      if (editingBranch) {
+        await axios.put(`${API}/branches/${editingBranch.id}`, payload);
+        toast.success("Branch updated!");
+      } else {
+        await axios.post(`${API}/branches`, payload);
+        toast.success("Branch added!");
+      }
+      setShowBranchModal(false);
+      setEditingBranch(null);
+      setBranchForm({ name: "", slug: "", address: "", city: "", state: "", phone: "", email: "", map_url: "", image_url: "", description: "", facilities: "", timings: "", order: 0 });
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to save branch");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleEditBranch = (branch) => {
+    setEditingBranch(branch);
+    setBranchForm({
+      name: branch.name,
+      slug: branch.slug,
+      address: branch.address,
+      city: branch.city,
+      state: branch.state,
+      phone: branch.phone,
+      email: branch.email,
+      map_url: branch.map_url || "",
+      image_url: branch.image_url || "",
+      description: branch.description || "",
+      facilities: branch.facilities ? branch.facilities.join(', ') : "",
+      timings: branch.timings || "",
+      order: branch.order || 0
+    });
+    setShowBranchModal(true);
+  };
+
+  const handleToggleBranch = async (id, currentStatus) => {
+    try {
+      await axios.put(`${API}/branches/${id}`, { is_active: !currentStatus });
+      toast.success(`Branch ${!currentStatus ? 'activated' : 'deactivated'}`);
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to update");
+    }
+  };
+
+  const handleDeleteBranch = async (id) => {
+    if (!window.confirm("Delete this branch?")) return;
+    try {
+      await axios.delete(`${API}/branches/${id}`);
+      toast.success("Branch deleted");
+      fetchData();
+    } catch (error) {
+      toast.error("Failed to delete");
+    }
+  };
+
+  // Edit handlers for existing items
+  const handleEditEvent = (event) => {
+    setEditingEvent(event);
+    setEventForm({
+      title: event.title,
+      description: event.description,
+      event_date: event.event_date || "",
+      event_time: event.event_time || "",
+      location: event.location || "",
+      image_url: event.image_url || ""
+    });
+    setShowEventModal(true);
+  };
+
+  const handleEditReview = (review) => {
+    setEditingReview(review);
+    setReviewForm({
+      student_name: review.student_name,
+      course: review.course,
+      review_text: review.review_text,
+      photo_url: review.photo_url || "",
+      rating: review.rating || 5
+    });
+    setShowReviewModal(true);
+  };
+
+  const handleEditBlog = (blog) => {
+    setEditingBlog(blog);
+    setBlogForm({
+      title: blog.title,
+      slug: blog.slug,
+      excerpt: blog.excerpt || "",
+      content: blog.content || "",
+      featured_image: blog.featured_image || "",
+      category: blog.category || "",
+      tags: blog.tags || "",
+      author: blog.author || "ETI Educom",
+      read_time: blog.read_time || 5,
+      is_featured: blog.is_featured || false,
+      meta_title: blog.meta_title || "",
+      meta_description: blog.meta_description || ""
+    });
+    setShowBlogModal(true);
+  };
+
   // Helper functions
   const addArrayItem = (formSetter, field, currentForm) => {
     formSetter({ ...currentForm, [field]: [...currentForm[field], ""] });
