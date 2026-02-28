@@ -118,6 +118,13 @@ const AdminPage = () => {
   const [faqForm, setFaqForm] = useState({ question: "", answer: "", category: "General", order: 0 });
   const [cwEventForm, setCwEventForm] = useState({ title: "", description: "", image: "", date: "" });
   const [announcementForm, setAnnouncementForm] = useState({ text: "", link: "", link_text: "", order: 0 });
+  const [teamForm, setTeamForm] = useState({ 
+    name: "", title: "", bio: "", photo_url: "", linkedin_url: "", twitter_url: "", email: "", order: 0 
+  });
+  const [branchForm, setBranchForm] = useState({ 
+    name: "", slug: "", address: "", city: "", state: "", phone: "", email: "", 
+    map_url: "", image_url: "", description: "", facilities: "", timings: "", order: 0 
+  });
   const [popupModalForm, setPopupModalForm] = useState({ 
     title: "", body: "", image_url: "", cta_text: "", cta_link: "", delay_seconds: 4 
   });
