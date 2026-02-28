@@ -512,6 +512,133 @@ class CyberWarriorsRegistrationResponse(BaseModel):
     created_at: str
 
 
+# ============ Team Member Models ============
+
+class TeamMember(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    title: str
+    bio: Optional[str] = None
+    photo_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    email: Optional[str] = None
+    order: int = 0
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class TeamMemberCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    title: str = Field(..., min_length=2, max_length=100)
+    bio: Optional[str] = None
+    photo_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    email: Optional[str] = None
+    order: int = 0
+
+
+class TeamMemberUpdate(BaseModel):
+    name: Optional[str] = None
+    title: Optional[str] = None
+    bio: Optional[str] = None
+    photo_url: Optional[str] = None
+    linkedin_url: Optional[str] = None
+    twitter_url: Optional[str] = None
+    email: Optional[str] = None
+    order: Optional[int] = None
+    is_active: Optional[bool] = None
+
+
+class TeamMemberResponse(BaseModel):
+    id: str
+    name: str
+    title: str
+    bio: Optional[str]
+    photo_url: Optional[str]
+    linkedin_url: Optional[str]
+    twitter_url: Optional[str]
+    email: Optional[str]
+    order: int
+    is_active: bool
+    created_at: str
+
+
+# ============ Branch Models ============
+
+class Branch(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    slug: str
+    address: str
+    city: str
+    state: str
+    phone: str
+    email: str
+    map_url: Optional[str] = None
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    facilities: List[str] = []
+    timings: Optional[str] = None
+    is_active: bool = True
+    order: int = 0
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class BranchCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    slug: str = Field(..., min_length=2, max_length=50)
+    address: str = Field(..., min_length=5, max_length=300)
+    city: str = Field(..., min_length=2, max_length=50)
+    state: str = Field(..., min_length=2, max_length=50)
+    phone: str
+    email: str
+    map_url: Optional[str] = None
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    facilities: List[str] = []
+    timings: Optional[str] = None
+    order: int = 0
+
+
+class BranchUpdate(BaseModel):
+    name: Optional[str] = None
+    address: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    map_url: Optional[str] = None
+    image_url: Optional[str] = None
+    description: Optional[str] = None
+    facilities: Optional[List[str]] = None
+    timings: Optional[str] = None
+    is_active: Optional[bool] = None
+    order: Optional[int] = None
+
+
+class BranchResponse(BaseModel):
+    id: str
+    name: str
+    slug: str
+    address: str
+    city: str
+    state: str
+    phone: str
+    email: str
+    map_url: Optional[str]
+    image_url: Optional[str]
+    description: Optional[str]
+    facilities: List[str]
+    timings: Optional[str]
+    is_active: bool
+    order: int
+    created_at: str
+
+
 # Store chat sessions in memory (for simplicity)
 chat_sessions = {}
 
