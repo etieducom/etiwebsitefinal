@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
+import SEO from "../components/SEO";
 import { 
   ChevronRight, 
   Monitor, 
