@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import axios from "axios";
 import { 
   MapPin, 
   Phone, 
@@ -16,6 +17,9 @@ import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const API = `${BACKEND_URL}/api`;
+
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
@@ -23,44 +27,50 @@ const fadeInUp = {
   transition: { duration: 0.5, ease: "easeOut" }
 };
 
-// Branch data
-const branchesData = {
-  pathankot: {
-    name: "Pathankot",
-    fullName: "ETI Educom - Pathankot Branch",
-    address: "ETI Educom, Jodhamal Colony, Dhangu Road, Pathankot",
-    phone: "+91 9646727676",
-    email: "Pathankot@etieducom.com",
-    timings: "Monday - Saturday, 9:00 AM - 6:00 PM",
-    mapUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d106964.53476779655!2d75.55785671640625!3d32.27411!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391b91c6d7b0c9cf%3A0xf3a68a3e9e2d4c!2sPathankot%2C%20Punjab!5e0!3m2!1sen!2sin!4v1234567890",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800",
-    description: "Our flagship center in Pathankot offers comprehensive computer education programs with state-of-the-art facilities and experienced faculty.",
-    features: [
-      "Modern Computer Labs",
-      "Air-conditioned Classrooms",
-      "Experienced Faculty",
-      "Placement Assistance",
-      "Industry Certifications",
-      "Flexible Timings"
-    ],
-    programs: [
-      "Computer Career Foundation",
-      "Digital Design & Marketing",
-      "IT Support & Cybersecurity",
-      "Software Development",
-      "Summer Training Programs"
-    ]
-  }
-};
+// Default programs available at all branches
+const defaultPrograms = [
+  "Computer Career Foundation",
+  "Digital Design & Marketing",
+  "IT Support & Cybersecurity",
+  "Software Development",
+  "Summer Training Programs"
+];
 
 const BranchPage = () => {
   const { branchId } = useParams();
-  const branch = branchesData[branchId];
+  const [branch, setBranch] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  if (!branch) {
+  useEffect(() => {
+    fetchBranch();
+  }, [branchId]);
+
+  const fetchBranch = async () => {
+    try {
+      const response = await axios.get(`${API}/branches/${branchId}`);
+      setBranch(response.data);
+    } catch (err) {
+      console.error("Error fetching branch:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="pt-[72px] min-h-screen flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-[#1545ea]/20 border-t-[#1545ea] rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  if (error || !branch) {
     return (
       <div className="pt-[72px] min-h-screen flex items-center justify-center" data-testid="branch-not-found">
         <div className="text-center">
+          <Building2 className="w-16 h-16 text-[#b0b0b0] mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-[#1a1a1a] mb-4">Branch Not Found</h1>
           <p className="text-[#717171] mb-6">The branch you're looking for doesn't exist.</p>
           <Link to="/">
@@ -71,13 +81,15 @@ const BranchPage = () => {
     );
   }
 
+  const defaultImage = "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=800";
+
   return (
     <div className="pt-[72px]" data-testid="branch-page">
       {/* Hero Section */}
       <section className="relative h-[400px] overflow-hidden">
         <img 
-          src={branch.image}
-          alt={branch.fullName}
+          src={branch.image_url || defaultImage}
+          alt={branch.name}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
@@ -89,11 +101,11 @@ const BranchPage = () => {
                 Branch
               </Badge>
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-2 font-['Poppins']">
-                {branch.fullName}
+                ETI Educom - {branch.name}
               </h1>
               <p className="text-white/80 flex items-center gap-2">
                 <MapPin className="w-4 h-4" />
-                {branch.address}
+                {branch.address}, {branch.city}, {branch.state}
               </p>
             </motion.div>
           </div>
@@ -144,7 +156,7 @@ const BranchPage = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-[#1a1a1a] mb-1">Timings</h3>
-                    <p className="text-[#4a4a4a] text-sm">{branch.timings}</p>
+                    <p className="text-[#4a4a4a] text-sm">{branch.timings || "Monday - Saturday, 9:00 AM - 6:00 PM"}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -163,17 +175,19 @@ const BranchPage = () => {
                 {branch.name} Center
               </h2>
               <p className="text-[#4a4a4a] mb-8 leading-relaxed">
-                {branch.description}
+                {branch.description || `Our ${branch.name} center offers comprehensive computer education programs with state-of-the-art facilities and experienced faculty. We are committed to providing quality education and career guidance to students.`}
               </p>
               
-              <div className="grid grid-cols-2 gap-4">
-                {branch.features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-[#1545ea] flex-shrink-0" />
-                    <span className="text-sm text-[#1a1a1a]">{feature}</span>
-                  </div>
-                ))}
-              </div>
+              {branch.facilities && branch.facilities.length > 0 && (
+                <div className="grid grid-cols-2 gap-4">
+                  {branch.facilities.map((facility, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <CheckCircle className="w-5 h-5 text-[#1545ea] flex-shrink-0" />
+                      <span className="text-sm text-[#1a1a1a]">{facility}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
 
             <motion.div {...fadeInUp} transition={{ delay: 0.2 }}>
@@ -184,7 +198,7 @@ const BranchPage = () => {
                     Programs Available
                   </h3>
                   <div className="space-y-3">
-                    {branch.programs.map((program, index) => (
+                    {defaultPrograms.map((program, index) => (
                       <div key={index} className="flex items-center gap-3 p-3 bg-[#f8f9fa] rounded-lg">
                         <div className="w-8 h-8 bg-[#1545ea]/10 rounded-lg flex items-center justify-center">
                           <Users className="w-4 h-4 text-[#1545ea]" />
@@ -199,6 +213,35 @@ const BranchPage = () => {
           </div>
         </div>
       </section>
+
+      {/* Map Section */}
+      {branch.map_url && (
+        <section className="py-16 bg-white">
+          <div className="container-main">
+            <motion.div {...fadeInUp} className="text-center mb-8">
+              <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">
+                <MapPin className="w-4 h-4 mr-1" />
+                Location
+              </Badge>
+              <h2 className="text-3xl font-bold text-[#1a1a1a] font-['Poppins']">
+                Find Us on Map
+              </h2>
+            </motion.div>
+            <motion.div {...fadeInUp} className="rounded-2xl overflow-hidden shadow-lg">
+              <iframe
+                src={branch.map_url}
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title={`${branch.name} Location`}
+              ></iframe>
+            </motion.div>
+          </div>
+        </section>
+      )}
 
       {/* CTA Section */}
       <section className="py-16 bg-[#1545ea]">
