@@ -1517,6 +1517,120 @@ const AdminPage = () => {
               </div>
             </TabsContent>
 
+            {/* Team Tab */}
+            <TabsContent value="team">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-[#1a1a1a]">Team Members</h2>
+                  <p className="text-sm text-[#717171]">Manage your team. Members appear on homepage and /team page.</p>
+                </div>
+                <Button className="btn-primary" onClick={() => { setEditingTeam(null); setTeamForm({ name: "", title: "", bio: "", photo_url: "", linkedin_url: "", twitter_url: "", email: "", order: 0 }); setShowTeamModal(true); }} data-testid="add-team-btn">
+                  <Plus className="w-4 h-4" /> Add Member
+                </Button>
+              </div>
+              {teamMembers.length === 0 ? (
+                <Card className="card-default"><CardContent className="p-8 text-center">
+                  <Users className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
+                  <p className="text-[#717171]">No team members yet</p>
+                </CardContent></Card>
+              ) : (
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {teamMembers.map((member) => (
+                    <Card key={member.id} className={`card-default ${!member.is_active ? 'opacity-60' : ''}`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-start gap-4">
+                          {member.photo_url ? (
+                            <img src={member.photo_url} alt={member.name} className="w-16 h-16 rounded-full object-cover" />
+                          ) : (
+                            <div className="w-16 h-16 bg-[#1545ea]/10 rounded-full flex items-center justify-center">
+                              <span className="text-xl font-bold text-[#1545ea]">{member.name.charAt(0)}</span>
+                            </div>
+                          )}
+                          <div className="flex-1">
+                            <h3 className="font-semibold text-[#1a1a1a]">{member.name}</h3>
+                            <p className="text-sm text-[#1545ea]">{member.title}</p>
+                            <Badge className={member.is_active ? 'bg-green-100 text-green-700 mt-2' : 'bg-gray-100 text-gray-500 mt-2'}>
+                              {member.is_active ? 'Active' : 'Inactive'}
+                            </Badge>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 mt-4">
+                          <Button variant="outline" size="sm" className="flex-1" onClick={() => handleEditTeam(member)}>
+                            Edit
+                          </Button>
+                          <Button variant="outline" size="sm" onClick={() => handleToggleTeam(member.id, member.is_active)}>
+                            {member.is_active ? 'Hide' : 'Show'}
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteTeam(member.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            {/* Branches Tab */}
+            <TabsContent value="branches">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-[#1a1a1a]">Branches</h2>
+                  <p className="text-sm text-[#717171]">Manage branches. Each branch auto-generates a landing page at /branches/slug</p>
+                </div>
+                <Button className="btn-primary" onClick={() => { setEditingBranch(null); setBranchForm({ name: "", slug: "", address: "", city: "", state: "", phone: "", email: "", map_url: "", image_url: "", description: "", facilities: "", timings: "", order: 0 }); setShowBranchModal(true); }} data-testid="add-branch-btn">
+                  <Plus className="w-4 h-4" /> Add Branch
+                </Button>
+              </div>
+              {branches.length === 0 ? (
+                <Card className="card-default"><CardContent className="p-8 text-center">
+                  <Building2 className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
+                  <p className="text-[#717171]">No branches yet</p>
+                </CardContent></Card>
+              ) : (
+                <div className="space-y-4">
+                  {branches.map((branch) => (
+                    <Card key={branch.id} className={`card-default ${!branch.is_active ? 'opacity-60' : ''}`}>
+                      <CardContent className="p-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            {branch.image_url && (
+                              <img src={branch.image_url} alt={branch.name} className="w-20 h-16 rounded-lg object-cover" />
+                            )}
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h3 className="font-semibold text-[#1a1a1a]">{branch.name}</h3>
+                                <Badge className={branch.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}>
+                                  {branch.is_active ? 'Active' : 'Inactive'}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-[#717171]">{branch.city}, {branch.state}</p>
+                              <p className="text-sm text-[#717171]">{branch.phone} | {branch.email}</p>
+                              <a href={`/branches/${branch.slug}`} target="_blank" rel="noreferrer" className="text-sm text-[#1545ea] hover:underline">
+                                View Page →
+                              </a>
+                            </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => handleEditBranch(branch)}>
+                              Edit
+                            </Button>
+                            <Button variant="outline" size="sm" onClick={() => handleToggleBranch(branch.id, branch.is_active)}>
+                              {branch.is_active ? 'Hide' : 'Show'}
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => handleDeleteBranch(branch.id)}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
             {/* Announcements Tab */}
             <TabsContent value="announcements">
               <div className="flex justify-between items-center mb-6">
