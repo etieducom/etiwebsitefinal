@@ -126,9 +126,6 @@ const AdminPage = () => {
     name: "", slug: "", address: "", city: "", state: "", phone: "", email: "", 
     map_url: "", image_url: "", description: "", facilities: "", timings: "", order: 0 
   });
-  const [navForm, setNavForm] = useState({ 
-    label: "", url: "", parent_id: "", order: 0, is_visible: true, is_dropdown: false, icon: "" 
-  });
   const [popupModalForm, setPopupModalForm] = useState({ 
     title: "", body: "", image_url: "", cta_text: "", cta_link: "", delay_seconds: 4 
   });
