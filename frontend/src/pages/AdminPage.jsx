@@ -1121,9 +1121,14 @@ const AdminPage = () => {
                             <p className="text-sm text-[#717171]">{blog.category} | {blog.read_time} min read</p>
                           </div>
                         </div>
-                        <Button variant="destructive" size="sm" onClick={() => handleDeleteBlog(blog.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditBlog(blog)}>
+                            Edit
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteBlog(blog.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
