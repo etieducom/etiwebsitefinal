@@ -177,6 +177,8 @@ Build the official website for "ETI Educom", a computer career school in India. 
 - **Cyber Warriors**: GET/POST/DELETE /api/cyber-warriors/events, POST /api/cyber-warriors/register, GET/DELETE /api/cyber-warriors/registrations, GET /api/cyber-warriors/upcoming-events
 - **Announcements**: GET/POST/PUT/DELETE /api/announcements
 - **Popup Modal**: GET/POST/DELETE /api/popup-modal, PUT /api/popup-modal/toggle
+- **Team**: GET/POST/PUT/DELETE /api/team
+- **Branches**: GET/POST/PUT/DELETE /api/branches, GET /api/branches/{slug}
 - **AI**: POST /api/chatbot
 
 ## Database Collections
@@ -185,6 +187,7 @@ Build the official website for "ETI Educom", a computer career school in India. 
 - franchise_enquiries, counselling_leads, summer_training_leads, quick_enquiries
 - cyber_warrior_events, cyber_warrior_registrations
 - announcements, popup_modal
+- team_members, branches
 
 ---
 
