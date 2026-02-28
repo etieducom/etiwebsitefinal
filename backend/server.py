@@ -2139,6 +2139,140 @@ async def delete_popup_modal():
     return {"message": "Popup modal deleted successfully"}
 
 
+# ============ Team Member Routes ============
+
+@api_router.post("/team", response_model=TeamMemberResponse)
+async def create_team_member(input: TeamMemberCreate):
+    try:
+        member_dict = input.model_dump()
+        member_obj = TeamMember(**member_dict)
+        doc = member_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.team_members.insert_one(doc)
+        return TeamMemberResponse(**doc)
+    except Exception as e:
+        logging.error(f"Error creating team member: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create team member")
+
+
+@api_router.get("/team", response_model=List[TeamMemberResponse])
+async def get_team_members(active_only: bool = True):
+    query = {"is_active": True} if active_only else {}
+    members = await db.team_members.find(query, {"_id": 0}).sort("order", 1).to_list(100)
+    return [
+        TeamMemberResponse(
+            id=m['id'], name=m['name'], title=m['title'], bio=m.get('bio'),
+            photo_url=m.get('photo_url'), linkedin_url=m.get('linkedin_url'),
+            twitter_url=m.get('twitter_url'), email=m.get('email'),
+            order=m.get('order', 0), is_active=m.get('is_active', True),
+            created_at=m['created_at'] if isinstance(m['created_at'], str) else m['created_at'].isoformat()
+        ) for m in members
+    ]
+
+
+@api_router.put("/team/{member_id}", response_model=TeamMemberResponse)
+async def update_team_member(member_id: str, input: TeamMemberUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.team_members.update_one({"id": member_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Team member not found")
+    member = await db.team_members.find_one({"id": member_id}, {"_id": 0})
+    return TeamMemberResponse(
+        id=member['id'], name=member['name'], title=member['title'], bio=member.get('bio'),
+        photo_url=member.get('photo_url'), linkedin_url=member.get('linkedin_url'),
+        twitter_url=member.get('twitter_url'), email=member.get('email'),
+        order=member.get('order', 0), is_active=member.get('is_active', True),
+        created_at=member['created_at'] if isinstance(member['created_at'], str) else member['created_at'].isoformat()
+    )
+
+
+@api_router.delete("/team/{member_id}")
+async def delete_team_member(member_id: str):
+    result = await db.team_members.delete_one({"id": member_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Team member not found")
+    return {"message": "Team member deleted successfully"}
+
+
+# ============ Branch Routes ============
+
+@api_router.post("/branches", response_model=BranchResponse)
+async def create_branch(input: BranchCreate):
+    try:
+        branch_dict = input.model_dump()
+        branch_obj = Branch(**branch_dict)
+        doc = branch_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.branches.insert_one(doc)
+        return BranchResponse(**doc)
+    except Exception as e:
+        logging.error(f"Error creating branch: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create branch")
+
+
+@api_router.get("/branches", response_model=List[BranchResponse])
+async def get_branches(active_only: bool = True):
+    query = {"is_active": True} if active_only else {}
+    branches = await db.branches.find(query, {"_id": 0}).sort("order", 1).to_list(100)
+    return [
+        BranchResponse(
+            id=b['id'], name=b['name'], slug=b['slug'], address=b['address'],
+            city=b['city'], state=b['state'], phone=b['phone'], email=b['email'],
+            map_url=b.get('map_url'), image_url=b.get('image_url'),
+            description=b.get('description'), facilities=b.get('facilities', []),
+            timings=b.get('timings'), is_active=b.get('is_active', True),
+            order=b.get('order', 0),
+            created_at=b['created_at'] if isinstance(b['created_at'], str) else b['created_at'].isoformat()
+        ) for b in branches
+    ]
+
+
+@api_router.get("/branches/{branch_slug}", response_model=BranchResponse)
+async def get_branch(branch_slug: str):
+    branch = await db.branches.find_one({"slug": branch_slug, "is_active": True}, {"_id": 0})
+    if not branch:
+        raise HTTPException(status_code=404, detail="Branch not found")
+    return BranchResponse(
+        id=branch['id'], name=branch['name'], slug=branch['slug'], address=branch['address'],
+        city=branch['city'], state=branch['state'], phone=branch['phone'], email=branch['email'],
+        map_url=branch.get('map_url'), image_url=branch.get('image_url'),
+        description=branch.get('description'), facilities=branch.get('facilities', []),
+        timings=branch.get('timings'), is_active=branch.get('is_active', True),
+        order=branch.get('order', 0),
+        created_at=branch['created_at'] if isinstance(branch['created_at'], str) else branch['created_at'].isoformat()
+    )
+
+
+@api_router.put("/branches/{branch_id}", response_model=BranchResponse)
+async def update_branch(branch_id: str, input: BranchUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No data to update")
+    result = await db.branches.update_one({"id": branch_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Branch not found")
+    branch = await db.branches.find_one({"id": branch_id}, {"_id": 0})
+    return BranchResponse(
+        id=branch['id'], name=branch['name'], slug=branch['slug'], address=branch['address'],
+        city=branch['city'], state=branch['state'], phone=branch['phone'], email=branch['email'],
+        map_url=branch.get('map_url'), image_url=branch.get('image_url'),
+        description=branch.get('description'), facilities=branch.get('facilities', []),
+        timings=branch.get('timings'), is_active=branch.get('is_active', True),
+        order=branch.get('order', 0),
+        created_at=branch['created_at'] if isinstance(branch['created_at'], str) else branch['created_at'].isoformat()
+    )
+
+
+@api_router.delete("/branches/{branch_id}")
+async def delete_branch(branch_id: str):
+    result = await db.branches.delete_one({"id": branch_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Branch not found")
+    return {"message": "Branch deleted successfully"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
