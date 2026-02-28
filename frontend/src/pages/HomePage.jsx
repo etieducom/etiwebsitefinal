@@ -214,11 +214,13 @@ const HomePage = () => {
   const [reviews, setReviews] = useState([]);
   const [events, setEvents] = useState([]);
   const [blogs, setBlogs] = useState([]);
+  const [team, setTeam] = useState([]);
 
   useEffect(() => {
     fetchReviews();
     fetchEvents();
     fetchBlogs();
+    fetchTeam();
   }, []);
 
   const fetchReviews = async () => {
