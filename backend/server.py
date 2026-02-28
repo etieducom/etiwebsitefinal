@@ -2273,6 +2273,248 @@ async def delete_branch(branch_id: str):
     return {"message": "Branch deleted successfully"}
 
 
+# ============ Navigation Menu Models ============
+
+class NavMenuItem(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    label: str = Field(..., min_length=1, max_length=50)
+    url: str = Field(..., min_length=1)
+    parent_id: Optional[str] = None  # For dropdown items
+    order: int = 0
+    is_visible: bool = True
+    is_dropdown: bool = False
+    icon: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class NavMenuItemCreate(BaseModel):
+    label: str = Field(..., min_length=1, max_length=50)
+    url: str = Field(..., min_length=1)
+    parent_id: Optional[str] = None
+    order: int = 0
+    is_visible: bool = True
+    is_dropdown: bool = False
+    icon: Optional[str] = None
+
+
+class NavMenuItemUpdate(BaseModel):
+    label: Optional[str] = None
+    url: Optional[str] = None
+    parent_id: Optional[str] = None
+    order: Optional[int] = None
+    is_visible: Optional[bool] = None
+    is_dropdown: Optional[bool] = None
+    icon: Optional[str] = None
+
+
+class NavMenuItemResponse(BaseModel):
+    id: str
+    label: str
+    url: str
+    parent_id: Optional[str]
+    order: int
+    is_visible: bool
+    is_dropdown: bool
+    icon: Optional[str]
+    children: List['NavMenuItemResponse'] = []
+
+
+# ============ Navigation Menu Routes ============
+
+@api_router.get("/navigation", response_model=List[NavMenuItemResponse])
+async def get_navigation():
+    """Get all navigation items organized hierarchically"""
+    items = await db.navigation.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+    
+    # Organize into parent-child structure
+    parents = [item for item in items if not item.get('parent_id')]
+    
+    result = []
+    for parent in parents:
+        children = [
+            NavMenuItemResponse(
+                id=child['id'],
+                label=child['label'],
+                url=child['url'],
+                parent_id=child.get('parent_id'),
+                order=child.get('order', 0),
+                is_visible=child.get('is_visible', True),
+                is_dropdown=child.get('is_dropdown', False),
+                icon=child.get('icon'),
+                children=[]
+            )
+            for child in items if child.get('parent_id') == parent['id']
+        ]
+        children.sort(key=lambda x: x.order)
+        
+        result.append(NavMenuItemResponse(
+            id=parent['id'],
+            label=parent['label'],
+            url=parent['url'],
+            parent_id=parent.get('parent_id'),
+            order=parent.get('order', 0),
+            is_visible=parent.get('is_visible', True),
+            is_dropdown=parent.get('is_dropdown', False),
+            icon=parent.get('icon'),
+            children=children
+        ))
+    
+    result.sort(key=lambda x: x.order)
+    return result
+
+
+@api_router.get("/navigation/all", response_model=List[NavMenuItemResponse])
+async def get_all_navigation_items():
+    """Get all navigation items as flat list (for admin)"""
+    items = await db.navigation.find({}, {"_id": 0}).sort("order", 1).to_list(100)
+    return [
+        NavMenuItemResponse(
+            id=item['id'],
+            label=item['label'],
+            url=item['url'],
+            parent_id=item.get('parent_id'),
+            order=item.get('order', 0),
+            is_visible=item.get('is_visible', True),
+            is_dropdown=item.get('is_dropdown', False),
+            icon=item.get('icon'),
+            children=[]
+        )
+        for item in items
+    ]
+
+
+@api_router.post("/navigation", response_model=NavMenuItemResponse)
+async def create_navigation_item(input: NavMenuItemCreate):
+    try:
+        item_dict = input.model_dump()
+        item_obj = NavMenuItem(**item_dict)
+        doc = item_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.navigation.insert_one(doc)
+        return NavMenuItemResponse(
+            id=doc['id'],
+            label=doc['label'],
+            url=doc['url'],
+            parent_id=doc.get('parent_id'),
+            order=doc.get('order', 0),
+            is_visible=doc.get('is_visible', True),
+            is_dropdown=doc.get('is_dropdown', False),
+            icon=doc.get('icon'),
+            children=[]
+        )
+    except Exception as e:
+        logging.error(f"Error creating navigation item: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create navigation item")
+
+
+@api_router.put("/navigation/{item_id}", response_model=NavMenuItemResponse)
+async def update_navigation_item(item_id: str, input: NavMenuItemUpdate):
+    update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    
+    update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+    result = await db.navigation.update_one({"id": item_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Navigation item not found")
+    
+    item = await db.navigation.find_one({"id": item_id}, {"_id": 0})
+    return NavMenuItemResponse(
+        id=item['id'],
+        label=item['label'],
+        url=item['url'],
+        parent_id=item.get('parent_id'),
+        order=item.get('order', 0),
+        is_visible=item.get('is_visible', True),
+        is_dropdown=item.get('is_dropdown', False),
+        icon=item.get('icon'),
+        children=[]
+    )
+
+
+@api_router.delete("/navigation/{item_id}")
+async def delete_navigation_item(item_id: str):
+    # Also delete children
+    await db.navigation.delete_many({"parent_id": item_id})
+    result = await db.navigation.delete_one({"id": item_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Navigation item not found")
+    return {"message": "Navigation item deleted successfully"}
+
+
+@api_router.post("/navigation/reorder")
+async def reorder_navigation_items(items: List[dict]):
+    """Reorder navigation items"""
+    try:
+        for item in items:
+            await db.navigation.update_one(
+                {"id": item['id']},
+                {"$set": {"order": item['order']}}
+            )
+        return {"message": "Navigation items reordered successfully"}
+    except Exception as e:
+        logging.error(f"Error reordering navigation: {e}")
+        raise HTTPException(status_code=500, detail="Failed to reorder navigation items")
+
+
+@api_router.post("/navigation/seed-default")
+async def seed_default_navigation():
+    """Seed default navigation items if none exist"""
+    count = await db.navigation.count_documents({})
+    if count > 0:
+        return {"message": "Navigation already has items", "count": count}
+    
+    default_items = [
+        {"label": "Home", "url": "/", "order": 0, "is_dropdown": False},
+        {"label": "About", "url": "/about", "order": 1, "is_dropdown": True},
+        {"label": "Programs", "url": "/programs", "order": 2, "is_dropdown": True},
+        {"label": "Resources", "url": "#", "order": 3, "is_dropdown": True},
+        {"label": "Careers", "url": "#", "order": 4, "is_dropdown": True},
+        {"label": "Franchise", "url": "/franchise", "order": 5, "is_dropdown": False},
+        {"label": "Contact", "url": "/contact", "order": 6, "is_dropdown": False},
+    ]
+    
+    parent_ids = {}
+    for item_data in default_items:
+        item = NavMenuItem(**item_data)
+        doc = item.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.navigation.insert_one(doc)
+        parent_ids[item_data['label']] = doc['id']
+    
+    # Add dropdown children
+    dropdown_children = [
+        # About dropdown
+        {"label": "About Us", "url": "/about", "parent_id": parent_ids["About"], "order": 0},
+        {"label": "Our Founder", "url": "/founder", "parent_id": parent_ids["About"], "order": 1},
+        {"label": "Our Team", "url": "/team", "parent_id": parent_ids["About"], "order": 2},
+        # Programs dropdown
+        {"label": "All Programs", "url": "/programs", "parent_id": parent_ids["Programs"], "order": 0},
+        {"label": "Cyber Warriors", "url": "/cyber-warriors", "parent_id": parent_ids["Programs"], "order": 1},
+        {"label": "Summer Training", "url": "/summer-training", "parent_id": parent_ids["Programs"], "order": 2},
+        # Resources dropdown
+        {"label": "Blogs", "url": "/blogs", "parent_id": parent_ids["Resources"], "order": 0},
+        {"label": "Events", "url": "/events", "parent_id": parent_ids["Resources"], "order": 1},
+        {"label": "FAQ", "url": "/faq", "parent_id": parent_ids["Resources"], "order": 2},
+        # Careers dropdown
+        {"label": "Hire From Us", "url": "/hire-from-us", "parent_id": parent_ids["Careers"], "order": 0},
+        {"label": "Join Our Team", "url": "/join-team", "parent_id": parent_ids["Careers"], "order": 1},
+    ]
+    
+    for child_data in dropdown_children:
+        child = NavMenuItem(**child_data)
+        doc = child.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.navigation.insert_one(doc)
+    
+    return {"message": "Default navigation seeded successfully"}
+
+
 # Include the router in the main app
 app.include_router(api_router)
 
