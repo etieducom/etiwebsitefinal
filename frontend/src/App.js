@@ -54,9 +54,10 @@ const MainLayout = ({ children }) => {
 
 function App() {
   return (
-    <div className="App">
-      <Toaster position="top-right" richColors />
-      <BrowserRouter>
+    <HelmetProvider>
+      <div className="App">
+        <Toaster position="top-right" richColors />
+        <BrowserRouter>
         <AnnouncementProvider>
           <Routes>
             {/* Landing pages - No header/footer */}
