@@ -33,6 +33,7 @@ import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AdminPage from "./pages/AdminPage";
 import BranchPage from "./pages/BranchPage";
 import CyberWarriorsPage from "./pages/CyberWarriorsPage";
+import TeamPage from "./pages/TeamPage";
 
 // Layout wrapper component to handle announcement bar spacing
 const MainLayout = ({ children }) => {
