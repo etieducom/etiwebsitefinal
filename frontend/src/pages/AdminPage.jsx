@@ -1821,6 +1821,95 @@ const AdminPage = () => {
                 )}
               </div>
             </TabsContent>
+
+            {/* Navigation Tab */}
+            <TabsContent value="navigation">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h2 className="text-xl font-bold text-[#1a1a1a]">Navigation Menu</h2>
+                  <p className="text-sm text-[#717171]">Manage the main navigation menu items and dropdowns</p>
+                </div>
+                <div className="flex gap-2">
+                  {navItems.length === 0 && (
+                    <Button variant="outline" onClick={handleSeedDefaultNav} data-testid="seed-nav-btn">
+                      Load Default Menu
+                    </Button>
+                  )}
+                  <Button className="btn-primary" onClick={() => {
+                    setEditingNav(null);
+                    setNavForm({ label: "", url: "", parent_id: "", order: 0, is_visible: true, is_dropdown: false, icon: "" });
+                    setShowNavModal(true);
+                  }} data-testid="add-nav-btn">
+                    <Plus className="w-4 h-4" /> Add Menu Item
+                  </Button>
+                </div>
+              </div>
+              
+              {navItems.length === 0 ? (
+                <Card className="card-default"><CardContent className="p-8 text-center">
+                  <Menu className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
+                  <p className="text-[#717171]">No navigation items yet</p>
+                  <p className="text-sm text-[#b0b0b0] mt-2">Click "Load Default Menu" to add the default navigation structure</p>
+                </CardContent></Card>
+              ) : (
+                <div className="space-y-4">
+                  {/* Parent Items */}
+                  <div className="mb-4">
+                    <h3 className="text-sm font-semibold text-[#717171] mb-2">Main Menu Items</h3>
+                    {navItems.filter(item => !item.parent_id).sort((a, b) => a.order - b.order).map((item) => (
+                      <Card key={item.id} className={`card-default mb-2 ${!item.is_visible ? 'opacity-60' : ''}`}>
+                        <CardContent className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                              <span className="text-xs text-[#b0b0b0] w-6">{item.order}</span>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-[#1a1a1a]">{item.label}</span>
+                                  {item.is_dropdown && (
+                                    <Badge className="bg-purple-100 text-purple-700 text-xs">Dropdown</Badge>
+                                  )}
+                                  {!item.is_visible && (
+                                    <Badge className="bg-gray-100 text-gray-500 text-xs">Hidden</Badge>
+                                  )}
+                                </div>
+                                <span className="text-sm text-[#717171]">{item.url}</span>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button variant="outline" size="sm" onClick={() => handleEditNav(item)}>Edit</Button>
+                              <Button variant="destructive" size="sm" onClick={() => handleDeleteNav(item.id)}>
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </div>
+                          
+                          {/* Show children */}
+                          {navItems.filter(child => child.parent_id === item.id).length > 0 && (
+                            <div className="mt-3 pl-9 border-l-2 border-[#ebebeb] space-y-2">
+                              {navItems.filter(child => child.parent_id === item.id).sort((a, b) => a.order - b.order).map((child) => (
+                                <div key={child.id} className={`flex items-center justify-between py-2 ${!child.is_visible ? 'opacity-60' : ''}`}>
+                                  <div className="flex items-center gap-2">
+                                    <span className="text-xs text-[#b0b0b0]">{child.order}</span>
+                                    <span className="text-sm text-[#4a4a4a]">{child.label}</span>
+                                    <span className="text-xs text-[#b0b0b0]">→ {child.url}</span>
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <Button variant="ghost" size="sm" onClick={() => handleEditNav(child)}>Edit</Button>
+                                    <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-700" onClick={() => handleDeleteNav(child.id)}>
+                                      <Trash2 className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </TabsContent>
           </Tabs>
         </div>
       </section>
