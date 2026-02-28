@@ -94,7 +94,6 @@ function App() {
         </AnnouncementProvider>
       </BrowserRouter>
     </div>
-    </HelmetProvider>
   );
 }
 
