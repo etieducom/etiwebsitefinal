@@ -2542,6 +2542,96 @@ const AdminPage = () => {
           </form>
         </DialogContent>
       </Dialog>
+
+      {/* Navigation Modal */}
+      <Dialog open={showNavModal} onOpenChange={(open) => { setShowNavModal(open); if (!open) setEditingNav(null); }}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{editingNav ? 'Edit Menu Item' : 'Add Menu Item'}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleNavSubmit} className="space-y-4">
+            <div>
+              <label className="form-label">Label *</label>
+              <Input 
+                placeholder="About Us" 
+                value={navForm.label} 
+                onChange={(e) => setNavForm({...navForm, label: e.target.value})} 
+                required 
+                className="form-input" 
+              />
+            </div>
+            <div>
+              <label className="form-label">URL *</label>
+              <Input 
+                placeholder="/about or https://..." 
+                value={navForm.url} 
+                onChange={(e) => setNavForm({...navForm, url: e.target.value})} 
+                required 
+                className="form-input" 
+              />
+              <p className="text-xs text-[#717171] mt-1">Use / for internal links, # for dropdown parents</p>
+            </div>
+            <div>
+              <label className="form-label">Parent Menu (for dropdown items)</label>
+              <Select value={navForm.parent_id || "none"} onValueChange={(v) => setNavForm({...navForm, parent_id: v === "none" ? "" : v})}>
+                <SelectTrigger className="form-input">
+                  <SelectValue placeholder="None (Top Level)" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None (Top Level)</SelectItem>
+                  {navItems.filter(item => !item.parent_id && item.is_dropdown).map(item => (
+                    <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="form-label">Order</label>
+                <Input 
+                  type="number" 
+                  placeholder="0" 
+                  value={navForm.order} 
+                  onChange={(e) => setNavForm({...navForm, order: parseInt(e.target.value) || 0})} 
+                  className="form-input" 
+                />
+              </div>
+              <div>
+                <label className="form-label">Icon (optional)</label>
+                <Input 
+                  placeholder="Home, Users, Code..." 
+                  value={navForm.icon} 
+                  onChange={(e) => setNavForm({...navForm, icon: e.target.value})} 
+                  className="form-input" 
+                />
+              </div>
+            </div>
+            <div className="flex items-center gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={navForm.is_dropdown} 
+                  onChange={(e) => setNavForm({...navForm, is_dropdown: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm">Has Dropdown</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  checked={navForm.is_visible} 
+                  onChange={(e) => setNavForm({...navForm, is_visible: e.target.checked})}
+                  className="w-4 h-4"
+                />
+                <span className="text-sm">Visible</span>
+              </label>
+            </div>
+            <Button type="submit" className="btn-primary w-full" disabled={submitting}>
+              {submitting ? "Saving..." : (editingNav ? "Update Menu Item" : "Add Menu Item")}
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
