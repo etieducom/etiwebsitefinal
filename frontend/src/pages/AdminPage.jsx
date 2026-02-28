@@ -1047,9 +1047,14 @@ const AdminPage = () => {
                             <p className="text-sm text-[#717171]">{review.course} | Rating: {review.rating}/5</p>
                           </div>
                         </div>
-                        <Button variant="destructive" size="sm" onClick={() => handleDeleteReview(review.id)}>
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button variant="outline" size="sm" onClick={() => handleEditReview(review)}>
+                            Edit
+                          </Button>
+                          <Button variant="destructive" size="sm" onClick={() => handleDeleteReview(review.id)}>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </CardContent>
                     </Card>
                   ))}
