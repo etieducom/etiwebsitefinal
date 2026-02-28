@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
+import SEO from "../components/SEO";
 import { Linkedin, Twitter, Mail, Users } from "lucide-react";
 import { Badge } from "../components/ui/badge";
 

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axios from "axios";
 import { toast } from "sonner";
+import SEO from "../components/SEO";
 import { 
   Mail, 
   Phone, 
