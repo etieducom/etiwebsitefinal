@@ -101,6 +101,12 @@ const trendingSkills = [
     icon: <Shield className="w-5 h-5" />
   },
   {
+    id: "soc-analyst",
+    title: "SOC Analyst",
+    tag: "Cybersecurity",
+    icon: <Network className="w-5 h-5" />
+  },
+  {
     id: "graphic-design",
     title: "Graphic Design",
     tag: "Creative",
