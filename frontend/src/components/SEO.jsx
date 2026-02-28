@@ -63,6 +63,9 @@ const SEO = ({ pageSlug = 'home' }) => {
   const ogDescription = seoData?.og_description || description;
   const ogImage = seoData?.og_image || '';
 
+  // Don't render if title is not available
+  if (!title) return null;
+
   return (
     <Helmet>
       <title>{title}</title>
