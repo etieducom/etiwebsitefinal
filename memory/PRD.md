@@ -10,12 +10,16 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 - **Admin Panel:** Complete content management system at `/admin`
 - **SEO Management:** Dynamic meta tags for all pages
 - **AI Chatbot:** Powered by OpenAI GPT-4o via Emergent LLM Key
-- **Dynamic Navigation:** Admin-managed navbar with dropdown support
+
+### Landing Pages
+- **Summer Training Page:** `/summer-training`
+- **Free Counselling Page:** `/free-counselling`
+- **Industrial Training Page (NEW):** `/industrial-training` - 6 Weeks Industrial Training for students
 
 ### Content Management (Admin Panel)
 | Feature | Status | Notes |
 |---------|--------|-------|
-| **Navigation** | ✅ NEW | Add/Edit/Delete menu items, dropdowns |
+| Partners | ✅ Done | Placement & Certification partners |
 | Events | ✅ Done | Add/Edit/Delete with dates, locations |
 | Reviews | ✅ Done | Student testimonials with ratings |
 | Blogs | ✅ Done | Full blog system with categories |
@@ -30,21 +34,13 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 | Jobs | ✅ Done | Career postings |
 | Leads | ✅ Done | Contact form submissions |
 | Enquiries | ✅ Done | Quick enquiry submissions |
+| Industrial Training Leads | ✅ NEW | Lead capture from industrial training page |
 
 ### Programs Added
 1. SOC Analyst (6 Months) - Full 10-module curriculum
 2. Ethical Hacking & Penetration Testing (6 Months)
 3. Full Stack Web Development (8 Months)
 4. Digital Marketing Mastery (4 Months)
-
-### Navigation Structure (Default)
-- Home
-- About (dropdown): About Us, Our Founder, Our Team
-- Programs (mega menu): All programs by category
-- Resources (dropdown): Blogs, Events, FAQ
-- Careers (dropdown): Hire From Us, Join Our Team
-- Franchise
-- Contact
 
 ### Pages
 - Home, About, Founder, Programs, Program Details
@@ -53,6 +49,7 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 - Contact, Free Counselling, Summer Training
 - Privacy Policy, Team, Branches
 - Cyber Warriors, Admin
+- **Industrial Training (NEW)**
 
 ## Technical Stack
 - **Backend:** FastAPI, Python 3.10+, Motor (MongoDB async)
@@ -62,27 +59,38 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 
 ## API Endpoints
 
-### Navigation API (NEW)
-- `GET /api/navigation` - Get hierarchical navigation
-- `GET /api/navigation/all` - Get flat list (admin)
-- `POST /api/navigation` - Create nav item
-- `PUT /api/navigation/:id` - Update nav item
-- `DELETE /api/navigation/:id` - Delete nav item
-- `POST /api/navigation/seed-default` - Seed default menu
+### Industrial Training API (NEW)
+- `POST /api/industrial-training-leads` - Create lead
+- `GET /api/industrial-training-leads` - Get all leads
+- `DELETE /api/industrial-training-leads/:id` - Delete lead
+
+### Other Core APIs
+- Partners CRUD: `/api/partners`
+- Programs: `/api/programs`
+- SEO: `/api/seo`
+- Reviews, Blogs, Events, Team, Branches, etc.
 
 ## Files of Reference
 - `/app/backend/server.py` - Main API file
 - `/app/frontend/src/pages/AdminPage.jsx` - Admin dashboard
-- `/app/frontend/src/components/Header.jsx` - Dynamic navigation header
+- `/app/frontend/src/pages/IndustrialTrainingPage.jsx` - Industrial Training landing page (NEW)
+- `/app/frontend/src/components/Header.jsx` - Navigation header
 - `/app/frontend/src/components/SEO.jsx` - SEO component
-- `/app/DEPLOYMENT_GUIDE.md` - Deployment instructions
 
 ## Deployment Status
 - **Preview Environment:** Fully functional
-- **Production (Hostinger VPS):** Pending deployment with latest code
+- **Production (Hostinger VPS):** Has recurring MongoDB auth & Nginx config issues
 
-## Known Issues
-1. Data persistence on VPS when using PM2 (environment variable issue)
+## Known Issues (VPS)
+1. MongoDB authentication failure - "Command requires authentication"
+2. Nginx conflict - bms.etieducom.com content showing on etieducom.com
+
+## Upcoming Tasks
+- P0: Sitemap generation
+- P1: Dynamic SEO management from admin panel
+- P1: Multiple image uploads for Events
+- P1: Founder image management
+- P2: About/Franchise page redesign
 
 ## Last Updated
-February 28, 2026
+March 11, 2026

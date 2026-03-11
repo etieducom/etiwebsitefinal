@@ -29,6 +29,7 @@ import FranchisePage from "./pages/FranchisePage";
 import ContactPage from "./pages/ContactPage";
 import FreeCounsellingPage from "./pages/FreeCounsellingPage";
 import SummerTrainingPage from "./pages/SummerTrainingPage";
+import IndustrialTrainingPage from "./pages/IndustrialTrainingPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 import AdminPage from "./pages/AdminPage";
 import BranchPage from "./pages/BranchPage";
@@ -61,6 +62,7 @@ function App() {
             {/* Landing pages - No header/footer */}
             <Route path="/free-counselling" element={<FreeCounsellingPage />} />
             <Route path="/summer-training" element={<SummerTrainingPage />} />
+            <Route path="/industrial-training" element={<IndustrialTrainingPage />} />
             
             {/* All other routes with header/footer */}
             <Route path="/*" element={

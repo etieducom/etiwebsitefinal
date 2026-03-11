@@ -105,6 +105,13 @@ const SEO = ({ pageSlug = 'home' }) => {
       keywords: 'cybersecurity training, ethical hacking training, cyber warriors program, cybersecurity careers',
       ogTitle: 'Cyber Warriors | ETI Educom®',
       ogDescription: 'A cybersecurity career track designed for future cyber defense professionals.'
+    },
+    'industrial-training': {
+      title: '6 Weeks Industrial Training | ETI Educom® | ₹6,999',
+      description: '45 Days Industrial Training for BCA, MCA, BTech, MTech students. International Certifications, Expert Trainers, Project Development Support. Technologies: Python, Java, Web Design, CCNA, Cybersecurity & more.',
+      keywords: '6 weeks industrial training, industrial training for BCA, MCA industrial training, BTech summer training, project training, international certification, CCNA training, Python training, Java training',
+      ogTitle: '6 Weeks Industrial Training | ETI Educom®',
+      ogDescription: 'Get 45 days hands-on industrial training with International Certification at just ₹6,999. Perfect for BCA, MCA, BTech, MTech students.'
     }
   };
 

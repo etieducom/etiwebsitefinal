@@ -7,7 +7,7 @@ import requests
 import os
 import uuid
 
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://eti-deployment-fix.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://eti-vps-fix.preview.emergentagent.com')
 
 class TestHealthEndpoints:
     """Health and root endpoint tests"""

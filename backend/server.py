@@ -77,6 +77,42 @@ class SummerTrainingLeadResponse(BaseModel):
     created_at: str
 
 
+# ============ Industrial Training Lead Models ============
+
+class IndustrialTrainingLead(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    phone: str
+    college: Optional[str] = None
+    course: Optional[str] = None
+    program_interest: str
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class IndustrialTrainingLeadCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: EmailStr
+    phone: str = Field(..., min_length=10)
+    college: Optional[str] = None
+    course: Optional[str] = None
+    program_interest: str = Field(..., min_length=2)
+
+
+class IndustrialTrainingLeadResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    phone: str
+    college: Optional[str] = None
+    course: Optional[str] = None
+    program_interest: str
+    status: str
+    created_at: str
+
+
 # ============ Quick Enquiry Models ============
 
 class QuickEnquiry(BaseModel):
@@ -1932,6 +1968,44 @@ async def get_summer_training_leads():
 @api_router.delete("/summer-training-leads/{lead_id}")
 async def delete_summer_training_lead(lead_id: str):
     result = await db.summer_training_leads.delete_one({"id": lead_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Lead not found")
+    return {"message": "Lead deleted successfully"}
+
+
+# ============ Industrial Training Lead Routes ============
+
+@api_router.post("/industrial-training-leads", response_model=IndustrialTrainingLeadResponse)
+async def create_industrial_training_lead(input: IndustrialTrainingLeadCreate):
+    try:
+        lead_dict = input.model_dump()
+        lead_obj = IndustrialTrainingLead(**lead_dict)
+        doc = lead_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.industrial_training_leads.insert_one(doc)
+        return IndustrialTrainingLeadResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating industrial training lead: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit lead")
+
+
+@api_router.get("/industrial-training-leads", response_model=List[IndustrialTrainingLeadResponse])
+async def get_industrial_training_leads():
+    leads = await db.industrial_training_leads.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return [
+        IndustrialTrainingLeadResponse(
+            id=lead['id'], name=lead['name'], email=lead['email'], phone=lead['phone'],
+            college=lead.get('college'), course=lead.get('course'),
+            program_interest=lead['program_interest'],
+            status=lead.get('status', 'new'),
+            created_at=lead['created_at'] if isinstance(lead['created_at'], str) else lead['created_at'].isoformat()
+        ) for lead in leads
+    ]
+
+
+@api_router.delete("/industrial-training-leads/{lead_id}")
+async def delete_industrial_training_lead(lead_id: str):
+    result = await db.industrial_training_leads.delete_one({"id": lead_id})
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Lead not found")
     return {"message": "Lead deleted successfully"}
