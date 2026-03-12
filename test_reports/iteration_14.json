@@ -63,7 +63,7 @@
     "frontend": "100% (all features verified)"
   },
   "test_credentials": {
-    "preview_url": "https://programs-cms-local.preview.emergentagent.com",
+    "preview_url": "https://eti-deploy.preview.emergentagent.com",
     "admin_password": "etieducom@admin2025"
   },
   "seed_data_creation": "Database has 6 universities and 10 programs seeded",

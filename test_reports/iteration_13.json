@@ -65,7 +65,7 @@
     "frontend": "100% (all features verified)"
   },
   "test_credentials": {
-    "preview_url": "https://programs-cms-local.preview.emergentagent.com"
+    "preview_url": "https://eti-deploy.preview.emergentagent.com"
   },
   "seed_data_creation": "Test enquiries created via API for testing",
   "retest_needed": false,

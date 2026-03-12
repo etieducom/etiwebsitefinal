@@ -8,7 +8,7 @@ import os
 import uuid
 
 # Use the public URL from environment
-BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://programs-cms-local.preview.emergentagent.com')
+BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://eti-deploy.preview.emergentagent.com')
 
 
 class TestReferralAPI:
