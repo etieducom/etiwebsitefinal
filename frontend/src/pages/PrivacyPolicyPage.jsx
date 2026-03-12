@@ -38,7 +38,7 @@ const PrivacyPolicyPage = () => {
             
             <h2>Introduction</h2>
             <p>
-              ETI Educom® ("we," "our," or "us"), a unit of ETI Learning Systems Private Limited, 
+              ETI Educom® ("we," "our," or "us") 
               is committed to protecting your privacy. This Privacy Policy explains how we collect, 
               use, disclose, and safeguard your information when you visit our website or enroll in our programs.
             </p>
@@ -137,9 +137,9 @@ const PrivacyPolicyPage = () => {
 
             <div className="bg-[#ebebeb] rounded-lg p-6 mt-8">
               <p className="text-sm text-[#4a4a4a] mb-0">
-                <strong>ETI Learning Systems Private Limited</strong><br />
-                Registered under the Companies Act, 2013<br />
-                Trading as ETI Educom®
+                <strong>ETI Educom®</strong><br />
+                ISO Certified | MSME Registered<br />
+                Certiport Authorized Testing Center
               </p>
             </div>
 

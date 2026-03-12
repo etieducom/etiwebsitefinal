@@ -58,8 +58,8 @@ const FounderPage = () => {
               </div>
 
               <div className="mt-8 text-center lg:text-left">
-                <h3 className="text-xl font-bold text-[#1a1a1a] font-['Manrope']">Managing Director</h3>
-                <p className="text-[#4a4a4a]">ETI Learning Systems Private Limited</p>
+                <h3 className="text-xl font-bold text-[#1a1a1a] font-['Manrope']">Founder & Managing Director</h3>
+                <p className="text-[#4a4a4a]">ETI Educom®</p>
               </div>
             </motion.div>
 

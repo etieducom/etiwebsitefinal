@@ -29,14 +29,6 @@ const fadeInUp = {
 };
 
 const AboutPage = () => {
-  const milestones = [
-    { year: "2017", title: "Foundation", desc: "ETI Educom established in Pathankot" },
-    { year: "2018", title: "CATC Authorization", desc: "Became Certiport Authorized Testing Center" },
-    { year: "2020", title: "Digital Expansion", desc: "Launched online learning platforms" },
-    { year: "2023", title: "Multi-Branch", desc: "Expanded to multiple locations" },
-    { year: "2024", title: "5000+ Students", desc: "Milestone of trained professionals" },
-  ];
-
   const values = [
     {
       icon: <Shield className="w-8 h-8" />,
@@ -132,23 +124,23 @@ const AboutPage = () => {
             <motion.div {...fadeInUp}>
               <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Who We Are</Badge>
               <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-6 font-['Poppins']">
-                The Computer Career School
+                Where Dreams Meet Digital Excellence
               </h2>
               <p className="text-[#4a4a4a] mb-6 text-lg leading-relaxed">
-                ETI Educom, a unit of ETI Learning Systems Private Limited, was established 
-                with a clear vision: to bridge the gap between academic education and 
-                industry requirements.
+                At ETI Educom, we don't just teach technology—we architect futures. Born from 
+                a vision to democratize quality IT education, we've become the launchpad for 
+                thousands of successful tech careers.
               </p>
               <p className="text-[#4a4a4a] mb-6 leading-relaxed">
-                Unlike traditional coaching institutes, we operate as a Computer Career School 
-                with defined Career Tracks, centralized academic governance, and industry-aligned 
-                certification programs. Our approach ensures that every student receives 
-                structured, career-oriented education.
+                What sets us apart? Our unwavering commitment to structured, career-focused 
+                education. Unlike traditional coaching, we operate as a <span className="font-semibold text-[#1a1a1a]">Computer Career School</span> with 
+                defined career pathways, industry-aligned curriculum, and real-world project 
+                experience that employers actually value.
               </p>
               <p className="text-[#4a4a4a] mb-8 leading-relaxed">
                 As a <span className="font-semibold text-[#1a1a1a]">Certiport Authorized Testing Center (CATC)</span>, 
-                we provide globally recognized certifications following ethical practices and 
-                transparent pricing.
+                we provide globally recognized certifications that open doors worldwide. 
+                Our students don't just learn—they transform into industry-ready professionals.
               </p>
               
               <Link to="/founder">
@@ -196,47 +188,8 @@ const AboutPage = () => {
         </div>
       </section>
 
-      {/* Timeline Section */}
-      <section className="py-20 bg-[#f8f9fa]">
-        <div className="container-main">
-          <motion.div {...fadeInUp} className="text-center mb-16">
-            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Our Journey</Badge>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] font-['Poppins']">
-              Milestones That Define Us
-            </h2>
-          </motion.div>
-
-          <div className="relative">
-            {/* Timeline Line */}
-            <div className="hidden md:block absolute top-1/2 left-0 right-0 h-1 bg-[#1545ea]/20 transform -translate-y-1/2"></div>
-            
-            <div className="grid md:grid-cols-5 gap-8">
-              {milestones.map((milestone, index) => (
-                <motion.div
-                  key={milestone.year}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  viewport={{ once: true }}
-                  className="relative text-center"
-                >
-                  <div className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow relative z-10">
-                    <div className="w-12 h-12 bg-[#1545ea] rounded-full flex items-center justify-center mx-auto mb-4 text-white font-bold">
-                      {milestone.year.slice(-2)}
-                    </div>
-                    <p className="text-sm text-[#1545ea] font-semibold mb-1">{milestone.year}</p>
-                    <h3 className="font-bold text-[#1a1a1a] mb-2">{milestone.title}</h3>
-                    <p className="text-sm text-[#717171]">{milestone.desc}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Our Values */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-[#f8f9fa]">
         <div className="container-main">
           <motion.div {...fadeInUp} className="text-center mb-16">
             <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Our Values</Badge>

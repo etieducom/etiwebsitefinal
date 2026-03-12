@@ -9,7 +9,11 @@ import {
   Instagram,
   Youtube,
   ChevronRight,
-  Building
+  Building,
+  Gift,
+  Shield,
+  Award,
+  BadgeCheck
 } from "lucide-react";
 
 const LOGO_WHITE = "https://customer-assets.emergentagent.com/job_career-tracks-hub/artifacts/guxbyjtl_etilogo%20white.png";
@@ -34,7 +38,8 @@ const Footer = () => {
     { label: "About Us", href: "/about" },
     { label: "Programs", href: "/programs" },
     { label: "Events", href: "/events" },
-    { label: "Contact Us", href: "/contact" }
+    { label: "Contact Us", href: "/contact" },
+    { label: "Refer & Earn", href: "/refer-and-earn" }
   ];
 
   const programs = [
@@ -55,7 +60,13 @@ const Footer = () => {
   ];
 
   const branches = [
-    { label: "Pathankot", href: "/branches/pathankot" }
+    { label: "Pathankot (Head Office)", href: "/best-institute-in-pathankot" }
+  ];
+
+  const certifications = [
+    { icon: <Shield className="w-4 h-4" />, label: "ISO Certified" },
+    { icon: <Award className="w-4 h-4" />, label: "MSME Registered" },
+    { icon: <BadgeCheck className="w-4 h-4" />, label: "Trusted Website" }
   ];
 
   return (
@@ -211,19 +222,34 @@ const Footer = () => {
           </div>
         </div>
 
+        {/* Certifications Bar */}
+        <div className="py-6 border-b border-[#333]">
+          <div className="flex flex-wrap justify-center gap-8">
+            {certifications.map((cert, index) => (
+              <div key={index} className="flex items-center gap-2 text-[#b0b0b0]">
+                <div className="w-8 h-8 bg-[#1545ea]/20 rounded-full flex items-center justify-center text-[#1545ea]">
+                  {cert.icon}
+                </div>
+                <span className="text-sm font-medium">{cert.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-[#717171] text-sm">
-            © {new Date().getFullYear()} ETI Educom. All rights reserved.
+            © {new Date().getFullYear()} ETI Educom®. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <Link to="/privacy-policy" className="text-[#717171] text-sm hover:text-white transition-colors">
               Privacy Policy
             </Link>
             <span className="text-[#717171]">|</span>
-            <p className="text-[#717171] text-sm">
-              A unit of <strong className="text-[#b0b0b0]">ETI Learning Systems Private Limited</strong>
-            </p>
+            <Link to="/refer-and-earn" className="text-[#717171] text-sm hover:text-white transition-colors flex items-center gap-1">
+              <Gift className="w-4 h-4" />
+              Refer & Earn
+            </Link>
           </div>
         </div>
       </div>

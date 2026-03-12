@@ -114,6 +114,44 @@ class IndustrialTrainingLeadResponse(BaseModel):
     created_at: str
 
 
+# ============ Referral Models ============
+
+class Referral(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    referrer_name: str
+    referrer_phone: str
+    referrer_email: Optional[str] = None
+    friend_name: str
+    friend_phone: str
+    program_interest: Optional[str] = None
+    status: str = "pending"  # pending, contacted, enrolled, rewarded
+    reward_amount: Optional[float] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ReferralCreate(BaseModel):
+    referrer_name: str = Field(..., min_length=2, max_length=100)
+    referrer_phone: str = Field(..., min_length=10)
+    referrer_email: Optional[str] = None
+    friend_name: str = Field(..., min_length=2, max_length=100)
+    friend_phone: str = Field(..., min_length=10)
+    program_interest: Optional[str] = None
+
+
+class ReferralResponse(BaseModel):
+    id: str
+    referrer_name: str
+    referrer_phone: str
+    referrer_email: Optional[str]
+    friend_name: str
+    friend_phone: str
+    program_interest: Optional[str]
+    status: str
+    reward_amount: Optional[float]
+    created_at: str
+
+
 # ============ Quick Enquiry Models ============
 
 class QuickEnquiry(BaseModel):
@@ -2563,6 +2601,55 @@ async def delete_quick_enquiry(enquiry_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Enquiry not found")
     return {"message": "Enquiry deleted successfully"}
+
+
+# ============ Referral Routes ============
+
+@api_router.post("/referrals", response_model=ReferralResponse)
+async def create_referral(input: ReferralCreate):
+    try:
+        referral_dict = input.model_dump()
+        referral_obj = Referral(**referral_dict)
+        doc = referral_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.referrals.insert_one(doc)
+        return ReferralResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating referral: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit referral")
+
+
+@api_router.get("/referrals", response_model=List[ReferralResponse])
+async def get_referrals():
+    referrals = await db.referrals.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return [
+        ReferralResponse(
+            id=r['id'], referrer_name=r['referrer_name'], referrer_phone=r['referrer_phone'],
+            referrer_email=r.get('referrer_email'), friend_name=r['friend_name'],
+            friend_phone=r['friend_phone'], program_interest=r.get('program_interest'),
+            status=r.get('status', 'pending'), reward_amount=r.get('reward_amount'),
+            created_at=r['created_at'] if isinstance(r['created_at'], str) else r['created_at'].isoformat()
+        ) for r in referrals
+    ]
+
+
+@api_router.put("/referrals/{referral_id}")
+async def update_referral(referral_id: str, status: str, reward_amount: Optional[float] = None):
+    update_data = {"status": status}
+    if reward_amount is not None:
+        update_data["reward_amount"] = reward_amount
+    result = await db.referrals.update_one({"id": referral_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Referral not found")
+    return {"message": "Referral updated successfully"}
+
+
+@api_router.delete("/referrals/{referral_id}")
+async def delete_referral(referral_id: str):
+    result = await db.referrals.delete_one({"id": referral_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Referral not found")
+    return {"message": "Referral deleted successfully"}
 
 
 # ============ Announcement Routes ============

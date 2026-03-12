@@ -66,51 +66,40 @@ const FranchisePage = () => {
   const benefits = [
     {
       icon: <Shield className="w-8 h-8" />,
-      title: "Brand Authorization",
-      description: "Licensed use of ETI Educom brand with full marketing support"
+      title: "Proven Business Model",
+      description: "Join a successful education franchise with established systems and processes"
     },
     {
       icon: <Award className="w-8 h-8" />,
-      title: "CATC Authorization",
-      description: "Certiport Authorized Testing Center for global certifications"
+      title: "Premium Brand Value",
+      description: "Leverage the trust and recognition of ETI Educom brand in your city"
     },
     {
       icon: <Users className="w-8 h-8" />,
-      title: "Training Support",
-      description: "Comprehensive faculty training and development programs"
+      title: "Complete Support System",
+      description: "From setup to operations, we're with you at every step of your journey"
     },
     {
       icon: <Target className="w-8 h-8" />,
-      title: "Academic Governance",
-      description: "Centralized curriculum and quality assurance framework"
+      title: "High-Demand Industry",
+      description: "Tap into the ever-growing demand for quality IT education"
     }
   ];
 
-  const terms = [
-    { label: "Agreement Duration", value: "5 Years", icon: <Clock /> },
-    { label: "Royalty", value: "15%", icon: <BarChart3 /> },
-    { label: "Exclusivity Radius", value: "15 KM", icon: <MapPin /> },
-    { label: "Renewal", value: "Auto", icon: <BadgeCheck /> }
-  ];
-
-  const features = [
-    "Fresh agreement at renewal without new brand license fee",
-    "Centralized marketing execution and brand support",
-    "ERP-enabled academic monitoring system",
-    "Structured career track curriculum",
-    "Ongoing operational support",
-    "Quality assurance audits",
-    "Student placement assistance",
-    "Regular training workshops for faculty"
+  const entrepreneurQualities = [
+    "Passionate about education and making a difference",
+    "Ready to invest in a meaningful business venture",
+    "Willing to commit full-time to your center's success",
+    "Strong networking skills within your community",
+    "Basic understanding of business operations",
+    "Desire to empower youth with digital skills"
   ];
 
   const process = [
-    { step: "01", title: "Application", desc: "Submit your franchise enquiry form" },
-    { step: "02", title: "Evaluation", desc: "Our team reviews your application" },
-    { step: "03", title: "Discussion", desc: "Detailed discussion with our team" },
-    { step: "04", title: "Agreement", desc: "Sign franchise agreement" },
-    { step: "05", title: "Setup", desc: "Center setup with our support" },
-    { step: "06", title: "Launch", desc: "Grand opening of your center" },
+    { step: "01", title: "Express Interest", desc: "Fill the enquiry form below" },
+    { step: "02", title: "We Connect", desc: "Our team reaches out within 48 hours" },
+    { step: "03", title: "Discussion", desc: "Detailed discussion about opportunity" },
+    { step: "04", title: "Partnership", desc: "Begin your entrepreneurial journey" },
   ];
 
   const handleSubmit = async (e) => {
@@ -151,35 +140,43 @@ const FranchisePage = () => {
             <motion.div {...fadeInUp}>
               <Badge className="bg-white/10 text-white border border-white/20 mb-6 px-4 py-2">
                 <Handshake className="w-4 h-4 mr-2" />
-                Partnership Opportunity
+                Entrepreneurship Opportunity
               </Badge>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight font-['Poppins']">
-                Build a Future-Proof Education Business
+                Ready to Be Your Own Boss?
               </h1>
               <p className="text-xl text-blue-100 mb-8 leading-relaxed">
-                Join India's growing network of structured computer career education centers. 
-                Partner with ETI Educom and create lasting impact in your community.
+                If you've always dreamed of running your own business while making a real 
+                difference in young lives, this opportunity is for you. Partner with 
+                ETI Educom and build a thriving education business in your city.
               </p>
               
-              {/* Quick Stats */}
+              {/* Value Props */}
               <div className="grid grid-cols-2 gap-4 mb-8">
-                {terms.map((term, index) => (
-                  <div key={term.label} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-                    <div className="flex items-center gap-3">
-                      <div className="text-yellow-400">{term.icon}</div>
-                      <div>
-                        <p className="text-2xl font-bold text-white">{term.value}</p>
-                        <p className="text-xs text-blue-100">{term.label}</p>
-                      </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="text-yellow-400"><TrendingUp className="w-5 h-5" /></div>
+                    <div>
+                      <p className="text-lg font-bold text-white">High Demand</p>
+                      <p className="text-xs text-blue-100">IT Skills Market</p>
                     </div>
                   </div>
-                ))}
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                  <div className="flex items-center gap-3">
+                    <div className="text-yellow-400"><Shield className="w-5 h-5" /></div>
+                    <div>
+                      <p className="text-lg font-bold text-white">Proven Model</p>
+                      <p className="text-xs text-blue-100">7+ Years Success</p>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="flex flex-wrap gap-4">
                 <a href="#enquiry-form">
                   <Button className="bg-white text-[#1545ea] hover:bg-blue-50 px-8 py-4 rounded-xl font-semibold">
-                    Apply for Franchise
+                    Start Your Journey
                     <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </a>
@@ -209,11 +206,11 @@ const FranchisePage = () => {
                 <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl">
                   <div className="flex items-center gap-4">
                     <div className="w-14 h-14 bg-[#1545ea]/10 rounded-xl flex items-center justify-center text-[#1545ea]">
-                      <TrendingUp className="w-7 h-7" />
+                      <HeartHandshake className="w-7 h-7" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-[#1a1a1a]">95%</p>
-                      <p className="text-sm text-[#717171]">Partner Satisfaction</p>
+                      <p className="text-2xl font-bold text-[#1a1a1a]">Be an</p>
+                      <p className="text-sm text-[#717171]">Edupreneur</p>
                     </div>
                   </div>
                 </div>
@@ -300,21 +297,23 @@ const FranchisePage = () => {
         </div>
       </section>
 
-      {/* What's Included Section */}
+      {/* Are You The One? Section */}
       <section className="py-20 bg-[#1545ea]">
         <div className="container-main">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div {...fadeInUp}>
-              <Badge className="bg-white/10 text-white border border-white/20 mb-4">Complete Package</Badge>
+              <Badge className="bg-white/10 text-white border border-white/20 mb-4">The Right Fit</Badge>
               <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 font-['Poppins']">
-                Everything You Need to Succeed
+                Are You The One We're Looking For?
               </h2>
               <p className="text-blue-100 mb-8 text-lg">
-                Our franchise model is designed to provide comprehensive support from day one.
+                We're not just looking for investors—we're looking for passionate individuals 
+                who want to build something meaningful. If these qualities resonate with you, 
+                let's talk!
               </p>
               
-              <div className="grid sm:grid-cols-2 gap-4">
-                {features.map((feature, index) => (
+              <div className="space-y-4">
+                {entrepreneurQualities.map((quality, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, x: -20 }}
@@ -326,7 +325,7 @@ const FranchisePage = () => {
                     <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <CheckCircle className="w-4 h-4 text-[#1545ea]" />
                     </div>
-                    <span className="text-white">{feature}</span>
+                    <span className="text-white">{quality}</span>
                   </motion.div>
                 ))}
               </div>
@@ -340,13 +339,17 @@ const FranchisePage = () => {
               <div className="w-20 h-20 bg-[#1545ea]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <HeartHandshake className="w-10 h-10 text-[#1545ea]" />
               </div>
-              <h3 className="text-2xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">Ready to Make an Impact?</h3>
-              <p className="text-[#4a4a4a] mb-8">
-                Join our network and transform education in your community
+              <h3 className="text-2xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">Ready to Transform Lives?</h3>
+              <p className="text-[#4a4a4a] mb-6">
+                Submit your enquiry and we'll share complete details about investment, 
+                support structure, and everything you need to know via email.
+              </p>
+              <p className="text-sm text-[#717171] mb-8">
+                All partnership details shared after form submission
               </p>
               <a href="#enquiry-form">
                 <Button className="btn-primary px-8 py-4">
-                  Start Your Application
+                  I'm Interested!
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </a>

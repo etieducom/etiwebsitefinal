@@ -35,6 +35,8 @@ import AdminPage from "./pages/AdminPage";
 import BranchPage from "./pages/BranchPage";
 import CyberWarriorsPage from "./pages/CyberWarriorsPage";
 import TeamPage from "./pages/TeamPage";
+import ReferAndEarnPage from "./pages/ReferAndEarnPage";
+import PathankotBranchPage from "./pages/PathankotBranchPage";
 
 // Layout wrapper component to handle announcement bar spacing
 const MainLayout = ({ children }) => {
@@ -84,6 +86,8 @@ function App() {
                   <Route path="/join-team" element={<JoinTeamPage />} />
                   <Route path="/franchise" element={<FranchisePage />} />
                   <Route path="/team" element={<TeamPage />} />
+                  <Route path="/refer-and-earn" element={<ReferAndEarnPage />} />
+                  <Route path="/best-institute-in-pathankot" element={<PathankotBranchPage />} />
                   <Route path="/branches/:branchId" element={<BranchPage />} />
                   <Route path="/cyber-warriors" element={<CyberWarriorsPage />} />
                   <Route path="/contact" element={<ContactPage />} />
