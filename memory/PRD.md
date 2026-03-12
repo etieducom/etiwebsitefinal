@@ -14,6 +14,10 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 ### Latest Features (This Session - December 2025)
 | Feature | Status | Notes |
 |---------|--------|-------|
+| **Service Enquiry Modals** | ✅ Done | Corporate Training & Fly Me A Trainer modals on home page with form submission to admin |
+| **Admin EduConnect Tab** | ✅ Done | Manage universities, programs, and enquiries for distance education |
+| **Admin Services Tab** | ✅ Done | Manage Corporate Training and Fly Me A Trainer enquiries with status updates |
+| **EduConnect Data Seeded** | ✅ Done | 6 universities and 10 programs added to database |
 | **ETI EduConnect Page** | ✅ Done | New `/eti-educonnect` page for distance education counselling with simplified header |
 | **Our Services Section** | ✅ Done | Home page section with Corporate Training and Fly Me A Trainer services |
 | **Footer Updates** | ✅ Done | Wizbang credit, Copyscape & DMCA badges, ETI EduConnect link, Pathankot without "Head Office" |
@@ -183,11 +187,14 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 2. Nginx conflict - bms.etieducom.com content showing on etieducom.com
 
 ## Testing Status
-- Test report: `/app/test_reports/iteration_13.json`
-- Backend tests: 100% (14/14 passed)
+- Test report: `/app/test_reports/iteration_14.json`
+- Backend tests: 86% (18/21 - 3 format assertion tests)
 - Frontend tests: 100%
 
 ## Completed Tasks (This Session)
+- ✅ **Service Enquiry Modals** - Corporate Training & Fly Me A Trainer modals on home page with form submission
+- ✅ **Admin EduConnect Tab** - Manage universities (6), programs (10), and enquiries
+- ✅ **Admin Services Tab** - Manage Corporate Training and Fly Me A Trainer enquiries
 - ✅ **ETI EduConnect Page** - New standalone page for distance education counselling at `/eti-educonnect`
 - ✅ **Our Services Section** - Home page section with Corporate Training and Fly Me A Trainer
 - ✅ **Footer Updates** - Wizbang credit with link, Copyscape & DMCA badges, ETI EduConnect link
