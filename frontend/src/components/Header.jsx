@@ -17,48 +17,80 @@ import {
   Building2,
   GraduationCap,
   FileText,
-  HelpCircle
+  HelpCircle,
+  Shield,
+  TrendingUp,
+  Globe,
+  Cpu,
+  PenTool,
+  BarChart3,
+  Bot,
+  Calculator,
+  MessageCircle,
+  Sparkles,
+  Star
 } from "lucide-react";
 import { useAnnouncement } from "../context/AnnouncementContext";
 
 const LOGO_BLUE = "https://customer-assets.emergentagent.com/job_career-tracks-hub/artifacts/zm56gptp_eti%20.png";
 
-// Programs categorized
+// Programs categorized - Career Tracks first, then individual programs
 const programCategories = [
   {
     id: "career_tracks",
     title: "Career Tracks",
+    highlight: true,
     programs: [
-      { id: "computer-foundation", title: "Computer Career Foundation", icon: <Monitor className="w-5 h-5" />, duration: "3-6 months" },
-      { id: "digital-design", title: "Digital Design & Marketing", icon: <Palette className="w-5 h-5" />, duration: "6-12 months" },
-      { id: "it-networking", title: "IT Support & Cybersecurity", icon: <Network className="w-5 h-5" />, duration: "6-12 months" },
-      { id: "software-development", title: "Software Development", icon: <Code className="w-5 h-5" />, duration: "9-18 months" }
+      { id: "it-foundation", title: "IT Foundation", icon: <Monitor className="w-5 h-5" />, duration: "6 Months" },
+      { id: "digital-design", title: "Digital Design & Marketing", icon: <Palette className="w-5 h-5" />, duration: "9-12 Months" },
+      { id: "it-networking", title: "IT Support & Cybersecurity", icon: <Shield className="w-5 h-5" />, duration: "9-12 Months" },
+      { id: "software-development", title: "Software Development", icon: <Code className="w-5 h-5" />, duration: "9-12 Months" }
     ]
   },
   {
-    id: "short_term",
-    title: "Short Term Programs",
+    id: "tech_programs",
+    title: "Tech Programs",
     programs: [
-      { id: "ms-office", title: "MS Office Certification", icon: <Award className="w-5 h-5" />, duration: "1-2 months" },
-      { id: "graphic-design", title: "Graphic Design Basics", icon: <Palette className="w-5 h-5" />, duration: "2-3 months" },
-      { id: "web-basics", title: "Web Development Basics", icon: <Code className="w-5 h-5" />, duration: "2-3 months" }
+      { id: "python", title: "Python Programming", icon: <Code className="w-5 h-5" />, duration: "3 Months" },
+      { id: "web-designing", title: "Web Designing", icon: <Globe className="w-5 h-5" />, duration: "3 Months" },
+      { id: "web-development", title: "Web Development", icon: <Code className="w-5 h-5" />, duration: "6 Months" },
+      { id: "data-analytics", title: "Data Analytics", icon: <BarChart3 className="w-5 h-5" />, duration: "4 Months" },
+      { id: "ai-beginners", title: "AI For Beginners", icon: <Bot className="w-5 h-5" />, duration: "2 Months" },
+      { id: "ai-engineering", title: "AI Engineering", icon: <Cpu className="w-5 h-5" />, duration: "6 Months" }
     ]
   },
   {
-    id: "skill_development",
-    title: "Skill Development",
+    id: "design_marketing",
+    title: "Design & Marketing",
     programs: [
-      { id: "python-programming", title: "Python Programming", icon: <Code className="w-5 h-5" />, duration: "2-3 months" },
-      { id: "data-entry", title: "Data Entry & Management", icon: <Monitor className="w-5 h-5" />, duration: "1-2 months" },
-      { id: "social-media", title: "Social Media Marketing", icon: <Palette className="w-5 h-5" />, duration: "1-2 months" }
+      { id: "digital-marketing", title: "Digital Marketing", icon: <TrendingUp className="w-5 h-5" />, duration: "4 Months" },
+      { id: "graphic-designing", title: "Graphic Designing", icon: <Palette className="w-5 h-5" />, duration: "3 Months" },
+      { id: "ui-ux-designing", title: "UI & UX Designing", icon: <PenTool className="w-5 h-5" />, duration: "4 Months" }
     ]
   },
   {
-    id: "corporate_training",
-    title: "Corporate Training",
+    id: "cybersecurity",
+    title: "Cybersecurity",
     programs: [
-      { id: "corporate-it", title: "Corporate IT Training", icon: <Building2 className="w-5 h-5" />, duration: "Custom" },
-      { id: "team-productivity", title: "Team Productivity Tools", icon: <Users className="w-5 h-5" />, duration: "Custom" }
+      { id: "soc-analyst", title: "SOC Analyst", icon: <Shield className="w-5 h-5" />, duration: "6 Months" },
+      { id: "ethical-hacking", title: "Ethical Hacking", icon: <Network className="w-5 h-5" />, duration: "6 Months" }
+    ]
+  },
+  {
+    id: "office_accounting",
+    title: "Office & Accounting",
+    programs: [
+      { id: "ms-office-ai", title: "MS-Office with AI", icon: <Award className="w-5 h-5" />, duration: "2 Months" },
+      { id: "e-accounting", title: "E-Accounting", icon: <Calculator className="w-5 h-5" />, duration: "3 Months" }
+    ]
+  },
+  {
+    id: "soft_skills",
+    title: "Soft Skills",
+    programs: [
+      { id: "spoken-english", title: "Spoken English", icon: <MessageCircle className="w-5 h-5" />, duration: "3 Months" },
+      { id: "personality-development", title: "Personality Development", icon: <Star className="w-5 h-5" />, duration: "2 Months" },
+      { id: "interview-preparation", title: "Interview Preparation", icon: <Briefcase className="w-5 h-5" />, duration: "1 Month" }
     ]
   }
 ];
@@ -139,9 +171,38 @@ const Header = () => {
                   Programs
                   <ChevronDown className="w-4 h-4" />
                 </button>
-                <div className={`mega-menu ${activeDropdown === 'programs' ? 'opacity-100 visible' : ''}`}>
-                  <div className="grid grid-cols-2 gap-6">
-                    {programCategories.map((category) => (
+                <div className={`mega-menu mega-menu-wide ${activeDropdown === 'programs' ? 'opacity-100 visible' : ''}`}>
+                  {/* Career Tracks Section - Full Width Top */}
+                  <div className="mb-6 pb-6 border-b border-[#ebebeb]">
+                    <h4 className="mega-menu-category-title flex items-center gap-2">
+                      <GraduationCap className="w-4 h-4 text-[#1545ea]" />
+                      Career Tracks
+                      <span className="text-xs bg-[#1545ea] text-white px-2 py-0.5 rounded-full">Featured</span>
+                    </h4>
+                    <div className="grid grid-cols-4 gap-4 mt-3">
+                      {programCategories[0].programs.map((program) => (
+                        <Link 
+                          key={program.id}
+                          to={`/programs/${program.id}`}
+                          className="mega-menu-item bg-[#f8f9fa] hover:bg-[#1545ea] hover:text-white group rounded-xl p-3"
+                          data-testid={`mega-menu-${program.id}`}
+                        >
+                          <div className="w-10 h-10 bg-[#1545ea]/10 group-hover:bg-white/20 rounded-lg flex items-center justify-center text-[#1545ea] group-hover:text-white mb-2">
+                            {program.icon}
+                          </div>
+                          <p className="font-semibold text-[#1a1a1a] group-hover:text-white text-sm">{program.title}</p>
+                          <p className="text-xs text-[#717171] group-hover:text-white/80 flex items-center gap-1 mt-1">
+                            <Clock className="w-3 h-3" />
+                            {program.duration}
+                          </p>
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Individual Programs - 3 Column Grid */}
+                  <div className="grid grid-cols-3 gap-6">
+                    {programCategories.slice(1).map((category) => (
                       <div key={category.id} className="mega-menu-category">
                         <h4 className="mega-menu-category-title">{category.title}</h4>
                         <div className="space-y-1">
