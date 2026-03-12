@@ -48,11 +48,39 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 | Enquiries | ✅ Done | Quick enquiry submissions |
 | Industrial Training Leads | ✅ Done | Lead capture from industrial training page |
 
-### Programs Available
-1. SOC Analyst (6 Months) - Full 10-module curriculum
-2. Ethical Hacking & Penetration Testing (6 Months)
-3. Full Stack Web Development (8 Months)
-4. Digital Marketing Mastery (4 Months)
+### Programs Available (All with detailed content)
+
+**Career Tracks (4):**
+1. IT Foundation (6 Months)
+2. Digital Design & Marketing (9-12 Months)
+3. IT Support & Cybersecurity (9-12 Months)
+4. Software Development (9-12 Months)
+
+**Tech Programs (6):**
+- Python Programming (3 Months)
+- Web Designing (3 Months)
+- Web Development (6 Months)
+- Data Analytics (4 Months)
+- AI For Beginners (2 Months)
+- AI Engineering (6 Months)
+
+**Design & Marketing (3):**
+- Digital Marketing (4 Months)
+- Graphic Designing (3 Months)
+- UI & UX Designing (4 Months)
+
+**Cybersecurity (2):**
+- SOC Analyst (6 Months)
+- Ethical Hacking (6 Months)
+
+**Office & Accounting (2):**
+- MS-Office with AI (2 Months)
+- E-Accounting (3 Months)
+
+**Soft Skills (3):**
+- Spoken English (3 Months)
+- Personality Development (2 Months)
+- Interview Preparation (1 Month)
 
 ### All Pages
 - Home, About, Founder, Programs, Program Details
