@@ -282,6 +282,46 @@ class QuickEnquiryResponse(BaseModel):
     created_at: str
 
 
+# ============ EduConnect Models ============
+
+class EduConnectUniversity(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    logo: Optional[str] = None
+    is_active: bool = True
+    order: int = 0
+
+
+class EduConnectProgram(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    duration: str
+    type: str = "UG"  # UG or PG
+    is_active: bool = True
+
+
+class EduConnectEnquiry(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    phone: str
+    qualification: Optional[str] = None
+    program_interest: Optional[str] = None
+    message: Optional[str] = None
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class EduConnectEnquiryCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    phone: str = Field(..., min_length=10)
+    qualification: Optional[str] = None
+    program_interest: Optional[str] = None
+    message: Optional[str] = None
+
+
 # ============ Models ============
 
 class StatusCheck(BaseModel):
@@ -2837,6 +2877,98 @@ async def delete_referral(referral_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Referral not found")
     return {"message": "Referral deleted successfully"}
+
+
+# ============ EduConnect Routes ============
+
+@api_router.get("/educonnect/universities")
+async def get_educonnect_universities():
+    universities = await db.educonnect_universities.find({"is_active": True}, {"_id": 0}).sort("order", 1).to_list(100)
+    return universities
+
+
+@api_router.post("/educonnect/universities")
+async def create_educonnect_university(name: str, logo: Optional[str] = None, order: int = 0):
+    uni = EduConnectUniversity(name=name, logo=logo, order=order)
+    doc = uni.model_dump()
+    await db.educonnect_universities.insert_one(doc)
+    return {"message": "University added successfully", "id": doc["id"]}
+
+
+@api_router.put("/educonnect/universities/{uni_id}")
+async def update_educonnect_university(uni_id: str, name: Optional[str] = None, logo: Optional[str] = None, is_active: Optional[bool] = None, order: Optional[int] = None):
+    update_data = {}
+    if name is not None: update_data["name"] = name
+    if logo is not None: update_data["logo"] = logo
+    if is_active is not None: update_data["is_active"] = is_active
+    if order is not None: update_data["order"] = order
+    
+    result = await db.educonnect_universities.update_one({"id": uni_id}, {"$set": update_data})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="University not found")
+    return {"message": "University updated successfully"}
+
+
+@api_router.delete("/educonnect/universities/{uni_id}")
+async def delete_educonnect_university(uni_id: str):
+    result = await db.educonnect_universities.delete_one({"id": uni_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="University not found")
+    return {"message": "University deleted successfully"}
+
+
+@api_router.get("/educonnect/programs")
+async def get_educonnect_programs():
+    programs = await db.educonnect_programs.find({"is_active": True}, {"_id": 0}).to_list(100)
+    return programs
+
+
+@api_router.post("/educonnect/programs")
+async def create_educonnect_program(name: str, duration: str, type: str = "UG"):
+    prog = EduConnectProgram(name=name, duration=duration, type=type)
+    doc = prog.model_dump()
+    await db.educonnect_programs.insert_one(doc)
+    return {"message": "Program added successfully", "id": doc["id"]}
+
+
+@api_router.delete("/educonnect/programs/{prog_id}")
+async def delete_educonnect_program(prog_id: str):
+    result = await db.educonnect_programs.delete_one({"id": prog_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Program not found")
+    return {"message": "Program deleted successfully"}
+
+
+@api_router.post("/educonnect/enquiry")
+async def create_educonnect_enquiry(input: EduConnectEnquiryCreate):
+    try:
+        enquiry_dict = input.model_dump()
+        enquiry_obj = EduConnectEnquiry(**enquiry_dict)
+        doc = enquiry_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.educonnect_enquiries.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "EduConnect Enquiry")
+        
+        return {"message": "Enquiry submitted successfully", "id": doc["id"]}
+    except Exception as e:
+        logging.error(f"Error creating EduConnect enquiry: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit enquiry")
+
+
+@api_router.get("/educonnect/enquiries")
+async def get_educonnect_enquiries():
+    enquiries = await db.educonnect_enquiries.find({}, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return enquiries
+
+
+@api_router.delete("/educonnect/enquiries/{enquiry_id}")
+async def delete_educonnect_enquiry(enquiry_id: str):
+    result = await db.educonnect_enquiries.delete_one({"id": enquiry_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return {"message": "Enquiry deleted successfully"}
 
 
 # ============ Announcement Routes ============

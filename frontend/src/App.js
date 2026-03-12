@@ -37,6 +37,7 @@ import CyberWarriorsPage from "./pages/CyberWarriorsPage";
 import TeamPage from "./pages/TeamPage";
 import ReferAndEarnPage from "./pages/ReferAndEarnPage";
 import PathankotBranchPage from "./pages/PathankotBranchPage";
+import EduConnectPage from "./pages/EduConnectPage";
 
 // Layout wrapper component to handle announcement bar spacing
 const MainLayout = ({ children }) => {
@@ -96,6 +97,8 @@ function App() {
                 </Routes>
               </MainLayout>
             } />
+            {/* EduConnect has its own layout */}
+            <Route path="/eti-educonnect" element={<EduConnectPage />} />
           </Routes>
         </AnnouncementProvider>
       </BrowserRouter>

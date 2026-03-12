@@ -56,17 +56,20 @@ const Footer = () => {
     { label: "Cyber Warriors", href: "/cyber-warriors" },
     { label: "Hire From Us", href: "/hire-from-us" },
     { label: "Join ETI Team", href: "/join-team" },
-    { label: "Franchise", href: "/franchise" }
+    { label: "Franchise", href: "/franchise" },
+    { label: "ETI EduConnect", href: "/eti-educonnect" }
   ];
 
   const branches = [
-    { label: "Pathankot (Head Office)", href: "/best-institute-in-pathankot" }
+    { label: "Pathankot", href: "/best-institute-in-pathankot" }
   ];
 
   const certifications = [
     { icon: <Shield className="w-4 h-4" />, label: "ISO Certified" },
     { icon: <Award className="w-4 h-4" />, label: "MSME Registered" },
-    { icon: <BadgeCheck className="w-4 h-4" />, label: "Trusted Website" }
+    { icon: <BadgeCheck className="w-4 h-4" />, label: "Trusted Website" },
+    { icon: <Shield className="w-4 h-4" />, label: "Copyscape Protected" },
+    { icon: <BadgeCheck className="w-4 h-4" />, label: "DMCA Protected" }
   ];
 
   return (
@@ -241,7 +244,7 @@ const Footer = () => {
           <p className="text-[#717171] text-sm">
             © {new Date().getFullYear()} ETI Educom®. All rights reserved.
           </p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap justify-center">
             <Link to="/privacy-policy" className="text-[#717171] text-sm hover:text-white transition-colors">
               Privacy Policy
             </Link>
@@ -250,6 +253,15 @@ const Footer = () => {
               <Gift className="w-4 h-4" />
               Refer & Earn
             </Link>
+            <span className="text-[#717171]">|</span>
+            <a 
+              href="https://www.wizbang.in" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="text-[#717171] text-sm hover:text-white transition-colors"
+            >
+              Designed & Developed by <span className="text-[#1545ea] font-medium">Wizbang</span>
+            </a>
           </div>
         </div>
       </div>

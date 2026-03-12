@@ -564,6 +564,119 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* Our Services Section */}
+      <section className="py-20 md:py-28 bg-white" data-testid="services-section">
+        <div className="container-main">
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">
+              <Briefcase className="w-4 h-4 mr-1" />
+              Business Solutions
+            </Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
+              Our Services
+            </h2>
+            <p className="text-[#4a4a4a] max-w-2xl mx-auto">
+              Beyond education, we offer specialized services to help businesses 
+              upskill their workforce and stay competitive.
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {/* Corporate Training */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full hover:shadow-xl transition-all group bg-gradient-to-br from-[#1545ea] to-[#0d36c4] text-white overflow-hidden">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Building2 className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Corporate Training</h3>
+                  <p className="text-blue-100 mb-6 leading-relaxed">
+                    Comprehensive training solutions for your organization. We offer both 
+                    online and offline corporate training programs customized to your needs.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <Globe className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Online Training Programs</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <Users className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Offline Classroom Sessions</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <Award className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Certification Programs</span>
+                    </div>
+                  </div>
+                  <Link to="/contact" className="inline-block mt-6">
+                    <Button className="bg-white text-[#1545ea] hover:bg-blue-50">
+                      Enquire Now <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Fly Me A Trainer */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <Card className="h-full hover:shadow-xl transition-all group bg-gradient-to-br from-[#1a1a1a] to-[#333] text-white overflow-hidden">
+                <CardContent className="p-8">
+                  <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Rocket className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">Fly Me A Trainer</h3>
+                  <p className="text-gray-300 mb-6 leading-relaxed">
+                    We bring expert trainers directly to your premises! No need to send 
+                    your team anywhere - we'll set up training at your location.
+                  </p>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <MapPin className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Training at Your Premises</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <Users className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Expert Industry Trainers</span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                        <Target className="w-3 h-3" />
+                      </div>
+                      <span className="text-sm">Customized Curriculum</span>
+                    </div>
+                  </div>
+                  <Link to="/contact" className="inline-block mt-6">
+                    <Button className="bg-white text-[#1a1a1a] hover:bg-gray-100">
+                      Book a Trainer <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Student Reviews Slider - Only show if reviews exist */}
       {displayReviews.length > 0 && (
         <section className="py-20 md:py-28 section-grey" data-testid="reviews-section">
