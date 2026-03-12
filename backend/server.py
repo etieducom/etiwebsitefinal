@@ -1,4 +1,5 @@
 from fastapi import FastAPI, APIRouter, HTTPException
+from fastapi.responses import Response
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -201,6 +202,7 @@ class Event(BaseModel):
     event_time: str
     location: str
     image_url: Optional[str] = None
+    gallery_images: List[str] = Field(default_factory=list)
     is_active: bool = True
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -212,6 +214,7 @@ class EventCreate(BaseModel):
     event_time: str
     location: str = Field(..., min_length=2, max_length=200)
     image_url: Optional[str] = None
+    gallery_images: List[str] = Field(default_factory=list)
 
 
 class EventUpdate(BaseModel):
@@ -221,6 +224,7 @@ class EventUpdate(BaseModel):
     event_time: Optional[str] = None
     location: Optional[str] = None
     image_url: Optional[str] = None
+    gallery_images: Optional[List[str]] = None
     is_active: Optional[bool] = None
 
 
@@ -232,6 +236,7 @@ class EventResponse(BaseModel):
     event_time: str
     location: str
     image_url: Optional[str]
+    gallery_images: List[str] = Field(default_factory=list)
     is_active: bool
     created_at: str
 
@@ -756,6 +761,7 @@ async def create_event(input: EventCreate):
             id=doc['id'], title=doc['title'], description=doc['description'],
             event_date=doc['event_date'], event_time=doc['event_time'],
             location=doc['location'], image_url=doc['image_url'],
+            gallery_images=doc.get('gallery_images', []),
             is_active=doc['is_active'], created_at=doc['created_at']
         )
     except Exception as e:
@@ -772,6 +778,7 @@ async def get_events(active_only: bool = True, limit: int = 100):
             id=e['id'], title=e['title'], description=e['description'],
             event_date=e['event_date'], event_time=e['event_time'],
             location=e['location'], image_url=e.get('image_url'),
+            gallery_images=e.get('gallery_images', []),
             is_active=e['is_active'],
             created_at=e['created_at'] if isinstance(e['created_at'], str) else e['created_at'].isoformat()
         ) for e in events
@@ -787,6 +794,7 @@ async def get_event(event_id: str):
         id=event['id'], title=event['title'], description=event['description'],
         event_date=event['event_date'], event_time=event['event_time'],
         location=event['location'], image_url=event.get('image_url'),
+        gallery_images=event.get('gallery_images', []),
         is_active=event['is_active'],
         created_at=event['created_at'] if isinstance(event['created_at'], str) else event['created_at'].isoformat()
     )
@@ -1381,6 +1389,43 @@ class SEOSettingsResponse(BaseModel):
     updated_at: str
 
 
+# ============ Founder Settings Models ============
+
+class FounderSettings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str = "Deepak Kumar"
+    title: str = "Founder & CEO"
+    image_url: Optional[str] = None
+    message: str = ""
+    vision: str = ""
+    linkedin: Optional[str] = None
+    twitter: Optional[str] = None
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class FounderSettingsUpdate(BaseModel):
+    name: Optional[str] = None
+    title: Optional[str] = None
+    image_url: Optional[str] = None
+    message: Optional[str] = None
+    vision: Optional[str] = None
+    linkedin: Optional[str] = None
+    twitter: Optional[str] = None
+
+
+class FounderSettingsResponse(BaseModel):
+    id: str
+    name: str
+    title: str
+    image_url: Optional[str]
+    message: str
+    vision: str
+    linkedin: Optional[str]
+    twitter: Optional[str]
+    updated_at: str
+
+
 # ============ Announcement Models ============
 
 class Announcement(BaseModel):
@@ -1840,6 +1885,74 @@ async def get_technical_seo():
         custom_head_scripts=seo.get('custom_head_scripts'),
         updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
     )
+
+
+# ============ Founder Settings Routes ============
+
+@api_router.get("/founder-settings", response_model=FounderSettingsResponse)
+async def get_founder_settings():
+    settings = await db.founder_settings.find_one({}, {"_id": 0})
+    if not settings:
+        # Return default settings
+        return FounderSettingsResponse(
+            id="default",
+            name="Deepak Kumar",
+            title="Founder & CEO",
+            image_url=None,
+            message="",
+            vision="",
+            linkedin=None,
+            twitter=None,
+            updated_at=datetime.now(timezone.utc).isoformat()
+        )
+    return FounderSettingsResponse(
+        id=settings['id'],
+        name=settings['name'],
+        title=settings['title'],
+        image_url=settings.get('image_url'),
+        message=settings.get('message', ''),
+        vision=settings.get('vision', ''),
+        linkedin=settings.get('linkedin'),
+        twitter=settings.get('twitter'),
+        updated_at=settings['updated_at'] if isinstance(settings['updated_at'], str) else settings['updated_at'].isoformat()
+    )
+
+
+@api_router.put("/founder-settings", response_model=FounderSettingsResponse)
+async def update_founder_settings(input: FounderSettingsUpdate):
+    try:
+        existing = await db.founder_settings.find_one({})
+        update_data = {k: v for k, v in input.model_dump().items() if v is not None}
+        update_data['updated_at'] = datetime.now(timezone.utc).isoformat()
+        
+        if existing:
+            await db.founder_settings.update_one(
+                {"id": existing['id']},
+                {"$set": update_data}
+            )
+            settings = await db.founder_settings.find_one({"id": existing['id']}, {"_id": 0})
+        else:
+            # Create new settings
+            settings_obj = FounderSettings(**update_data)
+            doc = settings_obj.model_dump()
+            doc['updated_at'] = doc['updated_at'].isoformat() if not isinstance(doc['updated_at'], str) else doc['updated_at']
+            await db.founder_settings.insert_one(doc)
+            settings = doc
+        
+        return FounderSettingsResponse(
+            id=settings['id'],
+            name=settings['name'],
+            title=settings['title'],
+            image_url=settings.get('image_url'),
+            message=settings.get('message', ''),
+            vision=settings.get('vision', ''),
+            linkedin=settings.get('linkedin'),
+            twitter=settings.get('twitter'),
+            updated_at=settings['updated_at'] if isinstance(settings['updated_at'], str) else settings['updated_at'].isoformat()
+        )
+    except Exception as e:
+        logging.error(f"Error saving founder settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save founder settings")
 
 
 # ============ Cyber Warriors Routes ============
@@ -2448,6 +2561,87 @@ async def delete_partner(partner_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Partner not found")
     return {"message": "Partner deleted successfully"}
+
+
+# ============ Sitemap Generation ============
+
+@api_router.get("/sitemap.xml")
+async def generate_sitemap():
+    """Generate dynamic sitemap.xml"""
+    base_url = "https://etieducom.com"
+    
+    # Static pages with priorities
+    static_pages = [
+        {"url": "/", "priority": "1.0", "changefreq": "weekly"},
+        {"url": "/about", "priority": "0.9", "changefreq": "monthly"},
+        {"url": "/founder", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/programs", "priority": "0.9", "changefreq": "weekly"},
+        {"url": "/events", "priority": "0.8", "changefreq": "weekly"},
+        {"url": "/blogs", "priority": "0.8", "changefreq": "daily"},
+        {"url": "/faq", "priority": "0.7", "changefreq": "monthly"},
+        {"url": "/contact", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/franchise", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/hire-from-us", "priority": "0.7", "changefreq": "monthly"},
+        {"url": "/join-team", "priority": "0.7", "changefreq": "weekly"},
+        {"url": "/team", "priority": "0.7", "changefreq": "monthly"},
+        {"url": "/cyber-warriors", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/free-counselling", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/summer-training", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/industrial-training", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/privacy-policy", "priority": "0.3", "changefreq": "yearly"},
+    ]
+    
+    # Build XML
+    xml_content = '<?xml version="1.0" encoding="UTF-8"?>\n'
+    xml_content += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+    
+    # Add static pages
+    for page in static_pages:
+        xml_content += f'''  <url>
+    <loc>{base_url}{page["url"]}</loc>
+    <changefreq>{page["changefreq"]}</changefreq>
+    <priority>{page["priority"]}</priority>
+  </url>\n'''
+    
+    # Add dynamic program pages
+    try:
+        programs = await db.programs.find({"is_active": True}, {"id": 1}).to_list(100)
+        for program in programs:
+            xml_content += f'''  <url>
+    <loc>{base_url}/programs/{program["id"]}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>\n'''
+    except Exception as e:
+        logging.error(f"Error fetching programs for sitemap: {e}")
+    
+    # Add dynamic blog pages
+    try:
+        blogs = await db.blogs.find({"is_published": True}, {"slug": 1}).to_list(100)
+        for blog in blogs:
+            xml_content += f'''  <url>
+    <loc>{base_url}/blogs/{blog["slug"]}</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>\n'''
+    except Exception as e:
+        logging.error(f"Error fetching blogs for sitemap: {e}")
+    
+    # Add branch pages
+    try:
+        branches = await db.branches.find({"is_active": True}, {"id": 1}).to_list(50)
+        for branch in branches:
+            xml_content += f'''  <url>
+    <loc>{base_url}/branches/{branch["id"]}</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>\n'''
+    except Exception as e:
+        logging.error(f"Error fetching branches for sitemap: {e}")
+    
+    xml_content += '</urlset>'
+    
+    return Response(content=xml_content, media_type="application/xml")
 
 
 # Include the router in the main app

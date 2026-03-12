@@ -10,12 +10,20 @@ import {
   Users,
   Award,
   Target,
-  Globe,
   Send,
   MapPin,
   Briefcase,
   IndianRupee,
-  FileText
+  FileText,
+  TrendingUp,
+  Handshake,
+  HeartHandshake,
+  BarChart3,
+  BadgeCheck,
+  ArrowRight,
+  Clock,
+  Phone,
+  Mail
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -63,8 +71,8 @@ const FranchisePage = () => {
     },
     {
       icon: <Award className="w-8 h-8" />,
-      title: "Certification Access",
-      description: "Certiport CATC authorization for global certification delivery"
+      title: "CATC Authorization",
+      description: "Certiport Authorized Testing Center for global certifications"
     },
     {
       icon: <Users className="w-8 h-8" />,
@@ -79,10 +87,10 @@ const FranchisePage = () => {
   ];
 
   const terms = [
-    { label: "Agreement Duration", value: "5 Years" },
-    { label: "Royalty", value: "15%" },
-    { label: "Exclusivity Radius", value: "15 KM" },
-    { label: "Renewal", value: "Auto (Compliance Based)" }
+    { label: "Agreement Duration", value: "5 Years", icon: <Clock /> },
+    { label: "Royalty", value: "15%", icon: <BarChart3 /> },
+    { label: "Exclusivity Radius", value: "15 KM", icon: <MapPin /> },
+    { label: "Renewal", value: "Auto", icon: <BadgeCheck /> }
   ];
 
   const features = [
@@ -91,7 +99,18 @@ const FranchisePage = () => {
     "ERP-enabled academic monitoring system",
     "Structured career track curriculum",
     "Ongoing operational support",
-    "Quality assurance audits"
+    "Quality assurance audits",
+    "Student placement assistance",
+    "Regular training workshops for faculty"
+  ];
+
+  const process = [
+    { step: "01", title: "Application", desc: "Submit your franchise enquiry form" },
+    { step: "02", title: "Evaluation", desc: "Our team reviews your application" },
+    { step: "03", title: "Discussion", desc: "Detailed discussion with our team" },
+    { step: "04", title: "Agreement", desc: "Sign franchise agreement" },
+    { step: "05", title: "Setup", desc: "Center setup with our support" },
+    { step: "06", title: "Launch", desc: "Grand opening of your center" },
   ];
 
   const handleSubmit = async (e) => {
@@ -118,94 +137,121 @@ const FranchisePage = () => {
   return (
     <div className="pt-[72px]" data-testid="franchise-page">
       <SEO pageSlug="franchise" />
-      {/* Page Header */}
-      <section className="page-header">
-        <div className="container-main">
-          <motion.div {...fadeInUp} className="text-center">
-            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">
-              <Building2 className="w-4 h-4 mr-1" />
-              Partnership Opportunity
-            </Badge>
-            <h1 className="text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
-              Franchise with ETI Educom
-            </h1>
-            <p className="text-lg text-[#4a4a4a] max-w-2xl mx-auto">
-              Join India's growing network of structured computer career education centers
-            </p>
-          </motion.div>
+      
+      {/* Hero Section - Blue Theme */}
+      <section className="relative bg-gradient-to-br from-[#1545ea] via-[#0d36c4] to-[#1545ea] py-20 lg:py-28 overflow-hidden">
+        {/* Background Elements */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
         </div>
-      </section>
-
-      {/* Overview */}
-      <section className="py-20 bg-white">
-        <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+        
+        <div className="container-main relative">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
             <motion.div {...fadeInUp}>
-              <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-6 font-['Poppins']">
-                Build a Sustainable Education Business
-              </h2>
-              <p className="text-[#4a4a4a] mb-6 leading-relaxed">
-                ETI Educom franchise model is designed for entrepreneurs who share our 
-                vision of structured, quality computer education. Join a network backed 
-                by institutional-grade support and governance.
+              <Badge className="bg-white/10 text-white border border-white/20 mb-6 px-4 py-2">
+                <Handshake className="w-4 h-4 mr-2" />
+                Partnership Opportunity
+              </Badge>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight font-['Poppins']">
+                Build a Future-Proof Education Business
+              </h1>
+              <p className="text-xl text-blue-100 mb-8 leading-relaxed">
+                Join India's growing network of structured computer career education centers. 
+                Partner with ETI Educom and create lasting impact in your community.
               </p>
-              <p className="text-[#4a4a4a] mb-8 leading-relaxed">
-                With centralized academic governance, marketing support, and global 
-                certification partnerships, our franchisees benefit from a proven 
-                education model focused on student success.
-              </p>
-
-              <div className="grid grid-cols-2 gap-4">
-                {terms.map((term) => (
-                  <Card key={term.label} className="card-default">
-                    <CardContent className="p-4 text-center">
-                      <p className="text-2xl font-bold text-[#1545ea]">{term.value}</p>
-                      <p className="text-xs text-[#717171]">{term.label}</p>
-                    </CardContent>
-                  </Card>
+              
+              {/* Quick Stats */}
+              <div className="grid grid-cols-2 gap-4 mb-8">
+                {terms.map((term, index) => (
+                  <div key={term.label} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                    <div className="flex items-center gap-3">
+                      <div className="text-yellow-400">{term.icon}</div>
+                      <div>
+                        <p className="text-2xl font-bold text-white">{term.value}</p>
+                        <p className="text-xs text-blue-100">{term.label}</p>
+                      </div>
+                    </div>
+                  </div>
                 ))}
+              </div>
+
+              <div className="flex flex-wrap gap-4">
+                <a href="#enquiry-form">
+                  <Button className="bg-white text-[#1545ea] hover:bg-blue-50 px-8 py-4 rounded-xl font-semibold">
+                    Apply for Franchise
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </a>
+                <a href="tel:+919417009339">
+                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-8 py-4 rounded-xl">
+                    <Phone className="w-4 h-4 mr-2" />
+                    Talk to Us
+                  </Button>
+                </a>
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               {...fadeInUp}
-              transition={{ duration: 0.5, delay: 0.2 }}
+              transition={{ delay: 0.2 }}
+              className="hidden lg:block"
             >
-              <div className="rounded-2xl overflow-hidden shadow-xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=800"
-                  alt="Business partnership"
-                  className="w-full h-auto object-cover"
-                />
+              <div className="relative">
+                <div className="rounded-3xl overflow-hidden shadow-2xl">
+                  <img 
+                    src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=800"
+                    alt="Business partnership"
+                    className="w-full h-auto object-cover"
+                  />
+                </div>
+                {/* Floating Stats Card */}
+                <div className="absolute -bottom-6 -left-6 bg-white rounded-2xl p-6 shadow-xl">
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 bg-[#1545ea]/10 rounded-xl flex items-center justify-center text-[#1545ea]">
+                      <TrendingUp className="w-7 h-7" />
+                    </div>
+                    <div>
+                      <p className="text-2xl font-bold text-[#1a1a1a]">95%</p>
+                      <p className="text-sm text-[#717171]">Partner Satisfaction</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Benefits */}
-      <section className="py-20 section-grey">
+      {/* Why Franchise Section */}
+      <section className="py-20 bg-white">
         <div className="container-main">
           <motion.div {...fadeInUp} className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] font-['Poppins']">
-              Franchise Benefits
+            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Why Partner With Us</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
+              The ETI Educom Advantage
             </h2>
+            <p className="text-[#4a4a4a] max-w-2xl mx-auto">
+              Join a proven education model with comprehensive support at every step
+            </p>
           </motion.div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {benefits.map((benefit, index) => (
               <motion.div
                 key={benefit.title}
-                {...fadeInUp}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
               >
-                <Card className="card-default h-full text-center">
+                <Card className="card-default h-full text-center hover:shadow-xl transition-all group hover:-translate-y-1">
                   <CardContent className="p-6">
-                    <div className="w-16 h-16 bg-[#1545ea]/10 rounded-xl flex items-center justify-center mx-auto mb-4 text-[#1545ea]">
+                    <div className="w-16 h-16 bg-[#1545ea]/10 rounded-2xl flex items-center justify-center mb-6 text-[#1545ea] mx-auto group-hover:bg-[#1545ea] group-hover:text-white transition-colors">
                       {benefit.icon}
                     </div>
-                    <h3 className="font-bold text-[#1a1a1a] mb-2">{benefit.title}</h3>
-                    <p className="text-sm text-[#4a4a4a]">{benefit.description}</p>
+                    <h3 className="font-bold text-[#1a1a1a] text-lg mb-3">{benefit.title}</h3>
+                    <p className="text-[#4a4a4a]">{benefit.description}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -214,216 +260,315 @@ const FranchisePage = () => {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-20 bg-white">
+      {/* Process Section */}
+      <section className="py-20 bg-[#f8f9fa]">
         <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
+          <motion.div {...fadeInUp} className="text-center mb-16">
+            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">How It Works</Badge>
+            <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
+              Your Journey to Partnership
+            </h2>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {process.map((item, index) => (
+              <motion.div
+                key={item.step}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="relative"
+              >
+                <Card className="card-default h-full hover:shadow-lg transition-shadow">
+                  <CardContent className="p-6">
+                    <span className="text-5xl font-black text-[#1545ea]/5 absolute top-4 right-4">
+                      {item.step}
+                    </span>
+                    <div className="relative z-10">
+                      <div className="w-12 h-12 bg-[#1545ea] rounded-xl flex items-center justify-center text-white font-bold mb-4">
+                        {item.step}
+                      </div>
+                      <h3 className="font-bold text-[#1a1a1a] text-lg mb-2">{item.title}</h3>
+                      <p className="text-[#4a4a4a]">{item.desc}</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* What's Included Section */}
+      <section className="py-20 bg-[#1545ea]">
+        <div className="container-main">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div {...fadeInUp}>
-              <h2 className="text-3xl font-bold text-[#1a1a1a] mb-8 font-['Poppins']">
-                What's Included
+              <Badge className="bg-white/10 text-white border border-white/20 mb-4">Complete Package</Badge>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 font-['Poppins']">
+                Everything You Need to Succeed
               </h2>
-              <div className="space-y-4">
+              <p className="text-blue-100 mb-8 text-lg">
+                Our franchise model is designed to provide comprehensive support from day one.
+              </p>
+              
+              <div className="grid sm:grid-cols-2 gap-4">
                 {features.map((feature, index) => (
-                  <div key={index} className="flex items-start gap-3">
-                    <CheckCircle className="w-5 h-5 text-[#1545ea] mt-0.5 flex-shrink-0" />
-                    <span className="text-[#1a1a1a]">{feature}</span>
-                  </div>
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    viewport={{ once: true }}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="w-6 h-6 bg-yellow-400 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle className="w-4 h-4 text-[#1545ea]" />
+                    </div>
+                    <span className="text-white">{feature}</span>
+                  </motion.div>
                 ))}
               </div>
-
-              <Card className="bg-[#1545ea] text-white mt-8">
-                <CardContent className="p-6">
-                  <Globe className="w-10 h-10 mb-3" />
-                  <h3 className="text-xl font-bold mb-2 font-['Poppins']">
-                    Join Our Growing Network
-                  </h3>
-                  <p className="text-blue-100 text-sm">
-                    Be part of India's premier computer career education franchise network.
-                  </p>
-                </CardContent>
-              </Card>
             </motion.div>
 
-            {/* Franchise Enquiry Form */}
-            <motion.div {...fadeInUp} transition={{ duration: 0.5, delay: 0.2 }}>
-              <Card className="card-default">
+            <motion.div
+              {...fadeInUp}
+              transition={{ delay: 0.2 }}
+              className="bg-white rounded-3xl p-8 lg:p-10 text-center"
+            >
+              <div className="w-20 h-20 bg-[#1545ea]/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <HeartHandshake className="w-10 h-10 text-[#1545ea]" />
+              </div>
+              <h3 className="text-2xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">Ready to Make an Impact?</h3>
+              <p className="text-[#4a4a4a] mb-8">
+                Join our network and transform education in your community
+              </p>
+              <a href="#enquiry-form">
+                <Button className="btn-primary px-8 py-4">
+                  Start Your Application
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </a>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Enquiry Form Section */}
+      <section id="enquiry-form" className="py-20 bg-white">
+        <div className="container-main">
+          <div className="grid lg:grid-cols-5 gap-12">
+            {/* Left Content */}
+            <div className="lg:col-span-2">
+              <motion.div {...fadeInUp}>
+                <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Get Started</Badge>
+                <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a] mb-6 font-['Poppins']">
+                  Apply for Franchise Partnership
+                </h2>
+                <p className="text-[#4a4a4a] mb-8">
+                  Fill out this form to express your interest in becoming an ETI Educom franchise partner. 
+                  Our team will review your application and get in touch within 48 hours.
+                </p>
+
+                <div className="space-y-6">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#1545ea]/10 rounded-xl flex items-center justify-center text-[#1545ea] flex-shrink-0">
+                      <Phone className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-[#1a1a1a]">Call Us</h4>
+                      <a href="tel:+919417009339" className="text-[#1545ea] hover:underline">+91 94170 09339</a>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 bg-[#1545ea]/10 rounded-xl flex items-center justify-center text-[#1545ea] flex-shrink-0">
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-[#1a1a1a]">Email Us</h4>
+                      <a href="mailto:franchise@etieducom.com" className="text-[#1545ea] hover:underline">franchise@etieducom.com</a>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+
+            {/* Form */}
+            <motion.div {...fadeInUp} transition={{ delay: 0.2 }} className="lg:col-span-3">
+              <Card className="card-default shadow-xl">
                 <CardContent className="p-6 md:p-8">
                   {submitted ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-8 h-8 text-green-600" />
+                    <div className="text-center py-12">
+                      <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <CheckCircle className="w-10 h-10 text-green-600" />
                       </div>
-                      <h3 className="text-xl font-bold text-[#1a1a1a] mb-2 font-['Poppins']">
-                        Thank You!
+                      <h3 className="text-2xl font-bold text-[#1a1a1a] mb-4 font-['Poppins']">
+                        Application Submitted!
                       </h3>
-                      <p className="text-[#4a4a4a]">
-                        Your franchise enquiry has been received. Our team will review your application and contact you within 48 hours.
+                      <p className="text-[#4a4a4a] max-w-md mx-auto">
+                        Thank you for your interest in partnering with ETI Educom. 
+                        Our franchise team will review your application and contact you within 48 hours.
                       </p>
                     </div>
                   ) : (
-                    <>
-                      <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2 font-['Poppins']">
-                        Franchise Enquiry
-                      </h3>
-                      <p className="text-[#717171] text-sm mb-6">
-                        Fill this form to express your interest in becoming an ETI Educom franchise partner.
-                      </p>
-
-                      <form onSubmit={handleSubmit} className="space-y-4" data-testid="franchise-form">
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="form-label">Full Name *</label>
-                            <Input
-                              type="text"
-                              value={formData.name}
-                              onChange={(e) => setFormData({...formData, name: e.target.value})}
-                              className="form-input"
-                              required
-                              data-testid="franchise-name"
-                            />
-                          </div>
-                          <div>
-                            <label className="form-label">Email *</label>
-                            <Input
-                              type="email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({...formData, email: e.target.value})}
-                              className="form-input"
-                              required
-                              data-testid="franchise-email"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="form-label">Phone Number *</label>
-                            <Input
-                              type="tel"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                              className="form-input"
-                              required
-                              data-testid="franchise-phone"
-                            />
-                          </div>
-                          <div>
-                            <label className="form-label">City *</label>
-                            <Input
-                              type="text"
-                              value={formData.city}
-                              onChange={(e) => setFormData({...formData, city: e.target.value})}
-                              className="form-input"
-                              placeholder="e.g., Mumbai"
-                              required
-                              data-testid="franchise-city"
-                            />
-                          </div>
-                        </div>
-
+                    <form onSubmit={handleSubmit} className="space-y-5" data-testid="franchise-form">
+                      <div className="grid sm:grid-cols-2 gap-5">
                         <div>
-                          <label className="form-label">
-                            <MapPin className="w-4 h-4 inline mr-1" />
-                            Proposed Location/Area *
-                          </label>
+                          <label className="form-label">Full Name *</label>
                           <Input
                             type="text"
-                            value={formData.location}
-                            onChange={(e) => setFormData({...formData, location: e.target.value})}
-                            className="form-input"
-                            placeholder="e.g., Andheri West, Mumbai"
+                            value={formData.name}
+                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                            className="form-input h-12"
+                            placeholder="John Doe"
                             required
-                            data-testid="franchise-location"
+                            data-testid="franchise-name"
                           />
                         </div>
-
                         <div>
-                          <label className="form-label">
-                            <IndianRupee className="w-4 h-4 inline mr-1" />
-                            Investment Budget *
-                          </label>
-                          <Select 
-                            value={formData.investment_budget} 
-                            onValueChange={(v) => setFormData({...formData, investment_budget: v})}
-                          >
-                            <SelectTrigger className="form-input" data-testid="franchise-budget">
-                              <SelectValue placeholder="Select investment range" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="5-10 Lakhs">5-10 Lakhs</SelectItem>
-                              <SelectItem value="10-20 Lakhs">10-20 Lakhs</SelectItem>
-                              <SelectItem value="20-30 Lakhs">20-30 Lakhs</SelectItem>
-                              <SelectItem value="30-50 Lakhs">30-50 Lakhs</SelectItem>
-                              <SelectItem value="50+ Lakhs">50+ Lakhs</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-
-                        <div>
-                          <label className="form-label">
-                            <Briefcase className="w-4 h-4 inline mr-1" />
-                            Your Experience/Background *
-                          </label>
-                          <Textarea
-                            value={formData.experience}
-                            onChange={(e) => setFormData({...formData, experience: e.target.value})}
-                            className="form-input resize-none"
-                            rows={3}
-                            placeholder="Describe your professional background, any experience in education sector, business experience, etc."
-                            required
-                            data-testid="franchise-experience"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="form-label">
-                            <FileText className="w-4 h-4 inline mr-1" />
-                            Resume/CV URL (Optional)
-                          </label>
+                          <label className="form-label">Email *</label>
                           <Input
-                            type="url"
-                            value={formData.resume_url}
-                            onChange={(e) => setFormData({...formData, resume_url: e.target.value})}
-                            className="form-input"
-                            placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
-                            data-testid="franchise-resume"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="form-label">Why do you want to partner with ETI Educom? *</label>
-                          <Textarea
-                            value={formData.why_franchise}
-                            onChange={(e) => setFormData({...formData, why_franchise: e.target.value})}
-                            className="form-input resize-none"
-                            rows={4}
-                            placeholder="Tell us about your motivation, vision, and why you believe this partnership would be successful..."
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                            className="form-input h-12"
+                            placeholder="john@example.com"
                             required
-                            data-testid="franchise-why"
+                            data-testid="franchise-email"
                           />
                         </div>
+                      </div>
 
-                        <Button 
-                          type="submit" 
-                          className="btn-primary w-full"
-                          disabled={submitting}
-                          data-testid="franchise-submit"
+                      <div className="grid sm:grid-cols-2 gap-5">
+                        <div>
+                          <label className="form-label">Phone Number *</label>
+                          <Input
+                            type="tel"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                            className="form-input h-12"
+                            placeholder="+91 98765 43210"
+                            required
+                            data-testid="franchise-phone"
+                          />
+                        </div>
+                        <div>
+                          <label className="form-label">City *</label>
+                          <Input
+                            type="text"
+                            value={formData.city}
+                            onChange={(e) => setFormData({...formData, city: e.target.value})}
+                            className="form-input h-12"
+                            placeholder="Mumbai"
+                            required
+                            data-testid="franchise-city"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="form-label">
+                          <MapPin className="w-4 h-4 inline mr-1" />
+                          Proposed Location/Area *
+                        </label>
+                        <Input
+                          type="text"
+                          value={formData.location}
+                          onChange={(e) => setFormData({...formData, location: e.target.value})}
+                          className="form-input h-12"
+                          placeholder="Andheri West, Mumbai"
+                          required
+                          data-testid="franchise-location"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="form-label">
+                          <IndianRupee className="w-4 h-4 inline mr-1" />
+                          Investment Budget *
+                        </label>
+                        <Select 
+                          value={formData.investment_budget} 
+                          onValueChange={(v) => setFormData({...formData, investment_budget: v})}
                         >
-                          {submitting ? (
-                            "Submitting..."
-                          ) : (
-                            <>
-                              <Send className="w-4 h-4 mr-2" />
-                              Submit Franchise Enquiry
-                            </>
-                          )}
-                        </Button>
+                          <SelectTrigger className="form-input h-12" data-testid="franchise-budget">
+                            <SelectValue placeholder="Select investment range" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="5-10 Lakhs">5-10 Lakhs</SelectItem>
+                            <SelectItem value="10-20 Lakhs">10-20 Lakhs</SelectItem>
+                            <SelectItem value="20-30 Lakhs">20-30 Lakhs</SelectItem>
+                            <SelectItem value="30-50 Lakhs">30-50 Lakhs</SelectItem>
+                            <SelectItem value="50+ Lakhs">50+ Lakhs</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                        <p className="text-xs text-[#717171] text-center">
-                          By submitting, you agree to be contacted by our franchise team.
-                        </p>
-                      </form>
-                    </>
+                      <div>
+                        <label className="form-label">
+                          <Briefcase className="w-4 h-4 inline mr-1" />
+                          Your Experience/Background *
+                        </label>
+                        <Textarea
+                          value={formData.experience}
+                          onChange={(e) => setFormData({...formData, experience: e.target.value})}
+                          className="form-input"
+                          rows={3}
+                          placeholder="Describe your professional background, any experience in education sector, business experience, etc."
+                          required
+                          data-testid="franchise-experience"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="form-label">
+                          <FileText className="w-4 h-4 inline mr-1" />
+                          Resume/CV URL (Optional)
+                        </label>
+                        <Input
+                          type="url"
+                          value={formData.resume_url}
+                          onChange={(e) => setFormData({...formData, resume_url: e.target.value})}
+                          className="form-input h-12"
+                          placeholder="Link to your resume (Google Drive, Dropbox, etc.)"
+                          data-testid="franchise-resume"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="form-label">Why do you want to partner with ETI Educom? *</label>
+                        <Textarea
+                          value={formData.why_franchise}
+                          onChange={(e) => setFormData({...formData, why_franchise: e.target.value})}
+                          className="form-input"
+                          rows={4}
+                          placeholder="Tell us about your motivation, vision, and why you believe this partnership would be successful..."
+                          required
+                          data-testid="franchise-why"
+                        />
+                      </div>
+
+                      <Button 
+                        type="submit" 
+                        className="btn-primary w-full h-12 text-base"
+                        disabled={submitting}
+                        data-testid="franchise-submit"
+                      >
+                        {submitting ? (
+                          "Submitting..."
+                        ) : (
+                          <>
+                            <Send className="w-4 h-4 mr-2" />
+                            Submit Franchise Application
+                          </>
+                        )}
+                      </Button>
+
+                      <p className="text-xs text-[#717171] text-center">
+                        By submitting, you agree to be contacted by our franchise team.
+                      </p>
+                    </form>
                   )}
                 </CardContent>
               </Card>

@@ -22,7 +22,8 @@ import {
   LogOut,
   Code,
   Bell,
-  Award
+  Award,
+  User
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -43,6 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+import FounderManager from "./admin/FounderManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -109,7 +111,8 @@ const AdminPage = () => {
   const [editingPartner, setEditingPartner] = useState(null);
 
   // Form states
-  const [eventForm, setEventForm] = useState({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
+  const [eventForm, setEventForm] = useState({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "", gallery_images: [] });
+  const [newGalleryUrl, setNewGalleryUrl] = useState("");
   const [jobForm, setJobForm] = useState({ title: "", department: "", location: "", type: "Full-time", description: "", requirements: [""] });
   const [reviewForm, setReviewForm] = useState({ student_name: "", course: "", review_text: "", photo_url: "", rating: 5 });
   const [programForm, setProgramForm] = useState({
@@ -278,13 +281,31 @@ const AdminPage = () => {
       }
       setShowEventModal(false);
       setEditingEvent(null);
-      setEventForm({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "" });
+      setEventForm({ title: "", description: "", event_date: "", event_time: "", location: "", image_url: "", gallery_images: [] });
+      setNewGalleryUrl("");
       fetchData();
     } catch (error) {
       toast.error("Failed to save event");
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const addGalleryImage = () => {
+    if (newGalleryUrl.trim()) {
+      setEventForm({
+        ...eventForm,
+        gallery_images: [...(eventForm.gallery_images || []), newGalleryUrl.trim()]
+      });
+      setNewGalleryUrl("");
+    }
+  };
+
+  const removeGalleryImage = (index) => {
+    setEventForm({
+      ...eventForm,
+      gallery_images: eventForm.gallery_images.filter((_, i) => i !== index)
+    });
   };
 
   const handleDeleteEvent = async (eventId) => {
@@ -867,8 +888,10 @@ const AdminPage = () => {
       event_date: event.event_date || "",
       event_time: event.event_time || "",
       location: event.location || "",
-      image_url: event.image_url || ""
+      image_url: event.image_url || "",
+      gallery_images: event.gallery_images || []
     });
+    setNewGalleryUrl("");
     setShowEventModal(true);
   };
 
@@ -1064,6 +1087,9 @@ const AdminPage = () => {
               </TabsTrigger>
               <TabsTrigger value="partners" className="flex items-center gap-1 text-xs bg-amber-500/10">
                 <Award className="w-3 h-3" /> Partners ({partners.length})
+              </TabsTrigger>
+              <TabsTrigger value="founder" className="flex items-center gap-1 text-xs bg-purple-500/10">
+                <User className="w-3 h-3" /> Founder
               </TabsTrigger>
             </TabsList>
 
@@ -1915,26 +1941,70 @@ const AdminPage = () => {
                 )}
               </div>
             </TabsContent>
+
+            {/* Founder Tab */}
+            <TabsContent value="founder">
+              <FounderManager />
+            </TabsContent>
           </Tabs>
         </div>
       </section>
 
       {/* Event Modal */}
-      <Dialog open={showEventModal} onOpenChange={setShowEventModal}>
-        <DialogContent className="max-w-lg">
+      <Dialog open={showEventModal} onOpenChange={(open) => { setShowEventModal(open); if (!open) { setEditingEvent(null); setNewGalleryUrl(""); } }}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Add New Event</DialogTitle>
+            <DialogTitle>{editingEvent ? "Edit Event" : "Add New Event"}</DialogTitle>
           </DialogHeader>
           <form onSubmit={handleEventSubmit} className="space-y-4">
-            <Input placeholder="Event Title *" value={eventForm.title} onChange={(e) => setEventForm({...eventForm, title: e.target.value})} required className="form-input" />
-            <Textarea placeholder="Description *" value={eventForm.description} onChange={(e) => setEventForm({...eventForm, description: e.target.value})} required className="form-input" rows={3} />
+            <Input placeholder="Event Title *" value={eventForm.title} onChange={(e) => setEventForm({...eventForm, title: e.target.value})} required className="form-input" data-testid="event-title" />
+            <Textarea placeholder="Description *" value={eventForm.description} onChange={(e) => setEventForm({...eventForm, description: e.target.value})} required className="form-input" rows={3} data-testid="event-description" />
             <div className="grid grid-cols-2 gap-4">
-              <Input type="date" value={eventForm.event_date} onChange={(e) => setEventForm({...eventForm, event_date: e.target.value})} required className="form-input" />
-              <Input placeholder="Time (e.g., 10:00 AM)" value={eventForm.event_time} onChange={(e) => setEventForm({...eventForm, event_time: e.target.value})} required className="form-input" />
+              <Input type="date" value={eventForm.event_date} onChange={(e) => setEventForm({...eventForm, event_date: e.target.value})} required className="form-input" data-testid="event-date" />
+              <Input placeholder="Time (e.g., 10:00 AM)" value={eventForm.event_time} onChange={(e) => setEventForm({...eventForm, event_time: e.target.value})} required className="form-input" data-testid="event-time" />
             </div>
-            <Input placeholder="Location *" value={eventForm.location} onChange={(e) => setEventForm({...eventForm, location: e.target.value})} required className="form-input" />
-            <Input placeholder="Image URL (optional)" value={eventForm.image_url} onChange={(e) => setEventForm({...eventForm, image_url: e.target.value})} className="form-input" />
-            <Button type="submit" className="btn-primary w-full" disabled={submitting}>{submitting ? "Creating..." : "Create Event"}</Button>
+            <Input placeholder="Location *" value={eventForm.location} onChange={(e) => setEventForm({...eventForm, location: e.target.value})} required className="form-input" data-testid="event-location" />
+            <Input placeholder="Main Image URL (optional)" value={eventForm.image_url} onChange={(e) => setEventForm({...eventForm, image_url: e.target.value})} className="form-input" data-testid="event-image" />
+            
+            {/* Gallery Images */}
+            <div className="border rounded-lg p-4 bg-gray-50">
+              <label className="form-label mb-2 block">Gallery Images (Multiple)</label>
+              <div className="flex gap-2 mb-3">
+                <Input 
+                  placeholder="Add gallery image URL" 
+                  value={newGalleryUrl}
+                  onChange={(e) => setNewGalleryUrl(e.target.value)}
+                  className="form-input"
+                  data-testid="gallery-url"
+                />
+                <Button type="button" variant="outline" onClick={addGalleryImage}>
+                  <Plus className="w-4 h-4" />
+                </Button>
+              </div>
+              {eventForm.gallery_images && eventForm.gallery_images.length > 0 && (
+                <div className="grid grid-cols-4 gap-2">
+                  {eventForm.gallery_images.map((url, index) => (
+                    <div key={index} className="relative group">
+                      <img src={url} alt={`Gallery ${index + 1}`} className="w-full h-16 object-cover rounded" />
+                      <button
+                        type="button"
+                        onClick={() => removeGalleryImage(index)}
+                        className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity text-xs"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {(!eventForm.gallery_images || eventForm.gallery_images.length === 0) && (
+                <p className="text-sm text-gray-400">No gallery images added yet</p>
+              )}
+            </div>
+            
+            <Button type="submit" className="btn-primary w-full" disabled={submitting} data-testid="event-submit">
+              {submitting ? "Saving..." : editingEvent ? "Update Event" : "Create Event"}
+            </Button>
           </form>
         </DialogContent>
       </Dialog>
