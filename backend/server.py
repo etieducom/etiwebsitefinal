@@ -322,6 +322,54 @@ class EduConnectEnquiryCreate(BaseModel):
     message: Optional[str] = None
 
 
+# ============ Service Enquiry Models ============
+
+class ServiceEnquiry(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    service_type: str  # "corporate_training" or "fly_me_a_trainer"
+    company_name: str
+    contact_person: str
+    email: str
+    phone: str
+    employees_count: Optional[str] = None
+    training_topic: Optional[str] = None
+    preferred_mode: Optional[str] = None  # "online" or "offline" or "both"
+    location: Optional[str] = None
+    message: Optional[str] = None
+    status: str = "new"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class ServiceEnquiryCreate(BaseModel):
+    service_type: str = Field(..., pattern="^(corporate_training|fly_me_a_trainer)$")
+    company_name: str = Field(..., min_length=2, max_length=200)
+    contact_person: str = Field(..., min_length=2, max_length=100)
+    email: str
+    phone: str = Field(..., min_length=10)
+    employees_count: Optional[str] = None
+    training_topic: Optional[str] = None
+    preferred_mode: Optional[str] = None
+    location: Optional[str] = None
+    message: Optional[str] = None
+
+
+class ServiceEnquiryResponse(BaseModel):
+    id: str
+    service_type: str
+    company_name: str
+    contact_person: str
+    email: str
+    phone: str
+    employees_count: Optional[str]
+    training_topic: Optional[str]
+    preferred_mode: Optional[str]
+    location: Optional[str]
+    message: Optional[str]
+    status: str
+    created_at: str
+
+
 # ============ Models ============
 
 class StatusCheck(BaseModel):
@@ -2877,6 +2925,52 @@ async def delete_referral(referral_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Referral not found")
     return {"message": "Referral deleted successfully"}
+
+
+# ============ Service Enquiry Routes ============
+
+@api_router.post("/service-enquiry", response_model=ServiceEnquiryResponse)
+async def create_service_enquiry(input: ServiceEnquiryCreate):
+    try:
+        enquiry_dict = input.model_dump()
+        enquiry_obj = ServiceEnquiry(**enquiry_dict)
+        doc = enquiry_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.service_enquiries.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        service_name = "Corporate Training" if input.service_type == "corporate_training" else "Fly Me A Trainer"
+        await send_whatsapp_thank_you(input.phone, input.contact_person, f"{service_name} Enquiry")
+        
+        return ServiceEnquiryResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating service enquiry: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit enquiry")
+
+
+@api_router.get("/service-enquiry")
+async def get_service_enquiries(service_type: Optional[str] = None):
+    query = {}
+    if service_type:
+        query["service_type"] = service_type
+    enquiries = await db.service_enquiries.find(query, {"_id": 0}).sort("created_at", -1).to_list(1000)
+    return enquiries
+
+
+@api_router.put("/service-enquiry/{enquiry_id}")
+async def update_service_enquiry(enquiry_id: str, status: str):
+    result = await db.service_enquiries.update_one({"id": enquiry_id}, {"$set": {"status": status}})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return {"message": "Enquiry updated successfully"}
+
+
+@api_router.delete("/service-enquiry/{enquiry_id}")
+async def delete_service_enquiry(enquiry_id: str):
+    result = await db.service_enquiries.delete_one({"id": enquiry_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Enquiry not found")
+    return {"message": "Enquiry deleted successfully"}
 
 
 # ============ EduConnect Routes ============

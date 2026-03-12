@@ -50,6 +50,8 @@ import SEOManager from "./admin/SEOManager";
 import EventsManager from "./admin/EventsManager";
 import ReferralManager from "./admin/ReferralManager";
 import WhatsAppSettingsManager from "./admin/WhatsAppSettingsManager";
+import EduConnectManager from "./admin/EduConnectManager";
+import ServiceEnquiryManager from "./admin/ServiceEnquiryManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -1099,6 +1101,12 @@ const AdminPage = () => {
               <TabsTrigger value="referrals" className="flex items-center gap-1 text-xs bg-pink-500/10">
                 <Gift className="w-3 h-3" /> Referrals ({referrals.length})
               </TabsTrigger>
+              <TabsTrigger value="educonnect" className="flex items-center gap-1 text-xs bg-indigo-500/10">
+                <GraduationCap className="w-3 h-3" /> EduConnect
+              </TabsTrigger>
+              <TabsTrigger value="services" className="flex items-center gap-1 text-xs bg-teal-500/10">
+                <Building2 className="w-3 h-3" /> Services
+              </TabsTrigger>
               <TabsTrigger value="whatsapp" className="flex items-center gap-1 text-xs bg-green-500/10">
                 <MessageSquare className="w-3 h-3" /> WhatsApp
               </TabsTrigger>
@@ -1902,6 +1910,16 @@ const AdminPage = () => {
             {/* Referrals Tab */}
             <TabsContent value="referrals">
               <ReferralManager referrals={referrals} onRefresh={fetchData} />
+            </TabsContent>
+
+            {/* EduConnect Tab */}
+            <TabsContent value="educonnect">
+              <EduConnectManager />
+            </TabsContent>
+
+            {/* Services Tab */}
+            <TabsContent value="services">
+              <ServiceEnquiryManager />
             </TabsContent>
 
             {/* WhatsApp Settings Tab */}

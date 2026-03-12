@@ -41,6 +41,13 @@ import { Button } from "../components/ui/button";
 import { Card, CardContent } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
+import { Textarea } from "../components/ui/textarea";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -221,6 +228,22 @@ const HomePage = () => {
   const [team, setTeam] = useState([]);
   const [placementPartners, setPlacementPartners] = useState([]);
   const [certificationPartners, setCertificationPartners] = useState([]);
+  
+  // Service enquiry modal states
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [serviceType, setServiceType] = useState("");
+  const [serviceForm, setServiceForm] = useState({
+    company_name: "",
+    contact_person: "",
+    email: "",
+    phone: "",
+    employees_count: "",
+    training_topic: "",
+    preferred_mode: "",
+    location: "",
+    message: ""
+  });
+  const [submittingService, setSubmittingService] = useState(false);
 
   useEffect(() => {
     fetchReviews();
@@ -275,6 +298,44 @@ const HomePage = () => {
       setTeam(response.data);
     } catch (error) {
       console.error("Error fetching team:", error);
+    }
+  };
+
+  const openServiceModal = (type) => {
+    setServiceType(type);
+    setServiceForm({
+      company_name: "",
+      contact_person: "",
+      email: "",
+      phone: "",
+      employees_count: "",
+      training_topic: "",
+      preferred_mode: "",
+      location: "",
+      message: ""
+    });
+    setShowServiceModal(true);
+  };
+
+  const handleServiceSubmit = async (e) => {
+    e.preventDefault();
+    if (!serviceForm.company_name || !serviceForm.contact_person || !serviceForm.email || !serviceForm.phone) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+    
+    setSubmittingService(true);
+    try {
+      await axios.post(`${API}/service-enquiry`, {
+        service_type: serviceType,
+        ...serviceForm
+      });
+      toast.success("Enquiry submitted successfully! We'll contact you soon.");
+      setShowServiceModal(false);
+    } catch (error) {
+      toast.error("Failed to submit enquiry. Please try again.");
+    } finally {
+      setSubmittingService(false);
     }
   };
 
@@ -619,11 +680,12 @@ const HomePage = () => {
                       <span className="text-sm">Certification Programs</span>
                     </div>
                   </div>
-                  <Link to="/contact" className="inline-block mt-6">
-                    <Button className="bg-white text-[#1545ea] hover:bg-blue-50">
-                      Enquire Now <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
+                  <Button 
+                    className="bg-white text-[#1545ea] hover:bg-blue-50 mt-6"
+                    onClick={() => openServiceModal("corporate_training")}
+                  >
+                    Enquire Now <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
             </motion.div>
@@ -665,17 +727,163 @@ const HomePage = () => {
                       <span className="text-sm">Customized Curriculum</span>
                     </div>
                   </div>
-                  <Link to="/contact" className="inline-block mt-6">
-                    <Button className="bg-white text-[#1a1a1a] hover:bg-gray-100">
-                      Book a Trainer <ArrowRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
+                  <Button 
+                    className="bg-white text-[#1a1a1a] hover:bg-gray-100 mt-6"
+                    onClick={() => openServiceModal("fly_me_a_trainer")}
+                  >
+                    Book a Trainer <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
                 </CardContent>
               </Card>
             </motion.div>
           </div>
         </div>
       </section>
+
+      {/* Service Enquiry Modal */}
+      <Dialog open={showServiceModal} onOpenChange={setShowServiceModal}>
+        <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              {serviceType === "corporate_training" ? (
+                <><Building2 className="w-5 h-5 text-[#1545ea]" /> Corporate Training Enquiry</>
+              ) : (
+                <><Rocket className="w-5 h-5 text-purple-600" /> Fly Me A Trainer Enquiry</>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleServiceSubmit} className="space-y-4 pt-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Company Name *</label>
+                <Input
+                  value={serviceForm.company_name}
+                  onChange={(e) => setServiceForm({...serviceForm, company_name: e.target.value})}
+                  placeholder="Your company name"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Contact Person *</label>
+                <Input
+                  value={serviceForm.contact_person}
+                  onChange={(e) => setServiceForm({...serviceForm, contact_person: e.target.value})}
+                  placeholder="Your name"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Email *</label>
+                <Input
+                  type="email"
+                  value={serviceForm.email}
+                  onChange={(e) => setServiceForm({...serviceForm, email: e.target.value})}
+                  placeholder="your@email.com"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Phone *</label>
+                <Input
+                  type="tel"
+                  value={serviceForm.phone}
+                  onChange={(e) => setServiceForm({...serviceForm, phone: e.target.value})}
+                  placeholder="+91 98765 43210"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Team Size</label>
+                <Select 
+                  value={serviceForm.employees_count} 
+                  onValueChange={(v) => setServiceForm({...serviceForm, employees_count: v})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select team size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1-10 employees</SelectItem>
+                    <SelectItem value="11-25">11-25 employees</SelectItem>
+                    <SelectItem value="26-50">26-50 employees</SelectItem>
+                    <SelectItem value="51-100">51-100 employees</SelectItem>
+                    <SelectItem value="100+">100+ employees</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Preferred Mode</label>
+                <Select 
+                  value={serviceForm.preferred_mode} 
+                  onValueChange={(v) => setServiceForm({...serviceForm, preferred_mode: v})}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select mode" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="online">Online</SelectItem>
+                    <SelectItem value="offline">Offline (In-person)</SelectItem>
+                    <SelectItem value="both">Both</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Training Topic</label>
+              <Input
+                value={serviceForm.training_topic}
+                onChange={(e) => setServiceForm({...serviceForm, training_topic: e.target.value})}
+                placeholder="e.g., Microsoft Office, Digital Marketing, Python"
+              />
+            </div>
+
+            {serviceType === "fly_me_a_trainer" && (
+              <div>
+                <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Training Location</label>
+                <Input
+                  value={serviceForm.location}
+                  onChange={(e) => setServiceForm({...serviceForm, location: e.target.value})}
+                  placeholder="City/Address where training is needed"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Additional Requirements</label>
+              <Textarea
+                value={serviceForm.message}
+                onChange={(e) => setServiceForm({...serviceForm, message: e.target.value})}
+                placeholder="Any specific requirements or questions?"
+                rows={3}
+              />
+            </div>
+
+            <div className="flex gap-3 pt-2">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowServiceModal(false)}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="btn-primary flex-1"
+                disabled={submittingService}
+              >
+                {submittingService ? "Submitting..." : "Submit Enquiry"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Student Reviews Slider - Only show if reviews exist */}
       {displayReviews.length > 0 && (
