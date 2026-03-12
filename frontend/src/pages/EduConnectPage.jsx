@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import axios from "axios";
@@ -15,13 +15,16 @@ import {
   Award,
   Globe,
   Clock,
-  MapPin
+  ChevronLeft,
+  ChevronRight,
+  Star,
+  Sparkles,
+  UserCheck
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
 import { Input } from "../components/ui/input";
-import { Textarea } from "../components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -47,11 +50,12 @@ const EduConnectPage = () => {
     name: "",
     phone: "",
     qualification: "",
-    program_interest: "",
-    message: ""
+    program_interest: ""
   });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -74,7 +78,7 @@ const EduConnectPage = () => {
     e.preventDefault();
     
     if (!formData.name || !formData.phone) {
-      toast.error("Please fill all required fields");
+      toast.error("Please enter your name and phone number");
       return;
     }
 
@@ -82,7 +86,7 @@ const EduConnectPage = () => {
     try {
       await axios.post(`${API}/educonnect/enquiry`, formData);
       setSubmitted(true);
-      toast.success("Enquiry submitted successfully! We'll contact you soon.");
+      toast.success("Thank you! Our counsellor will call you shortly.");
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -90,35 +94,143 @@ const EduConnectPage = () => {
     }
   };
 
-  const benefits = [
-    { icon: <GraduationCap className="w-6 h-6" />, title: "UGC Approved", desc: "All universities are UGC recognized" },
-    { icon: <Globe className="w-6 h-6" />, title: "NAAC Accredited", desc: "Quality assured education" },
-    { icon: <Clock className="w-6 h-6" />, title: "Flexible Learning", desc: "Study at your own pace" },
-    { icon: <Award className="w-6 h-6" />, title: "Valid Degrees", desc: "Accepted for jobs & higher studies" }
-  ];
+  const resetForm = () => {
+    setSubmitted(false);
+    setFormData({ name: "", phone: "", qualification: "", program_interest: "" });
+  };
 
-  const popularPrograms = [
+  // Programs slider
+  const popularPrograms = programs.length > 0 ? programs : [
     { name: "BBA", duration: "3 Years", type: "UG" },
     { name: "BCA", duration: "3 Years", type: "UG" },
     { name: "B.Com", duration: "3 Years", type: "UG" },
     { name: "BA", duration: "3 Years", type: "UG" },
+    { name: "B.Sc", duration: "3 Years", type: "UG" },
     { name: "MBA", duration: "2 Years", type: "PG" },
     { name: "MCA", duration: "2 Years", type: "PG" },
     { name: "M.Com", duration: "2 Years", type: "PG" },
-    { name: "MA", duration: "2 Years", type: "PG" }
+    { name: "MA", duration: "2 Years", type: "PG" },
+    { name: "M.Sc", duration: "2 Years", type: "PG" }
   ];
 
-  // Default university logos if none from API
   const defaultUniversities = [
-    { name: "Manipal University", logo: "https://images.unsplash.com/photo-1562774053-701939374585?w=200&h=100&fit=crop" },
-    { name: "Amity University", logo: "https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=200&h=100&fit=crop" },
-    { name: "IGNOU", logo: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=200&h=100&fit=crop" },
-    { name: "Jain University", logo: "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=200&h=100&fit=crop" },
-    { name: "LPU Online", logo: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?w=200&h=100&fit=crop" },
-    { name: "Chandigarh University", logo: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=200&h=100&fit=crop" }
+    { name: "Manipal University", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/92/Manipal_University_logo.png/200px-Manipal_University_logo.png" },
+    { name: "Amity University", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/0/03/Amity_University_logo.png/200px-Amity_University_logo.png" },
+    { name: "IGNOU", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/9/95/Indira_Gandhi_National_Open_University_logo.png/200px-Indira_Gandhi_National_Open_University_logo.png" },
+    { name: "Jain University", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/b/b9/Jain_University_logo.png/200px-Jain_University_logo.png" },
+    { name: "LPU Online", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/3/3a/Lovely_Professional_University_logo.png/200px-Lovely_Professional_University_logo.png" },
+    { name: "Chandigarh University", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/f7/Chandigarh_University_Logo.png/200px-Chandigarh_University_Logo.png" }
   ];
 
   const displayUniversities = universities.length > 0 ? universities : defaultUniversities;
+
+  const scrollSlider = (direction) => {
+    if (sliderRef.current) {
+      const scrollAmount = 300;
+      sliderRef.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Compact Form Component
+  const QuickEnquiryForm = ({ variant = "default" }) => (
+    <div className={`${variant === "hero" ? "bg-white rounded-2xl p-6 shadow-2xl" : "bg-white rounded-xl p-5 shadow-lg border border-gray-100"}`}>
+      {submitted ? (
+        <div className="text-center py-4">
+          <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+            <CheckCircle className="w-7 h-7 text-green-600" />
+          </div>
+          <h3 className="text-lg font-bold text-[#1a1a1a] mb-1">Thank You!</h3>
+          <p className="text-sm text-[#4a4a4a] mb-4">Our counsellor will call you shortly.</p>
+          <Button variant="outline" size="sm" onClick={resetForm}>
+            Submit Another
+          </Button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <div className="text-center mb-4">
+            <h3 className={`font-bold text-[#1a1a1a] ${variant === "hero" ? "text-xl" : "text-lg"}`}>
+              Get Free Counselling
+            </h3>
+            <p className="text-xs text-[#717171] mt-1">We'll call you within 24 hours</p>
+          </div>
+          
+          <Input
+            type="text"
+            value={formData.name}
+            onChange={(e) => setFormData({...formData, name: e.target.value})}
+            placeholder="Your Name *"
+            required
+            className="h-11 text-sm"
+            data-testid="educonnect-name"
+          />
+          
+          <Input
+            type="tel"
+            value={formData.phone}
+            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+            placeholder="Phone Number *"
+            required
+            className="h-11 text-sm"
+            data-testid="educonnect-phone"
+          />
+          
+          <Select 
+            value={formData.qualification} 
+            onValueChange={(v) => setFormData({...formData, qualification: v})}
+          >
+            <SelectTrigger className="h-11 text-sm">
+              <SelectValue placeholder="Current Qualification" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="10th">10th Pass</SelectItem>
+              <SelectItem value="12th">12th Pass</SelectItem>
+              <SelectItem value="graduate">Graduate</SelectItem>
+              <SelectItem value="postgraduate">Post Graduate</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <Select 
+            value={formData.program_interest} 
+            onValueChange={(v) => setFormData({...formData, program_interest: v})}
+          >
+            <SelectTrigger className="h-11 text-sm">
+              <SelectValue placeholder="Interested Program" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="BBA">BBA</SelectItem>
+              <SelectItem value="BCA">BCA</SelectItem>
+              <SelectItem value="B.Com">B.Com</SelectItem>
+              <SelectItem value="MBA">MBA</SelectItem>
+              <SelectItem value="MCA">MCA</SelectItem>
+              <SelectItem value="M.Com">M.Com</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Button 
+            type="submit" 
+            className="w-full h-11 bg-[#1545ea] hover:bg-[#0d36c4] text-white font-semibold"
+            disabled={submitting}
+            data-testid="educonnect-submit"
+          >
+            {submitting ? "Submitting..." : (
+              <>
+                <Send className="w-4 h-4 mr-2" />
+                Apply Now - It's Free
+              </>
+            )}
+          </Button>
+          
+          <p className="text-[10px] text-center text-[#717171]">
+            By submitting, you agree to receive calls from our counsellors
+          </p>
+        </form>
+      )}
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-white" data-testid="educonnect-page">
@@ -136,155 +248,157 @@ const EduConnectPage = () => {
             >
               <Phone className="w-4 h-4" />
               <span className="hidden sm:inline">8699391076</span>
-              <span className="sm:hidden">Call Now</span>
+              <span className="sm:hidden">Call</span>
             </a>
           </div>
         </div>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-[#1545ea] via-[#0d36c4] to-[#1545ea] py-16 lg:py-24 overflow-hidden">
+      {/* Hero Section with Form */}
+      <section className="relative bg-gradient-to-br from-[#1545ea] via-[#0d36c4] to-[#1545ea] py-12 lg:py-16 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-white/5 rounded-full blur-3xl"></div>
         </div>
         
         <div className="container mx-auto px-4 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Left Content */}
             <motion.div {...fadeInUp}>
-              <Badge className="bg-white/10 text-white border border-white/20 mb-6 px-4 py-2">
-                <GraduationCap className="w-4 h-4 mr-2" />
-                Free Counselling
+              <Badge className="bg-white/10 text-white border border-white/20 mb-4 px-3 py-1.5">
+                <Sparkles className="w-3 h-3 mr-1" />
+                Free Career Counselling
               </Badge>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-                Your Gateway to <span className="text-yellow-400">Distance & Online Education</span>
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight">
+                Get Your <span className="text-yellow-400">Distance Degree</span> From Top Universities
               </h1>
-              <p className="text-lg text-blue-100 mb-8 leading-relaxed">
-                Get free expert counselling to choose the right Distance or Online degree 
-                from top UGC-approved universities across India. We help you make the 
-                best decision for your career.
+              <p className="text-base lg:text-lg text-blue-100 mb-6 leading-relaxed">
+                Free expert guidance to choose the right Online or Distance education program. 
+                All UGC-approved universities. Valid degrees for jobs & higher studies.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4">
-                <a href="#enquiry-form">
-                  <Button className="bg-white text-[#1545ea] hover:bg-blue-50 px-6 py-3 rounded-xl font-semibold w-full sm:w-auto">
-                    Get Free Counselling
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </a>
-                <a href="tel:8699391076">
-                  <Button variant="outline" className="border-white/30 text-white hover:bg-white/10 px-6 py-3 rounded-xl w-full sm:w-auto">
-                    <Phone className="w-4 h-4 mr-2" />
-                    8699391076
-                  </Button>
-                </a>
+              {/* Quick Stats */}
+              <div className="grid grid-cols-3 gap-3 mb-6">
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
+                  <p className="text-xl lg:text-2xl font-bold text-white">50+</p>
+                  <p className="text-[10px] lg:text-xs text-blue-100">Programs</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
+                  <p className="text-xl lg:text-2xl font-bold text-white">10+</p>
+                  <p className="text-[10px] lg:text-xs text-blue-100">Universities</p>
+                </div>
+                <div className="bg-white/10 backdrop-blur-sm rounded-xl p-3 text-center border border-white/10">
+                  <p className="text-xl lg:text-2xl font-bold text-white">100%</p>
+                  <p className="text-[10px] lg:text-xs text-blue-100">UGC Valid</p>
+                </div>
+              </div>
+
+              {/* Trust Badges - Mobile */}
+              <div className="flex flex-wrap gap-2 lg:hidden">
+                {["UGC Approved", "NAAC Accredited", "EMI Available"].map((item, i) => (
+                  <span key={i} className="text-xs bg-white/10 text-white px-2 py-1 rounded-full flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" /> {item}
+                  </span>
+                ))}
               </div>
             </motion.div>
 
+            {/* Right - Form */}
             <motion.div
               {...fadeInUp}
               transition={{ delay: 0.2 }}
-              className="hidden lg:block"
             >
-              <div className="bg-white/10 backdrop-blur-sm rounded-3xl p-8 border border-white/20">
-                <div className="grid grid-cols-2 gap-4">
-                  {benefits.map((benefit, index) => (
-                    <div key={index} className="text-center p-4">
-                      <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-3 text-yellow-400">
-                        {benefit.icon}
-                      </div>
-                      <h3 className="font-semibold text-white mb-1">{benefit.title}</h3>
-                      <p className="text-xs text-blue-100">{benefit.desc}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <QuickEnquiryForm variant="hero" />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Benefits for Mobile */}
-      <section className="py-8 bg-[#f8f9fa] lg:hidden">
+      {/* Trust Badges - Desktop */}
+      <section className="hidden lg:block py-4 bg-[#f8f9fa] border-b">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-3">
-            {benefits.map((benefit, index) => (
-              <div key={index} className="bg-white rounded-xl p-4 text-center shadow-sm">
-                <div className="w-10 h-10 bg-[#1545ea]/10 rounded-lg flex items-center justify-center mx-auto mb-2 text-[#1545ea]">
-                  {benefit.icon}
-                </div>
-                <h3 className="font-semibold text-[#1a1a1a] text-sm">{benefit.title}</h3>
+          <div className="flex justify-center items-center gap-8">
+            {[
+              { icon: <Award className="w-5 h-5" />, text: "UGC Approved" },
+              { icon: <Star className="w-5 h-5" />, text: "NAAC Accredited" },
+              { icon: <Clock className="w-5 h-5" />, text: "Flexible Learning" },
+              { icon: <CheckCircle className="w-5 h-5" />, text: "Valid for Jobs" },
+              { icon: <Globe className="w-5 h-5" />, text: "EMI Available" }
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-2 text-[#4a4a4a]">
+                <span className="text-[#1545ea]">{item.icon}</span>
+                <span className="text-sm font-medium">{item.text}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* University Partners */}
-      <section className="py-16 bg-white">
+      {/* Programs Slider Section */}
+      <section className="py-12 lg:py-16 bg-white">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Our University Partners</Badge>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1a1a1a] mb-4">
-              Top Universities Across India
-            </h2>
-            <p className="text-[#4a4a4a] max-w-2xl mx-auto">
-              We partner with UGC-approved and NAAC-accredited universities to bring you 
-              the best distance and online education options.
-            </p>
-          </motion.div>
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-2">Popular Programs</Badge>
+              <h2 className="text-2xl lg:text-3xl font-bold text-[#1a1a1a]">
+                Choose Your Program
+              </h2>
+            </div>
+            <div className="hidden sm:flex gap-2">
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full"
+                onClick={() => scrollSlider('left')}
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </Button>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full"
+                onClick={() => scrollSlider('right')}
+              >
+                <ChevronRight className="w-5 h-5" />
+              </Button>
+            </div>
+          </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 lg:gap-6">
-            {displayUniversities.map((uni, index) => (
+          {/* Slider */}
+          <div 
+            ref={sliderRef}
+            className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+            {popularPrograms.map((prog, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="bg-[#f8f9fa] rounded-xl p-4 flex items-center justify-center h-24 hover:shadow-md transition-shadow"
+                className="flex-shrink-0 w-[160px] sm:w-[200px] snap-start"
               >
-                {uni.logo ? (
-                  <img 
-                    src={uni.logo} 
-                    alt={uni.name} 
-                    className="max-h-16 max-w-full object-contain"
-                  />
-                ) : (
-                  <span className="text-sm font-medium text-[#4a4a4a] text-center">{uni.name}</span>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Popular Programs */}
-      <section className="py-16 bg-[#f8f9fa]">
-        <div className="container mx-auto px-4">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Programs Available</Badge>
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1a1a1a] mb-4">
-              Choose Your Program
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            {(programs.length > 0 ? programs : popularPrograms).map((prog, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                viewport={{ once: true }}
-              >
-                <Card className="h-full hover:shadow-lg transition-shadow bg-white">
+                <Card className="h-full hover:shadow-xl transition-all group cursor-pointer border-2 border-transparent hover:border-[#1545ea]">
                   <CardContent className="p-4 text-center">
-                    <Badge className={`mb-3 ${prog.type === "PG" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
-                      {prog.type || "UG"}
+                    <div className={`w-12 h-12 mx-auto mb-3 rounded-xl flex items-center justify-center ${prog.type === "PG" ? "bg-purple-100 text-purple-600" : "bg-blue-100 text-blue-600"}`}>
+                      <GraduationCap className="w-6 h-6" />
+                    </div>
+                    <Badge className={`mb-2 text-[10px] ${prog.type === "PG" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"}`}>
+                      {prog.type === "PG" ? "Post Graduate" : "Undergraduate"}
                     </Badge>
                     <h3 className="font-bold text-[#1a1a1a] text-lg mb-1">{prog.name}</h3>
-                    <p className="text-sm text-[#717171]">{prog.duration}</p>
+                    <p className="text-xs text-[#717171] mb-3">{prog.duration}</p>
+                    <Button 
+                      size="sm" 
+                      className="w-full bg-[#1545ea] hover:bg-[#0d36c4] text-white text-xs"
+                      onClick={() => {
+                        setFormData({...formData, program_interest: prog.name});
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }}
+                    >
+                      Apply Now
+                    </Button>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -293,205 +407,115 @@ const EduConnectPage = () => {
         </div>
       </section>
 
-      {/* Why Choose Us */}
-      <section className="py-16 bg-[#1545ea]">
+      {/* University Partners */}
+      <section className="py-12 lg:py-16 bg-[#f8f9fa]">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeInUp} className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-              Why Choose ETI EduConnect?
+          <motion.div {...fadeInUp} className="text-center mb-10">
+            <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-2">Our Partners</Badge>
+            <h2 className="text-2xl lg:text-3xl font-bold text-[#1a1a1a] mb-2">
+              Top Universities
             </h2>
+            <p className="text-[#4a4a4a] text-sm max-w-lg mx-auto">
+              All our partner universities are UGC approved and NAAC accredited
+            </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: <Users />, title: "Free Counselling", desc: "Expert guidance at no cost" },
-              { icon: <CheckCircle />, title: "Verified Universities", desc: "Only UGC approved options" },
-              { icon: <BookOpen />, title: "Complete Support", desc: "From admission to graduation" },
-              { icon: <Award />, title: "Best Prices", desc: "Competitive fee structure" }
-            ].map((item, index) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+            {displayUniversities.map((uni, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.05 }}
                 viewport={{ once: true }}
-                className="text-center"
+                className="bg-white rounded-xl p-4 flex flex-col items-center justify-center h-28 shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4 text-yellow-400">
-                  {item.icon}
-                </div>
-                <h3 className="font-semibold text-white mb-2">{item.title}</h3>
-                <p className="text-sm text-blue-100">{item.desc}</p>
+                {uni.logo ? (
+                  <img src={uni.logo} alt={uni.name} className="max-h-12 max-w-full object-contain mb-2" />
+                ) : null}
+                <span className="text-xs font-medium text-[#4a4a4a] text-center">{uni.name}</span>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Enquiry Form */}
-      <section id="enquiry-form" className="py-16 bg-white">
+      {/* Why Choose Us + CTA Form */}
+      <section className="py-12 lg:py-16 bg-[#1545ea]">
         <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto">
-            <motion.div {...fadeInUp} className="text-center mb-10">
-              <Badge className="bg-[#1545ea]/10 text-[#1545ea] mb-4">Get Started</Badge>
-              <h2 className="text-2xl sm:text-3xl font-bold text-[#1a1a1a] mb-4">
-                Get Free Counselling
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <motion.div {...fadeInUp}>
+              <h2 className="text-2xl lg:text-3xl font-bold text-white mb-6">
+                Why Choose ETI EduConnect?
               </h2>
-              <p className="text-[#4a4a4a]">
-                Fill in your details and our counsellors will guide you to the 
-                best program and university for your goals.
-              </p>
+              
+              <div className="grid sm:grid-cols-2 gap-4">
+                {[
+                  { icon: <UserCheck className="w-6 h-6" />, title: "Free Counselling", desc: "Expert guidance at zero cost" },
+                  { icon: <CheckCircle className="w-6 h-6" />, title: "100% Genuine", desc: "Only UGC approved universities" },
+                  { icon: <BookOpen className="w-6 h-6" />, title: "Complete Support", desc: "From admission to graduation" },
+                  { icon: <Award className="w-6 h-6" />, title: "Best Prices", desc: "EMI options available" }
+                ].map((item, index) => (
+                  <div key={index} className="flex items-start gap-3 bg-white/10 rounded-xl p-4">
+                    <div className="w-10 h-10 bg-yellow-400 rounded-lg flex items-center justify-center text-[#1545ea] flex-shrink-0">
+                      {item.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-white">{item.title}</h4>
+                      <p className="text-xs text-blue-100">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex gap-3">
+                <a href="tel:8699391076">
+                  <Button className="bg-white text-[#1545ea] hover:bg-blue-50">
+                    <Phone className="w-4 h-4 mr-2" />
+                    Call Now
+                  </Button>
+                </a>
+              </div>
             </motion.div>
 
             <motion.div {...fadeInUp} transition={{ delay: 0.2 }}>
-              <Card className="shadow-xl">
-                <CardContent className="p-6 sm:p-8">
-                  {submitted ? (
-                    <div className="text-center py-8">
-                      <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <CheckCircle className="w-8 h-8 text-green-600" />
-                      </div>
-                      <h3 className="text-xl font-bold text-[#1a1a1a] mb-2">Thank You!</h3>
-                      <p className="text-[#4a4a4a] mb-6">
-                        Our counsellor will contact you within 24 hours.
-                      </p>
-                      <Button 
-                        className="bg-[#1545ea] text-white"
-                        onClick={() => {
-                          setSubmitted(false);
-                          setFormData({ name: "", phone: "", qualification: "", program_interest: "", message: "" });
-                        }}
-                      >
-                        Submit Another Enquiry
-                      </Button>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="space-y-4" data-testid="educonnect-form">
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Your Name *</label>
-                          <Input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData({...formData, name: e.target.value})}
-                            placeholder="Enter your name"
-                            required
-                            className="h-12"
-                            data-testid="educonnect-name"
-                          />
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Phone Number *</label>
-                          <Input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                            placeholder="Enter your phone"
-                            required
-                            className="h-12"
-                            data-testid="educonnect-phone"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="grid sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Current Qualification</label>
-                          <Select 
-                            value={formData.qualification} 
-                            onValueChange={(v) => setFormData({...formData, qualification: v})}
-                          >
-                            <SelectTrigger className="h-12" data-testid="educonnect-qualification">
-                              <SelectValue placeholder="Select qualification" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="10th">10th Pass</SelectItem>
-                              <SelectItem value="12th">12th Pass</SelectItem>
-                              <SelectItem value="graduate">Graduate</SelectItem>
-                              <SelectItem value="postgraduate">Post Graduate</SelectItem>
-                              <SelectItem value="other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Program Interest</label>
-                          <Select 
-                            value={formData.program_interest} 
-                            onValueChange={(v) => setFormData({...formData, program_interest: v})}
-                          >
-                            <SelectTrigger className="h-12" data-testid="educonnect-program">
-                              <SelectValue placeholder="Select program" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="BBA">BBA</SelectItem>
-                              <SelectItem value="BCA">BCA</SelectItem>
-                              <SelectItem value="B.Com">B.Com</SelectItem>
-                              <SelectItem value="BA">BA</SelectItem>
-                              <SelectItem value="MBA">MBA</SelectItem>
-                              <SelectItem value="MCA">MCA</SelectItem>
-                              <SelectItem value="M.Com">M.Com</SelectItem>
-                              <SelectItem value="MA">MA</SelectItem>
-                              <SelectItem value="Other">Other</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-medium text-[#1a1a1a] mb-1">Message (Optional)</label>
-                        <Textarea
-                          value={formData.message}
-                          onChange={(e) => setFormData({...formData, message: e.target.value})}
-                          placeholder="Any specific requirements or questions?"
-                          rows={3}
-                          data-testid="educonnect-message"
-                        />
-                      </div>
-
-                      <Button 
-                        type="submit" 
-                        className="w-full h-12 bg-[#1545ea] hover:bg-[#0d36c4] text-white font-semibold"
-                        disabled={submitting}
-                        data-testid="educonnect-submit"
-                      >
-                        {submitting ? "Submitting..." : (
-                          <>
-                            <Send className="w-4 h-4 mr-2" />
-                            Get Free Counselling
-                          </>
-                        )}
-                      </Button>
-                    </form>
-                  )}
-                </CardContent>
-              </Card>
+              <QuickEnquiryForm />
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-12 bg-[#f8f9fa]">
+      {/* Final CTA */}
+      <section className="py-10 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#1a1a1a] mb-4">
-            Still have questions?
+          <h2 className="text-xl lg:text-2xl font-bold text-[#1a1a1a] mb-3">
+            Ready to Start Your Journey?
           </h2>
-          <p className="text-[#4a4a4a] mb-6">
-            Call us directly for immediate assistance
+          <p className="text-[#4a4a4a] text-sm mb-5 max-w-md mx-auto">
+            Get free counselling and find the perfect program for your career goals
           </p>
-          <a href="tel:8699391076">
-            <Button className="bg-[#1545ea] hover:bg-[#0d36c4] text-white px-8 py-3 text-lg">
-              <Phone className="w-5 h-5 mr-2" />
-              8699391076
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Button 
+              className="bg-[#1545ea] hover:bg-[#0d36c4] text-white px-8"
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            >
+              <Send className="w-4 h-4 mr-2" />
+              Apply Now - Free
             </Button>
-          </a>
+            <a href="tel:8699391076">
+              <Button variant="outline" className="border-[#1545ea] text-[#1545ea] px-8">
+                <Phone className="w-4 h-4 mr-2" />
+                8699391076
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 
       {/* Simple Footer */}
-      <footer className="bg-[#1a1a1a] py-8">
+      <footer className="bg-[#1a1a1a] py-6">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-[#717171] text-sm mb-2">
+          <p className="text-[#717171] text-sm mb-1">
             ETI EduConnect - A Division of ETI Educom®
           </p>
           <p className="text-[#717171] text-xs">

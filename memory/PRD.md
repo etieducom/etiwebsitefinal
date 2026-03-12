@@ -14,6 +14,7 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 ### Latest Features (This Session - December 2025)
 | Feature | Status | Notes |
 |---------|--------|-------|
+| **EduConnect Page Redesign** | ✅ Done | Form in hero section, program cards slider with Apply Now buttons, multiple CTAs |
 | **Service Enquiry Modals** | ✅ Done | Corporate Training & Fly Me A Trainer modals on home page with form submission to admin |
 | **Admin EduConnect Tab** | ✅ Done | Manage universities, programs, and enquiries for distance education |
 | **Admin Services Tab** | ✅ Done | Manage Corporate Training and Fly Me A Trainer enquiries with status updates |
