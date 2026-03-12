@@ -11,6 +11,7 @@ from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
 from emergentintegrations.llm.chat import LlmChat, UserMessage
+import httpx
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -150,6 +151,102 @@ class ReferralResponse(BaseModel):
     status: str
     reward_amount: Optional[float]
     created_at: str
+
+
+# ============ MSG91 WhatsApp Settings Models ============
+
+class MSG91Settings(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    auth_key: str = ""
+    integrated_number: str = "918728054145"
+    template_name: str = "eti_certificate"
+    template_namespace: str = "73fda5e9_77e9_445f_82ac_9c2e532b32f4"
+    is_enabled: bool = False
+    thank_you_message: str = "Thank you for your enquiry! Our team will contact you shortly."
+
+
+class MSG91SettingsUpdate(BaseModel):
+    auth_key: Optional[str] = None
+    integrated_number: Optional[str] = None
+    template_name: Optional[str] = None
+    template_namespace: Optional[str] = None
+    is_enabled: Optional[bool] = None
+    thank_you_message: Optional[str] = None
+
+
+# ============ WhatsApp Utility Function ============
+
+async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enquiry"):
+    """Send WhatsApp thank you message via MSG91"""
+    try:
+        # Get MSG91 settings from database
+        settings = await db.msg91_settings.find_one({}, {"_id": 0})
+        if not settings or not settings.get("is_enabled") or not settings.get("auth_key"):
+            logging.info(f"WhatsApp notifications disabled or not configured")
+            return False
+        
+        # Format phone number (remove +, spaces, ensure starts with 91 for India)
+        clean_phone = phone.replace("+", "").replace(" ", "").replace("-", "")
+        if not clean_phone.startswith("91") and len(clean_phone) == 10:
+            clean_phone = "91" + clean_phone
+        
+        payload = {
+            "integrated_number": settings.get("integrated_number", "918728054145"),
+            "content_type": "template",
+            "payload": {
+                "messaging_product": "whatsapp",
+                "type": "template",
+                "template": {
+                    "name": settings.get("template_name", "eti_certificate"),
+                    "language": {
+                        "code": "en",
+                        "policy": "deterministic"
+                    },
+                    "namespace": settings.get("template_namespace", "73fda5e9_77e9_445f_82ac_9c2e532b32f4"),
+                    "to_and_components": [
+                        {
+                            "to": [clean_phone],
+                            "components": {
+                                "body_1": {
+                                    "type": "text",
+                                    "value": name
+                                },
+                                "body_2": {
+                                    "type": "text",
+                                    "value": form_type
+                                },
+                                "body_3": {
+                                    "type": "text",
+                                    "value": settings.get("thank_you_message", "Thank you for your enquiry!")
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+        
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://api.msg91.com/api/v5/whatsapp/whatsapp-outbound-message/bulk/",
+                json=payload,
+                headers={
+                    "Content-Type": "application/json",
+                    "authkey": settings.get("auth_key")
+                },
+                timeout=10.0
+            )
+            
+            if response.status_code == 200:
+                logging.info(f"WhatsApp sent successfully to {clean_phone}")
+                return True
+            else:
+                logging.error(f"WhatsApp failed: {response.status_code} - {response.text}")
+                return False
+                
+    except Exception as e:
+        logging.error(f"Error sending WhatsApp: {e}")
+        return False
 
 
 # ============ Quick Enquiry Models ============
@@ -1926,6 +2023,10 @@ async def create_franchise_enquiry(input: FranchiseEnquiryCreate):
         doc = enquiry_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.franchise_enquiries.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "Franchise Enquiry")
+        
         return FranchiseEnquiryResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating franchise enquiry: {e}")
@@ -1964,6 +2065,10 @@ async def create_counselling_lead(input: CounsellingLeadCreate):
         doc = lead_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.counselling_leads.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "Counselling Request")
+        
         return CounsellingLeadResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating counselling lead: {e}")
@@ -2329,6 +2434,72 @@ async def get_technical_seo():
     )
 
 
+# ============ MSG91 WhatsApp Settings Routes ============
+
+@api_router.get("/msg91-settings")
+async def get_msg91_settings():
+    settings = await db.msg91_settings.find_one({}, {"_id": 0})
+    if not settings:
+        return {
+            "auth_key": "",
+            "integrated_number": "918728054145",
+            "template_name": "eti_certificate",
+            "template_namespace": "73fda5e9_77e9_445f_82ac_9c2e532b32f4",
+            "is_enabled": False,
+            "thank_you_message": "Thank you for your enquiry! Our team will contact you shortly."
+        }
+    # Mask auth key for security (show only last 4 chars)
+    masked_key = ""
+    if settings.get("auth_key"):
+        key = settings["auth_key"]
+        masked_key = "*" * (len(key) - 4) + key[-4:] if len(key) > 4 else key
+    return {
+        **settings,
+        "auth_key_masked": masked_key,
+        "auth_key": ""  # Don't send full key to frontend
+    }
+
+
+@api_router.post("/msg91-settings")
+async def save_msg91_settings(input: MSG91SettingsUpdate):
+    try:
+        update_data = {}
+        if input.auth_key is not None and input.auth_key != "":
+            update_data["auth_key"] = input.auth_key
+        if input.integrated_number is not None:
+            update_data["integrated_number"] = input.integrated_number
+        if input.template_name is not None:
+            update_data["template_name"] = input.template_name
+        if input.template_namespace is not None:
+            update_data["template_namespace"] = input.template_namespace
+        if input.is_enabled is not None:
+            update_data["is_enabled"] = input.is_enabled
+        if input.thank_you_message is not None:
+            update_data["thank_you_message"] = input.thank_you_message
+        
+        update_data["updated_at"] = datetime.now(timezone.utc).isoformat()
+        
+        await db.msg91_settings.update_one(
+            {},
+            {"$set": update_data},
+            upsert=True
+        )
+        return {"message": "MSG91 settings saved successfully"}
+    except Exception as e:
+        logging.error(f"Error saving MSG91 settings: {e}")
+        raise HTTPException(status_code=500, detail="Failed to save MSG91 settings")
+
+
+@api_router.post("/msg91-settings/test")
+async def test_msg91_whatsapp(phone: str, name: str = "Test User"):
+    """Test WhatsApp integration with a test message"""
+    result = await send_whatsapp_thank_you(phone, name, "Test Message")
+    if result:
+        return {"message": "Test WhatsApp sent successfully", "success": True}
+    else:
+        return {"message": "Failed to send test WhatsApp. Check settings and logs.", "success": False}
+
+
 # ============ Founder Settings Routes ============
 
 @api_router.get("/founder-settings", response_model=FounderSettingsResponse)
@@ -2501,6 +2672,10 @@ async def create_summer_training_lead(input: SummerTrainingLeadCreate):
         doc = lead_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.summer_training_leads.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "Summer Training")
+        
         return SummerTrainingLeadResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating summer training lead: {e}")
@@ -2538,6 +2713,10 @@ async def create_industrial_training_lead(input: IndustrialTrainingLeadCreate):
         doc = lead_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.industrial_training_leads.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "Industrial Training")
+        
         return IndustrialTrainingLeadResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating industrial training lead: {e}")
@@ -2576,6 +2755,10 @@ async def create_quick_enquiry(input: QuickEnquiryCreate):
         doc = enquiry_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.quick_enquiries.insert_one(doc)
+        
+        # Send WhatsApp thank you
+        await send_whatsapp_thank_you(input.phone, input.name, "Quick Enquiry")
+        
         return QuickEnquiryResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating quick enquiry: {e}")
@@ -2613,6 +2796,10 @@ async def create_referral(input: ReferralCreate):
         doc = referral_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.referrals.insert_one(doc)
+        
+        # Send WhatsApp thank you to referrer
+        await send_whatsapp_thank_you(input.referrer_phone, input.referrer_name, "Referral Submission")
+        
         return ReferralResponse(**{**doc, 'created_at': doc['created_at']})
     except Exception as e:
         logging.error(f"Error creating referral: {e}")

@@ -23,7 +23,8 @@ import {
   Code,
   Bell,
   Award,
-  User
+  User,
+  Gift
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
@@ -47,6 +48,8 @@ import {
 import FounderManager from "./admin/FounderManager";
 import SEOManager from "./admin/SEOManager";
 import EventsManager from "./admin/EventsManager";
+import ReferralManager from "./admin/ReferralManager";
+import WhatsAppSettingsManager from "./admin/WhatsAppSettingsManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -78,6 +81,7 @@ const AdminPage = () => {
   const [counsellingLeads, setCounsellingLeads] = useState([]);
   const [summerLeads, setSummerLeads] = useState([]);
   const [quickEnquiries, setQuickEnquiries] = useState([]);
+  const [referrals, setReferrals] = useState([]);
   const [technicalSeo, setTechnicalSeo] = useState({});
   const [cyberWarriorsEvents, setCyberWarriorsEvents] = useState([]);
   const [cyberWarriorsRegistrations, setCyberWarriorsRegistrations] = useState([]);
@@ -198,7 +202,7 @@ const AdminPage = () => {
 
   const fetchData = async () => {
     try {
-      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes, cwEventsRes, cwRegsRes, announcementsRes, popupModalRes, teamRes, branchesRes, partnersRes] = await Promise.all([
+      const [eventsRes, jobsRes, reviewsRes, programsRes, enquiriesRes, blogsRes, faqsRes, seoRes, franchiseRes, counsellingRes, summerRes, quickRes, techSeoRes, cwEventsRes, cwRegsRes, announcementsRes, popupModalRes, teamRes, branchesRes, partnersRes, referralsRes] = await Promise.all([
         axios.get(`${API}/events?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/jobs?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/reviews?active_only=false`).catch(() => ({ data: [] })),
@@ -218,7 +222,8 @@ const AdminPage = () => {
         axios.get(`${API}/popup-modal/admin`).catch(() => ({ data: null })),
         axios.get(`${API}/team?active_only=false`).catch(() => ({ data: [] })),
         axios.get(`${API}/branches?active_only=false`).catch(() => ({ data: [] })),
-        axios.get(`${API}/partners?active_only=false`).catch(() => ({ data: [] }))
+        axios.get(`${API}/partners?active_only=false`).catch(() => ({ data: [] })),
+        axios.get(`${API}/referrals`).catch(() => ({ data: [] }))
       ]);
       setEvents(eventsRes.data);
       setJobs(jobsRes.data);
@@ -232,6 +237,7 @@ const AdminPage = () => {
       setCounsellingLeads(counsellingRes.data);
       setSummerLeads(summerRes.data);
       setQuickEnquiries(quickRes.data);
+      setReferrals(referralsRes.data);
       setTechnicalSeo(techSeoRes.data || {});
       setCyberWarriorsEvents(cwEventsRes.data);
       setCyberWarriorsRegistrations(cwRegsRes.data);
@@ -1090,6 +1096,12 @@ const AdminPage = () => {
               <TabsTrigger value="partners" className="flex items-center gap-1 text-xs bg-amber-500/10">
                 <Award className="w-3 h-3" /> Partners ({partners.length})
               </TabsTrigger>
+              <TabsTrigger value="referrals" className="flex items-center gap-1 text-xs bg-pink-500/10">
+                <Gift className="w-3 h-3" /> Referrals ({referrals.length})
+              </TabsTrigger>
+              <TabsTrigger value="whatsapp" className="flex items-center gap-1 text-xs bg-green-500/10">
+                <MessageSquare className="w-3 h-3" /> WhatsApp
+              </TabsTrigger>
               <TabsTrigger value="founder" className="flex items-center gap-1 text-xs bg-purple-500/10">
                 <User className="w-3 h-3" /> Founder
               </TabsTrigger>
@@ -1885,6 +1897,16 @@ const AdminPage = () => {
                   </div>
                 )}
               </div>
+            </TabsContent>
+
+            {/* Referrals Tab */}
+            <TabsContent value="referrals">
+              <ReferralManager referrals={referrals} onRefresh={fetchData} />
+            </TabsContent>
+
+            {/* WhatsApp Settings Tab */}
+            <TabsContent value="whatsapp">
+              <WhatsAppSettingsManager />
             </TabsContent>
 
             {/* Founder Tab */}
