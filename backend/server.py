@@ -287,9 +287,10 @@ class Program(BaseModel):
     model_config = ConfigDict(extra="ignore")
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     title: str
+    subtitle: str = ""
     slug: str
     description: str
-    category: str  # career_tracks, short_term, skill_development, corporate_training
+    category: str  # career_tracks, tech_programs, design_marketing, cybersecurity, office_accounting, soft_skills
     duration: str
     outcomes: List[str]
     suitable_for: str
@@ -304,9 +305,10 @@ class Program(BaseModel):
 
 class ProgramCreate(BaseModel):
     title: str = Field(..., min_length=3, max_length=200)
+    subtitle: str = ""
     slug: str = Field(..., min_length=3, max_length=100)
     description: str = Field(..., min_length=10, max_length=2000)
-    category: str = Field(..., pattern="^(career_tracks|short_term|skill_development|corporate_training)$")
+    category: str
     duration: str
     outcomes: List[str]
     suitable_for: str
@@ -319,6 +321,7 @@ class ProgramCreate(BaseModel):
 
 class ProgramUpdate(BaseModel):
     title: Optional[str] = None
+    subtitle: Optional[str] = None
     description: Optional[str] = None
     category: Optional[str] = None
     duration: Optional[str] = None
@@ -335,6 +338,7 @@ class ProgramUpdate(BaseModel):
 class ProgramResponse(BaseModel):
     id: str
     title: str
+    subtitle: str
     slug: str
     description: str
     category: str
@@ -887,7 +891,7 @@ async def create_program(input: ProgramCreate):
         doc['created_at'] = doc['created_at'].isoformat()
         await db.programs.insert_one(doc)
         return ProgramResponse(
-            id=doc['id'], title=doc['title'], slug=doc['slug'],
+            id=doc['id'], title=doc['title'], subtitle=doc.get('subtitle', ''), slug=doc['slug'],
             description=doc['description'], category=doc['category'],
             duration=doc['duration'], outcomes=doc['outcomes'],
             suitable_for=doc['suitable_for'], certifications=doc['certifications'],
@@ -910,7 +914,7 @@ async def get_programs(category: Optional[str] = None, active_only: bool = True)
     programs = await db.programs.find(query, {"_id": 0}).sort("order", 1).to_list(100)
     return [
         ProgramResponse(
-            id=p['id'], title=p['title'], slug=p['slug'],
+            id=p['id'], title=p['title'], subtitle=p.get('subtitle', ''), slug=p['slug'],
             description=p['description'], category=p['category'],
             duration=p['duration'], outcomes=p['outcomes'],
             suitable_for=p['suitable_for'], certifications=p['certifications'],
@@ -928,7 +932,7 @@ async def get_program(program_slug: str):
     if not program:
         raise HTTPException(status_code=404, detail="Program not found")
     return ProgramResponse(
-        id=program['id'], title=program['title'], slug=program['slug'],
+        id=program['id'], title=program['title'], subtitle=program.get('subtitle', ''), slug=program['slug'],
         description=program['description'], category=program['category'],
         duration=program['duration'], outcomes=program['outcomes'],
         suitable_for=program['suitable_for'], certifications=program['certifications'],
@@ -949,7 +953,7 @@ async def update_program(program_id: str, input: ProgramUpdate):
         raise HTTPException(status_code=404, detail="Program not found")
     program = await db.programs.find_one({"id": program_id}, {"_id": 0})
     return ProgramResponse(
-        id=program['id'], title=program['title'], slug=program['slug'],
+        id=program['id'], title=program['title'], subtitle=program.get('subtitle', ''), slug=program['slug'],
         description=program['description'], category=program['category'],
         duration=program['duration'], outcomes=program['outcomes'],
         suitable_for=program['suitable_for'], certifications=program['certifications'],
@@ -966,6 +970,244 @@ async def delete_program(program_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Program not found")
     return {"message": "Program deleted successfully"}
+
+
+@api_router.post("/programs/seed-all")
+async def seed_all_programs():
+    """Seed all programs to the database"""
+    programs_data = [
+        # Career Tracks
+        {
+            "slug": "it-foundation", "title": "IT Foundation", "subtitle": "Build Your Digital Career Base",
+            "description": "A comprehensive 6-month program designed to build a solid foundation in computing fundamentals, digital literacy, and essential IT skills. Perfect for beginners starting their career journey in the technology sector.",
+            "category": "career_tracks", "duration": "6 Months", "icon": "Monitor",
+            "outcomes": ["IT Support Specialist", "Computer Operator", "Digital Literacy Expert", "Office Administrator"],
+            "suitable_for": "Students, Fresh Graduates, Career Starters, Working Professionals",
+            "certifications": ["Microsoft Office Specialist (MOS)", "IC3 Digital Literacy Certification", "CompTIA IT Fundamentals"],
+            "modules": ["Computer Fundamentals & Hardware Basics", "Operating Systems (Windows & Linux Basics)", "Microsoft Office Suite", "Internet Technologies & Email Management", "Basic Networking Concepts", "Troubleshooting & Technical Support", "Digital Communication & Collaboration Tools", "Introduction to Cloud Computing"],
+            "image_url": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=1200", "order": 1
+        },
+        {
+            "slug": "digital-design", "title": "Digital Design & Marketing", "subtitle": "Create & Market with Impact",
+            "description": "Master the art of digital design and marketing in this comprehensive 9-12 month program. Learn industry-standard tools and strategies to create compelling visual content and execute effective marketing campaigns.",
+            "category": "career_tracks", "duration": "9-12 Months", "icon": "Palette",
+            "outcomes": ["Graphic Designer", "Digital Marketing Specialist", "UI/UX Designer", "Social Media Manager", "Brand Strategist"],
+            "suitable_for": "Creative Professionals, Marketing Enthusiasts, Entrepreneurs, Freelancers",
+            "certifications": ["Adobe Certified Professional", "Google Digital Marketing", "Meta Blueprint", "HubSpot Content Marketing"],
+            "modules": ["Design Fundamentals & Color Theory", "Adobe Photoshop & Illustrator Mastery", "UI/UX Design Principles", "Social Media Marketing & Management", "Search Engine Optimization (SEO)", "Google Ads & PPC Campaigns", "Content Marketing Strategy", "Analytics & Performance Tracking", "Brand Identity & Logo Design", "Video Editing Basics"],
+            "image_url": "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&q=80&w=1200", "order": 2
+        },
+        {
+            "slug": "it-networking", "title": "IT Support & Cybersecurity", "subtitle": "Secure & Connect the Digital World",
+            "description": "Develop expertise in IT infrastructure, network administration, and cybersecurity protocols in this 9-12 month program. Prepare for roles in enterprise IT environments with hands-on practical training.",
+            "category": "career_tracks", "duration": "9-12 Months", "icon": "Shield",
+            "outcomes": ["IT Support Technician", "Network Administrator", "Security Analyst", "Help Desk Specialist", "System Administrator"],
+            "suitable_for": "Technical Aspirants, IT Professionals, Career Changers, Engineering Students",
+            "certifications": ["CompTIA A+", "CompTIA Network+", "CompTIA Security+", "Cisco CCNA", "CEH"],
+            "modules": ["Hardware & Software Troubleshooting", "Windows & Linux Server Administration", "Network Configuration & Management", "TCP/IP & Network Protocols", "Cybersecurity Fundamentals", "Firewall & Security Tools", "Cloud Computing (AWS/Azure Basics)", "IT Service Management (ITIL)", "Vulnerability Assessment", "Incident Response & Recovery"],
+            "image_url": "https://images.unsplash.com/photo-1558494949-ef010c89b20c?auto=format&fit=crop&q=80&w=1200", "order": 3
+        },
+        {
+            "slug": "software-development", "title": "Software Development", "subtitle": "Code the Future",
+            "description": "Learn programming languages, development frameworks, and software engineering principles in this comprehensive 9-12 month program. Build real-world applications and prepare for high-paying careers in software development.",
+            "category": "career_tracks", "duration": "9-12 Months", "icon": "Code",
+            "outcomes": ["Full Stack Developer", "Software Engineer", "Web Developer", "Application Developer", "Backend Developer"],
+            "suitable_for": "Engineering Students, Tech Enthusiasts, Career Changers, IT Professionals",
+            "certifications": ["Microsoft Certified Developer", "AWS Developer Associate", "Oracle Certified Java Programmer"],
+            "modules": ["Programming Fundamentals", "Python Programming", "Java Programming", "Web Development (HTML, CSS, JavaScript)", "Database Management (SQL & NoSQL)", "Backend Development (Node.js/Django)", "Frontend Frameworks (React)", "API Development & Integration", "Version Control (Git & GitHub)", "Software Testing & DevOps Basics"],
+            "image_url": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?auto=format&fit=crop&q=80&w=1200", "order": 4
+        },
+        # Tech Programs
+        {
+            "slug": "python", "title": "Python Programming", "subtitle": "Master the Most Versatile Language",
+            "description": "Learn Python programming from basics to advanced concepts. Python is the most popular programming language used in web development, data science, AI, automation, and more.",
+            "category": "tech_programs", "duration": "3 Months", "icon": "Code",
+            "outcomes": ["Python Developer", "Automation Engineer", "Backend Developer", "Data Analyst"],
+            "suitable_for": "Beginners, Students, Working Professionals, Career Changers",
+            "certifications": ["Python Institute PCAP", "Microsoft Python Certification"],
+            "modules": ["Python Basics & Syntax", "Data Types & Variables", "Control Flow & Loops", "Functions & Modules", "Object-Oriented Programming", "File Handling & Exception Management", "Libraries (NumPy, Pandas basics)", "Project Development"],
+            "image_url": "https://images.unsplash.com/photo-1526379095098-d400fd0bf935?auto=format&fit=crop&q=80&w=1200", "order": 5
+        },
+        {
+            "slug": "web-designing", "title": "Web Designing", "subtitle": "Design Beautiful Websites",
+            "description": "Learn to create visually stunning and user-friendly websites. Master HTML, CSS, and design principles to build responsive websites that work on all devices.",
+            "category": "tech_programs", "duration": "3 Months", "icon": "Globe",
+            "outcomes": ["Web Designer", "Frontend Designer", "UI Developer", "Freelance Designer"],
+            "suitable_for": "Creative Individuals, Students, Small Business Owners",
+            "certifications": ["Adobe Certified Professional - Web", "W3Schools Certification"],
+            "modules": ["HTML5 Fundamentals", "CSS3 & Styling", "Responsive Web Design", "CSS Flexbox & Grid", "Bootstrap Framework", "UI/UX Principles", "Adobe XD/Figma Basics", "Portfolio Website Project"],
+            "image_url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=1200", "order": 6
+        },
+        {
+            "slug": "web-development", "title": "Web Development", "subtitle": "Build Dynamic Web Applications",
+            "description": "Learn full-stack web development including frontend and backend technologies. Build interactive web applications using modern frameworks and tools.",
+            "category": "tech_programs", "duration": "6 Months", "icon": "Code",
+            "outcomes": ["Web Developer", "Frontend Developer", "Full Stack Developer", "JavaScript Developer"],
+            "suitable_for": "Students, IT Professionals, Career Changers",
+            "certifications": ["Meta Front-End Developer", "freeCodeCamp Certification"],
+            "modules": ["HTML5 & CSS3", "JavaScript ES6+", "React.js Framework", "Node.js & Express", "Database Integration (MongoDB/MySQL)", "REST API Development", "Git & Version Control", "Deployment & Hosting"],
+            "image_url": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&q=80&w=1200", "order": 7
+        },
+        {
+            "slug": "data-analytics", "title": "Data Analytics", "subtitle": "Turn Data into Insights",
+            "description": "Master data analytics skills to make data-driven decisions. Learn statistical analysis, data visualization, and business intelligence tools to extract meaningful insights from complex datasets.",
+            "category": "tech_programs", "duration": "4 Months", "icon": "BarChart3",
+            "outcomes": ["Data Analyst", "Business Analyst", "BI Developer", "Data Visualization Specialist"],
+            "suitable_for": "Analysts, Business Professionals, Statistics Enthusiasts, MBA Students",
+            "certifications": ["Google Data Analytics Certificate", "Microsoft Power BI Certification", "Tableau Desktop Specialist"],
+            "modules": ["Excel for Data Analysis", "SQL & Database Querying", "Python for Data Analysis", "Statistical Analysis Fundamentals", "Data Visualization (Power BI/Tableau)", "Dashboard Creation", "Business Intelligence Reporting", "Capstone Analytics Project"],
+            "image_url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=1200", "order": 8
+        },
+        {
+            "slug": "ai-beginners", "title": "AI For Beginners", "subtitle": "Start Your AI Journey",
+            "description": "An introductory course to Artificial Intelligence covering fundamental concepts, applications, and hands-on experience with AI tools. Perfect for anyone wanting to understand AI technology.",
+            "category": "tech_programs", "duration": "2 Months", "icon": "Bot",
+            "outcomes": ["AI Enthusiast", "AI-Enabled Professional", "Prompt Engineer", "AI Tool User"],
+            "suitable_for": "Anyone interested in AI, Students, Working Professionals, Business Owners",
+            "certifications": ["Google AI Essentials", "IBM AI Foundations"],
+            "modules": ["Introduction to AI & Machine Learning", "Understanding ChatGPT & LLMs", "Prompt Engineering Basics", "AI Tools for Productivity", "AI in Business Applications", "Ethics in AI", "Hands-on AI Projects"],
+            "image_url": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1200", "order": 9
+        },
+        {
+            "slug": "ai-engineering", "title": "AI Engineering", "subtitle": "Build Intelligent Systems",
+            "description": "Advanced program covering machine learning, deep learning, and AI system development. Learn to build and deploy AI models for real-world applications.",
+            "category": "tech_programs", "duration": "6 Months", "icon": "Cpu",
+            "outcomes": ["AI Engineer", "ML Engineer", "Data Scientist", "Deep Learning Specialist"],
+            "suitable_for": "Programmers, Data Analysts, Engineering Graduates, Tech Professionals",
+            "certifications": ["TensorFlow Developer Certificate", "AWS Machine Learning Specialty", "Google ML Engineer"],
+            "modules": ["Python for AI", "Mathematics for Machine Learning", "Machine Learning Algorithms", "Deep Learning & Neural Networks", "TensorFlow & PyTorch", "Natural Language Processing", "Computer Vision Basics", "Model Deployment & MLOps", "AI Project Development"],
+            "image_url": "https://images.unsplash.com/photo-1555255707-c07966088b7b?auto=format&fit=crop&q=80&w=1200", "order": 10
+        },
+        # Design & Marketing
+        {
+            "slug": "digital-marketing", "title": "Digital Marketing", "subtitle": "Master Online Marketing Strategies",
+            "description": "Become a digital marketing expert with comprehensive training in SEO, social media marketing, content marketing, paid advertising, and analytics. Learn to create and execute successful marketing campaigns.",
+            "category": "design_marketing", "duration": "4 Months", "icon": "TrendingUp",
+            "outcomes": ["Digital Marketing Manager", "SEO Specialist", "Social Media Manager", "Content Strategist", "PPC Specialist"],
+            "suitable_for": "Marketing Professionals, Business Owners, Fresh Graduates, Entrepreneurs",
+            "certifications": ["Google Digital Marketing Certification", "Meta Blueprint Certification", "HubSpot Inbound Marketing"],
+            "modules": ["Digital Marketing Fundamentals", "Search Engine Optimization (SEO)", "Search Engine Marketing (Google Ads)", "Social Media Marketing", "Content Marketing Strategy", "Email Marketing & Automation", "Analytics & Performance Tracking", "Marketing Campaign Management"],
+            "image_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200", "order": 11
+        },
+        {
+            "slug": "graphic-designing", "title": "Graphic Designing", "subtitle": "Create Visual Masterpieces",
+            "description": "Master the art of visual communication with professional graphic design training. Learn industry-standard tools like Adobe Photoshop, Illustrator, and Canva to create stunning designs.",
+            "category": "design_marketing", "duration": "3 Months", "icon": "Palette",
+            "outcomes": ["Graphic Designer", "Visual Designer", "Brand Designer", "Print Designer", "Digital Artist"],
+            "suitable_for": "Creative Individuals, Art Enthusiasts, Marketing Professionals, Freelancers",
+            "certifications": ["Adobe Certified Professional", "Canva Design Certification"],
+            "modules": ["Design Principles & Color Theory", "Adobe Photoshop Mastery", "Adobe Illustrator Mastery", "Logo & Brand Identity Design", "Social Media Graphics", "Print Design (Brochures, Banners)", "Canva for Quick Designs", "Portfolio Development"],
+            "image_url": "https://images.unsplash.com/photo-1626785774573-4b799315345d?auto=format&fit=crop&q=80&w=1200", "order": 12
+        },
+        {
+            "slug": "ui-ux-designing", "title": "UI & UX Designing", "subtitle": "Design User-Centric Experiences",
+            "description": "Learn to design intuitive and engaging user interfaces and experiences. Master design thinking, prototyping, and user research to create products users love.",
+            "category": "design_marketing", "duration": "4 Months", "icon": "PenTool",
+            "outcomes": ["UI Designer", "UX Designer", "Product Designer", "Interaction Designer", "UX Researcher"],
+            "suitable_for": "Designers, Developers, Product Managers, Creative Professionals",
+            "certifications": ["Google UX Design Certificate", "Adobe XD Certification", "Figma Certification"],
+            "modules": ["UX Design Fundamentals", "User Research & Personas", "Information Architecture", "Wireframing & Prototyping", "UI Design Principles", "Figma/Adobe XD Mastery", "Design Systems", "Usability Testing", "Portfolio & Case Studies"],
+            "image_url": "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?auto=format&fit=crop&q=80&w=1200", "order": 13
+        },
+        # Cybersecurity
+        {
+            "slug": "soc-analyst", "title": "SOC Analyst", "subtitle": "Defend Against Cyber Threats",
+            "description": "Become a Security Operations Center (SOC) Analyst with comprehensive training in threat detection, incident response, and security monitoring. Prepare for a high-demand cybersecurity career.",
+            "category": "cybersecurity", "duration": "6 Months", "icon": "Shield",
+            "outcomes": ["SOC Analyst Level 1", "Security Analyst", "Threat Analyst", "Incident Responder"],
+            "suitable_for": "IT Professionals, Networking Enthusiasts, Security Aspirants, Career Changers",
+            "certifications": ["CompTIA Security+", "CompTIA CySA+", "Splunk Certified User", "IBM QRadar"],
+            "modules": ["Cybersecurity Fundamentals", "Network Security & Protocols", "Security Information & Event Management (SIEM)", "Threat Intelligence", "Incident Detection & Response", "Malware Analysis Basics", "Log Analysis & Monitoring", "SOC Tools & Technologies", "Compliance & Frameworks (NIST, ISO)", "Hands-on SOC Simulation"],
+            "image_url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200", "order": 14
+        },
+        {
+            "slug": "ethical-hacking", "title": "Ethical Hacking", "subtitle": "Become a Cybersecurity Expert",
+            "description": "Learn ethical hacking and penetration testing techniques to protect organizations from cyber threats. Master security tools, vulnerability assessment, and defensive strategies.",
+            "category": "cybersecurity", "duration": "6 Months", "icon": "Network",
+            "outcomes": ["Ethical Hacker", "Penetration Tester", "Security Consultant", "Vulnerability Analyst"],
+            "suitable_for": "IT Professionals, Networking Enthusiasts, Security Aspirants",
+            "certifications": ["Certified Ethical Hacker (CEH)", "CompTIA PenTest+", "OSCP"],
+            "modules": ["Networking & System Fundamentals", "Linux for Hackers", "Footprinting & Reconnaissance", "Scanning & Enumeration", "Vulnerability Assessment", "System Hacking", "Web Application Hacking", "Wireless Network Hacking", "Social Engineering", "Report Writing & Documentation"],
+            "image_url": "https://images.unsplash.com/photo-1563206767-5b18f218e8de?auto=format&fit=crop&q=80&w=1200", "order": 15
+        },
+        # Office & Accounting
+        {
+            "slug": "ms-office-ai", "title": "MS-Office with AI", "subtitle": "Office Productivity Reimagined",
+            "description": "Master Microsoft Office applications enhanced with AI capabilities. Learn to use Copilot, AI-powered features in Word, Excel, PowerPoint, and Outlook to boost your productivity.",
+            "category": "office_accounting", "duration": "2 Months", "icon": "Award",
+            "outcomes": ["Office Administrator", "Executive Assistant", "Data Entry Specialist", "Office Productivity Expert"],
+            "suitable_for": "Students, Office Workers, Professionals, Job Seekers",
+            "certifications": ["Microsoft Office Specialist (MOS)", "Microsoft 365 Certified"],
+            "modules": ["Microsoft Word Advanced Features", "Excel Formulas & Data Analysis", "PowerPoint Presentation Design", "Outlook & Email Management", "Microsoft Copilot Integration", "AI Features in Office Apps", "Cloud Collaboration (OneDrive, Teams)", "Productivity Tips & Shortcuts"],
+            "image_url": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&q=80&w=1200", "order": 16
+        },
+        {
+            "slug": "e-accounting", "title": "E-Accounting", "subtitle": "Master Digital Accounting",
+            "description": "Learn computerized accounting using industry-standard software like Tally and accounting principles. Prepare for accounting roles in the digital age.",
+            "category": "office_accounting", "duration": "3 Months", "icon": "Calculator",
+            "outcomes": ["Accountant", "Accounts Executive", "Tally Operator", "Bookkeeper", "GST Practitioner"],
+            "suitable_for": "Commerce Students, Accountants, Small Business Owners, Finance Professionals",
+            "certifications": ["Tally Certification", "GST Practitioner Certificate"],
+            "modules": ["Accounting Fundamentals", "Tally Prime Complete Course", "GST Accounting & Returns", "Inventory Management", "Payroll Processing", "Bank Reconciliation", "Financial Statements", "TDS & Tax Compliance"],
+            "image_url": "https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=1200", "order": 17
+        },
+        # Soft Skills
+        {
+            "slug": "spoken-english", "title": "Spoken English", "subtitle": "Communicate with Confidence",
+            "description": "Improve your English speaking skills with comprehensive training in grammar, vocabulary, pronunciation, and conversational English. Gain confidence to communicate effectively in any situation.",
+            "category": "soft_skills", "duration": "3 Months", "icon": "MessageCircle",
+            "outcomes": ["Confident English Speaker", "Better Communication Skills", "Interview Ready", "Professional Communicator"],
+            "suitable_for": "Students, Job Seekers, Working Professionals, Anyone wanting to improve English",
+            "certifications": ["Cambridge English Certificate", "IELTS Preparation"],
+            "modules": ["English Grammar Essentials", "Vocabulary Building", "Pronunciation & Accent Training", "Conversational English", "Public Speaking Basics", "Business English", "Email & Written Communication", "Group Discussions Practice"],
+            "image_url": "https://images.unsplash.com/photo-1543269664-56d93c1b41a6?auto=format&fit=crop&q=80&w=1200", "order": 18
+        },
+        {
+            "slug": "personality-development", "title": "Personality Development", "subtitle": "Unlock Your True Potential",
+            "description": "Develop essential soft skills, build confidence, and enhance your personality for personal and professional success. Learn leadership, communication, and interpersonal skills.",
+            "category": "soft_skills", "duration": "2 Months", "icon": "Star",
+            "outcomes": ["Enhanced Confidence", "Better Leadership Skills", "Improved Communication", "Professional Image"],
+            "suitable_for": "Students, Young Professionals, Job Seekers, Anyone seeking self-improvement",
+            "certifications": ["Personality Development Certificate"],
+            "modules": ["Self-Awareness & Confidence Building", "Effective Communication Skills", "Body Language & Non-verbal Communication", "Time Management", "Stress Management", "Leadership & Team Skills", "Positive Attitude Development", "Goal Setting & Achievement"],
+            "image_url": "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1200", "order": 19
+        },
+        {
+            "slug": "interview-preparation", "title": "Interview Preparation", "subtitle": "Ace Your Next Interview",
+            "description": "Comprehensive interview preparation program covering all aspects of job interviews. Learn to present yourself effectively, answer tough questions, and negotiate offers.",
+            "category": "soft_skills", "duration": "1 Month", "icon": "Briefcase",
+            "outcomes": ["Interview Confident", "Resume Ready", "Negotiation Skills", "Job Offer Ready"],
+            "suitable_for": "Job Seekers, Fresh Graduates, Career Changers, Working Professionals",
+            "certifications": ["Interview Preparation Certificate"],
+            "modules": ["Resume & CV Writing", "LinkedIn Profile Optimization", "Common Interview Questions", "Behavioral Interview Techniques", "Technical Interview Preparation", "Group Discussion Skills", "Salary Negotiation", "Mock Interview Practice"],
+            "image_url": "https://images.unsplash.com/photo-1565688534245-05d6b5be184a?auto=format&fit=crop&q=80&w=1200", "order": 20
+        }
+    ]
+    
+    # Clear existing programs and insert new ones
+    await db.programs.delete_many({})
+    
+    for prog_data in programs_data:
+        program = Program(
+            slug=prog_data["slug"],
+            title=prog_data["title"],
+            subtitle=prog_data.get("subtitle", ""),
+            description=prog_data["description"],
+            category=prog_data["category"],
+            duration=prog_data["duration"],
+            outcomes=prog_data["outcomes"],
+            suitable_for=prog_data["suitable_for"],
+            certifications=prog_data["certifications"],
+            modules=prog_data["modules"],
+            image_url=prog_data.get("image_url"),
+            icon=prog_data.get("icon", "Monitor"),
+            order=prog_data.get("order", 0)
+        )
+        doc = program.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.programs.insert_one(doc)
+    
+    return {"message": f"Successfully seeded {len(programs_data)} programs"}
 
 
 # Job Openings Routes
@@ -1827,6 +2069,168 @@ async def get_seo_settings(page_slug: str):
         og_image=seo.get('og_image'),
         updated_at=seo['updated_at'] if isinstance(seo['updated_at'], str) else seo['updated_at'].isoformat()
     )
+
+
+@api_router.post("/seo/seed-all")
+async def seed_all_seo():
+    """Seed all SEO settings to the database"""
+    seo_data = [
+        {
+            "page_slug": "home",
+            "meta_title": "ETI Educom® | Best Computer Training Institute in Pathankot",
+            "meta_description": "ETI Educom is India's leading computer career school offering professional IT training, certifications & placement support. Join our industry-aligned programs today!",
+            "meta_keywords": "computer training institute, IT courses, professional certification, career training, Pathankot",
+            "og_title": "ETI Educom® - The Computer Career School",
+            "og_description": "Transform your career with industry-recognized IT certifications and hands-on training at ETI Educom."
+        },
+        {
+            "page_slug": "about",
+            "meta_title": "About ETI Educom | Our Story & Mission",
+            "meta_description": "Learn about ETI Educom's mission to bridge the gap between education and industry. Discover our structured career tracks and commitment to student success.",
+            "meta_keywords": "about ETI Educom, computer training institute, career school, IT education",
+            "og_title": "About ETI Educom - Building Digital Careers Since 2017",
+            "og_description": "ETI Educom is India's trusted Computer Career School transforming students into industry-ready professionals."
+        },
+        {
+            "page_slug": "contact",
+            "meta_title": "Contact ETI Educom | Get in Touch",
+            "meta_description": "Contact ETI Educom for course inquiries, admissions, and career guidance. Visit our centers in Pathankot or reach us online.",
+            "meta_keywords": "contact ETI Educom, IT training inquiry, admission, career guidance",
+            "og_title": "Contact ETI Educom",
+            "og_description": "Get in touch with ETI Educom for course information and career guidance."
+        },
+        {
+            "page_slug": "founder",
+            "meta_title": "Founder's Desk | ETI Educom",
+            "meta_description": "Message from the founder of ETI Educom. Learn about the vision and mission that drives India's leading computer career school.",
+            "meta_keywords": "ETI Educom founder, vision, mission, leadership",
+            "og_title": "Founder's Message - ETI Educom",
+            "og_description": "Learn about the vision behind ETI Educom from our founder."
+        },
+        {
+            "page_slug": "franchise",
+            "meta_title": "Franchise Opportunity | Partner with ETI Educom",
+            "meta_description": "Start your education business with ETI Educom franchise. Get brand authorization, CATC certification support, and comprehensive training programs.",
+            "meta_keywords": "ETI Educom franchise, education franchise, computer training franchise, business opportunity",
+            "og_title": "ETI Educom Franchise Opportunity",
+            "og_description": "Partner with ETI Educom and build a future-proof education business."
+        },
+        {
+            "page_slug": "team",
+            "meta_title": "Our Team | Meet the Experts at ETI Educom",
+            "meta_description": "Meet the dedicated team of industry experts and educators at ETI Educom who are committed to shaping future IT professionals.",
+            "meta_keywords": "ETI Educom team, faculty, trainers, experts",
+            "og_title": "Meet Our Team - ETI Educom",
+            "og_description": "Dedicated experts committed to your career success."
+        },
+        {
+            "page_slug": "events",
+            "meta_title": "Events & Workshops | ETI Educom",
+            "meta_description": "Explore upcoming events, workshops, and seminars at ETI Educom. Stay updated with our tech talks and career guidance sessions.",
+            "meta_keywords": "IT events, workshops, seminars, tech talks, career guidance",
+            "og_title": "Events at ETI Educom",
+            "og_description": "Join our workshops and events to enhance your skills."
+        },
+        {
+            "page_slug": "blogs",
+            "meta_title": "Blog | Tech Insights & Career Tips | ETI Educom",
+            "meta_description": "Read our latest blog posts on technology trends, career advice, and industry insights. Stay informed with ETI Educom's expert content.",
+            "meta_keywords": "tech blog, career tips, IT trends, education blog",
+            "og_title": "ETI Educom Blog",
+            "og_description": "Tech insights and career tips from industry experts."
+        },
+        {
+            "page_slug": "faq",
+            "meta_title": "FAQ | Frequently Asked Questions | ETI Educom",
+            "meta_description": "Find answers to commonly asked questions about ETI Educom's courses, admissions, certifications, and placement support.",
+            "meta_keywords": "FAQ, questions, admissions, courses, certifications",
+            "og_title": "Frequently Asked Questions - ETI Educom",
+            "og_description": "Get answers to your questions about our programs."
+        },
+        {
+            "page_slug": "hire-from-us",
+            "meta_title": "Hire From Us | Recruit Trained Professionals | ETI Educom",
+            "meta_description": "Hire skilled IT professionals trained at ETI Educom. Our graduates are industry-ready with practical experience and certifications.",
+            "meta_keywords": "hire IT professionals, recruitment, trained candidates, placement",
+            "og_title": "Hire From ETI Educom",
+            "og_description": "Recruit industry-ready professionals from our talent pool."
+        },
+        {
+            "page_slug": "join-team",
+            "meta_title": "Careers at ETI Educom | Join Our Team",
+            "meta_description": "Explore career opportunities at ETI Educom. Join our team of passionate educators and help shape the future of IT education.",
+            "meta_keywords": "careers, jobs, ETI Educom jobs, teaching jobs",
+            "og_title": "Join Our Team - ETI Educom",
+            "og_description": "Be part of India's leading computer career school."
+        },
+        {
+            "page_slug": "programs",
+            "meta_title": "Programs & Courses | IT Training | ETI Educom",
+            "meta_description": "Explore our comprehensive range of IT programs including career tracks, certifications, and skill development courses at ETI Educom.",
+            "meta_keywords": "IT programs, courses, certifications, career tracks",
+            "og_title": "Programs at ETI Educom",
+            "og_description": "Industry-aligned IT training programs for your career."
+        },
+        {
+            "page_slug": "free-counselling",
+            "meta_title": "Free Career Counselling | ETI Educom",
+            "meta_description": "Get free career counselling from ETI Educom experts. Discover the right IT career path based on your interests and goals.",
+            "meta_keywords": "free counselling, career guidance, IT career, consultation",
+            "og_title": "Free Career Counselling - ETI Educom",
+            "og_description": "Get expert guidance for your IT career journey."
+        },
+        {
+            "page_slug": "cyber-warriors",
+            "meta_title": "Cyber Warriors | Cybersecurity Training | ETI Educom",
+            "meta_description": "Join the Cyber Warriors program at ETI Educom. Comprehensive cybersecurity training for ethical hacking, security operations and digital defense.",
+            "meta_keywords": "cybersecurity training, ethical hacking, cyber warriors, security",
+            "og_title": "Cyber Warriors - ETI Educom",
+            "og_description": "Become a cybersecurity professional with expert training."
+        },
+        {
+            "page_slug": "summer-training",
+            "meta_title": "Summer Training Program | ETI Educom",
+            "meta_description": "Join ETI Educom's summer training program. Hands-on IT training with certifications during your summer break.",
+            "meta_keywords": "summer training, vacation courses, IT internship, summer program",
+            "og_title": "Summer Training - ETI Educom",
+            "og_description": "Make your summer productive with our training programs."
+        },
+        {
+            "page_slug": "industrial-training",
+            "meta_title": "6 Weeks Industrial Training | ETI Educom | Rs. 6,999",
+            "meta_description": "45 Days Industrial Training for BCA, MCA, BTech, MTech students. International Certifications, Expert Trainers, Project Development Support. Technologies: Python, Java, Web Design, CCNA & more.",
+            "meta_keywords": "6 weeks industrial training, industrial training for BCA, MCA industrial training, BTech summer training, project training",
+            "og_title": "6 Weeks Industrial Training | ETI Educom",
+            "og_description": "Get 45 days hands-on industrial training with International Certification at just Rs. 6,999."
+        },
+        {
+            "page_slug": "privacy-policy",
+            "meta_title": "Privacy Policy | ETI Educom",
+            "meta_description": "Read ETI Educom's privacy policy. Learn how we collect, use, and protect your personal information.",
+            "meta_keywords": "privacy policy, data protection, terms",
+            "og_title": "Privacy Policy - ETI Educom",
+            "og_description": "Our commitment to protecting your privacy."
+        }
+    ]
+    
+    # Clear existing SEO settings and insert new ones
+    await db.seo_settings.delete_many({})
+    
+    for seo_item in seo_data:
+        seo = SEOSettings(
+            page_slug=seo_item["page_slug"],
+            meta_title=seo_item["meta_title"],
+            meta_description=seo_item["meta_description"],
+            meta_keywords=seo_item.get("meta_keywords"),
+            og_title=seo_item.get("og_title"),
+            og_description=seo_item.get("og_description"),
+            og_image=seo_item.get("og_image")
+        )
+        doc = seo.model_dump()
+        doc['updated_at'] = doc['updated_at'].isoformat()
+        await db.seo_settings.insert_one(doc)
+    
+    return {"message": f"Successfully seeded {len(seo_data)} SEO settings"}
 
 
 # ============ Technical SEO Routes ============

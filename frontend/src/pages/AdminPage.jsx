@@ -45,6 +45,8 @@ import {
   SelectValue,
 } from "../components/ui/select";
 import FounderManager from "./admin/FounderManager";
+import SEOManager from "./admin/SEOManager";
+import EventsManager from "./admin/EventsManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -1095,39 +1097,7 @@ const AdminPage = () => {
 
             {/* Events Tab */}
             <TabsContent value="events">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-[#1a1a1a]">Manage Events</h2>
-                <Button className="btn-primary" onClick={() => setShowEventModal(true)} data-testid="add-event-btn">
-                  <Plus className="w-4 h-4" /> Add Event
-                </Button>
-              </div>
-              {events.length === 0 ? (
-                <Card className="card-default"><CardContent className="p-8 text-center">
-                  <Calendar className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
-                  <p className="text-[#717171]">No events yet</p>
-                </CardContent></Card>
-              ) : (
-                <div className="space-y-4">
-                  {events.map((event) => (
-                    <Card key={event.id} className="card-default">
-                      <CardContent className="p-4 flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-[#1a1a1a]">{event.title}</h3>
-                          <p className="text-sm text-[#717171]">{event.event_date} | {event.location}</p>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button variant="outline" size="sm" onClick={() => handleEditEvent(event)}>
-                            Edit
-                          </Button>
-                          <Button variant="destructive" size="sm" onClick={() => handleDeleteEvent(event.id)}>
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+              <EventsManager events={events} onRefresh={fetchData} />
             </TabsContent>
 
             {/* Reviews Tab */}
@@ -1325,32 +1295,7 @@ const AdminPage = () => {
 
             {/* SEO Tab */}
             <TabsContent value="seo">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-[#1a1a1a]">SEO Settings</h2>
-                <Button className="btn-primary" onClick={() => setShowSeoModal(true)} data-testid="add-seo-btn">
-                  <Plus className="w-4 h-4" /> Add/Update SEO
-                </Button>
-              </div>
-              {seoSettings.length === 0 ? (
-                <Card className="card-default"><CardContent className="p-8 text-center">
-                  <Globe className="w-12 h-12 text-[#b0b0b0] mx-auto mb-4" />
-                  <p className="text-[#717171]">No SEO settings yet</p>
-                </CardContent></Card>
-              ) : (
-                <div className="space-y-4">
-                  {seoSettings.map((seo) => (
-                    <Card key={seo.id} className="card-default">
-                      <CardContent className="p-4">
-                        <div className="flex items-center justify-between mb-2">
-                          <Badge>{seo.page_slug}</Badge>
-                        </div>
-                        <h3 className="font-semibold text-[#1a1a1a]">{seo.meta_title}</h3>
-                        <p className="text-sm text-[#717171] line-clamp-2">{seo.meta_description}</p>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              )}
+              <SEOManager seoSettings={seoSettings} onRefresh={fetchData} />
             </TabsContent>
 
             {/* Technical SEO Tab */}
