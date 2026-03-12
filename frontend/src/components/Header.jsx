@@ -161,82 +161,121 @@ const Header = () => {
                 </div>
               </div>
               
-              {/* Programs Mega Menu */}
+              {/* Programs Mega Menu - Full Width */}
               <div 
-                className="nav-item relative"
+                className="nav-item static"
                 onMouseEnter={() => setActiveDropdown('programs')}
                 onMouseLeave={() => setActiveDropdown(null)}
               >
                 <button className="nav-link flex items-center gap-1" data-testid="programs-menu">
                   Programs
-                  <ChevronDown className="w-4 h-4" />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'programs' ? 'rotate-180' : ''}`} />
                 </button>
-                <div className={`mega-menu mega-menu-wide ${activeDropdown === 'programs' ? 'opacity-100 visible' : ''}`}>
-                  {/* Career Tracks Section - Full Width Top */}
-                  <div className="mb-6 pb-6 border-b border-[#ebebeb]">
-                    <h4 className="mega-menu-category-title flex items-center gap-2">
-                      <GraduationCap className="w-4 h-4 text-[#1545ea]" />
-                      Career Tracks
-                      <span className="text-xs bg-[#1545ea] text-white px-2 py-0.5 rounded-full">Featured</span>
-                    </h4>
-                    <div className="grid grid-cols-4 gap-4 mt-3">
-                      {programCategories[0].programs.map((program) => (
-                        <Link 
-                          key={program.id}
-                          to={`/programs/${program.id}`}
-                          className="mega-menu-item bg-[#f8f9fa] hover:bg-[#1545ea] hover:text-white group rounded-xl p-3"
-                          data-testid={`mega-menu-${program.id}`}
-                        >
-                          <div className="w-10 h-10 bg-[#1545ea]/10 group-hover:bg-white/20 rounded-lg flex items-center justify-center text-[#1545ea] group-hover:text-white mb-2">
-                            {program.icon}
-                          </div>
-                          <p className="font-semibold text-[#1a1a1a] group-hover:text-white text-sm">{program.title}</p>
-                          <p className="text-xs text-[#717171] group-hover:text-white/80 flex items-center gap-1 mt-1">
-                            <Clock className="w-3 h-3" />
-                            {program.duration}
-                          </p>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Individual Programs - 3 Column Grid */}
-                  <div className="grid grid-cols-3 gap-6">
-                    {programCategories.slice(1).map((category) => (
-                      <div key={category.id} className="mega-menu-category">
-                        <h4 className="mega-menu-category-title">{category.title}</h4>
-                        <div className="space-y-1">
-                          {category.programs.map((program) => (
-                            <Link 
-                              key={program.id}
-                              to={`/programs/${program.id}`}
-                              className="mega-menu-item"
-                              data-testid={`mega-menu-${program.id}`}
-                            >
-                              <div className="w-8 h-8 bg-[#ebebeb] rounded-lg flex items-center justify-center text-[#1545ea]">
-                                {program.icon}
-                              </div>
-                              <div className="flex-1">
-                                <p className="font-medium text-[#1a1a1a] text-sm">{program.title}</p>
-                                <p className="text-xs text-[#717171] flex items-center gap-1">
-                                  <Clock className="w-3 h-3" />
-                                  {program.duration}
-                                </p>
-                              </div>
-                            </Link>
-                          ))}
+                
+                {/* Full Width Mega Menu */}
+                <div className={`fixed left-0 right-0 top-[72px] bg-white border-t border-[#ebebeb] shadow-2xl transition-all duration-300 z-50 ${activeDropdown === 'programs' ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}>
+                  <div className="max-w-7xl mx-auto px-6 py-8">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-[#1545ea] to-[#0d36c4] rounded-xl flex items-center justify-center">
+                          <GraduationCap className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-[#1a1a1a]">Explore Our Programs</h3>
+                          <p className="text-sm text-[#717171]">Industry-aligned courses with international certifications</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  <div className="mt-4 pt-4 border-t border-[#ebebeb]">
-                    <Link 
-                      to="/programs" 
-                      className="flex items-center gap-2 text-[#1545ea] font-semibold text-sm hover:underline"
-                    >
-                      View All Programs
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
+                      <Link to="/programs" className="flex items-center gap-2 bg-[#1545ea] text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-[#0d36c4] transition-colors">
+                        View All Programs
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+
+                    {/* Career Tracks - Featured Section */}
+                    <div className="mb-8">
+                      <div className="flex items-center gap-2 mb-4">
+                        <span className="text-sm font-bold text-[#1545ea] uppercase tracking-wider">Career Tracks</span>
+                        <span className="text-[10px] bg-gradient-to-r from-[#1545ea] to-[#0d36c4] text-white px-2 py-0.5 rounded-full font-medium">FEATURED</span>
+                      </div>
+                      <div className="grid grid-cols-4 gap-4">
+                        {programCategories[0].programs.map((program, idx) => (
+                          <Link 
+                            key={program.id}
+                            to={`/programs/${program.id}`}
+                            className="group relative bg-gradient-to-br from-[#f8f9fa] to-white border border-[#ebebeb] rounded-2xl p-5 hover:border-[#1545ea] hover:shadow-lg transition-all duration-300 overflow-hidden"
+                            data-testid={`mega-menu-${program.id}`}
+                          >
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-[#1545ea]/5 to-transparent rounded-bl-full"></div>
+                            <div className="relative">
+                              <div className="w-12 h-12 bg-gradient-to-br from-[#1545ea] to-[#0d36c4] rounded-xl flex items-center justify-center text-white mb-3 group-hover:scale-110 transition-transform shadow-lg">
+                                {program.icon}
+                              </div>
+                              <h4 className="font-bold text-[#1a1a1a] mb-1 group-hover:text-[#1545ea] transition-colors">{program.title}</h4>
+                              <div className="flex items-center gap-2 text-xs text-[#717171]">
+                                <Clock className="w-3 h-3" />
+                                <span>{program.duration}</span>
+                              </div>
+                              <div className="mt-3 flex items-center gap-1 text-[#1545ea] text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+                                Learn More <ChevronRight className="w-3 h-3" />
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Other Programs Grid */}
+                    <div className="grid grid-cols-5 gap-6">
+                      {programCategories.slice(1).map((category) => (
+                        <div key={category.id}>
+                          <h4 className="text-xs font-bold text-[#717171] uppercase tracking-wider mb-3 flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-[#1545ea] rounded-full"></span>
+                            {category.title}
+                          </h4>
+                          <div className="space-y-1">
+                            {category.programs.map((program) => (
+                              <Link 
+                                key={program.id}
+                                to={`/programs/${program.id}`}
+                                className="group flex items-center gap-3 p-2 rounded-lg hover:bg-[#f8f9fa] transition-colors"
+                                data-testid={`mega-menu-${program.id}`}
+                              >
+                                <div className="w-8 h-8 bg-[#f0f0f0] group-hover:bg-[#1545ea]/10 rounded-lg flex items-center justify-center text-[#717171] group-hover:text-[#1545ea] transition-colors flex-shrink-0">
+                                  {program.icon}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-[#1a1a1a] group-hover:text-[#1545ea] transition-colors truncate">{program.title}</p>
+                                  <p className="text-[10px] text-[#717171]">{program.duration}</p>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Bottom CTA Bar */}
+                    <div className="mt-8 pt-6 border-t border-[#ebebeb] flex items-center justify-between">
+                      <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-2 text-sm text-[#717171]">
+                          <Award className="w-4 h-4 text-[#1545ea]" />
+                          <span>International Certifications</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-[#717171]">
+                          <Users className="w-4 h-4 text-[#1545ea]" />
+                          <span>Expert Trainers</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-[#717171]">
+                          <Briefcase className="w-4 h-4 text-[#1545ea]" />
+                          <span>Placement Support</span>
+                        </div>
+                      </div>
+                      <Link to="/free-counselling" className="flex items-center gap-2 text-[#1545ea] font-semibold text-sm hover:underline">
+                        Get Free Career Counselling
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
