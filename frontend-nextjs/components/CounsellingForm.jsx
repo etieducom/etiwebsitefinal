@@ -9,34 +9,30 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 export default function CounsellingForm() {
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
     phone: '',
-    qualification: '',
-    interest: ''
+    education: '',
+    preferred_track: ''
   });
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone) {
+    if (!formData.name || !formData.phone || !formData.education || !formData.preferred_track) {
       toast.error('Please fill all required fields');
       return;
     }
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/leads`, {
+      const response = await fetch(`${API_URL}/api/counselling-leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          source: 'free_counselling'
-        })
+        body: JSON.stringify(formData)
       });
       
       if (response.ok) {
         toast.success('Thank you! Our counsellor will contact you within 24 hours.');
-        setFormData({ name: '', email: '', phone: '', qualification: '', interest: '' });
+        setFormData({ name: '', phone: '', education: '', preferred_track: '' });
       } else {
         throw new Error('Failed to submit');
       }
@@ -72,24 +68,15 @@ export default function CounsellingForm() {
       </div>
       
       <div>
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          className="form-input"
-        />
-      </div>
-      
-      <div>
         <select
-          value={formData.qualification}
-          onChange={(e) => setFormData({ ...formData, qualification: e.target.value })}
+          value={formData.education}
+          onChange={(e) => setFormData({ ...formData, education: e.target.value })}
           className="form-input"
+          required
         >
-          <option value="">Your Qualification</option>
-          <option value="10th">10th Pass</option>
-          <option value="12th">12th Pass</option>
+          <option value="">Your Education *</option>
+          <option value="10th Pass">10th Pass</option>
+          <option value="12th Pass">12th Pass</option>
           <option value="Graduate">Graduate</option>
           <option value="Post Graduate">Post Graduate</option>
           <option value="Working Professional">Working Professional</option>
@@ -98,11 +85,12 @@ export default function CounsellingForm() {
       
       <div>
         <select
-          value={formData.interest}
-          onChange={(e) => setFormData({ ...formData, interest: e.target.value })}
+          value={formData.preferred_track}
+          onChange={(e) => setFormData({ ...formData, preferred_track: e.target.value })}
           className="form-input"
+          required
         >
-          <option value="">Interested In</option>
+          <option value="">Preferred Track *</option>
           <option value="Software Development">Software Development</option>
           <option value="Cybersecurity">Cybersecurity</option>
           <option value="Digital Marketing">Digital Marketing</option>
