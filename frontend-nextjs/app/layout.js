@@ -1,0 +1,113 @@
+import './globals.css';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata = {
+  metadataBase: new URL('https://etieducom.com'),
+  title: {
+    default: 'ETI Educom® | The Computer Career School',
+    template: '%s | ETI Educom®',
+  },
+  description: 'ETI Educom® - India\'s premier Computer Career School since 2017. Offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support with 100% placement assistance.',
+  keywords: ['ETI Educom', 'computer institute', 'IT training', 'software development course', 'cybersecurity training', 'digital marketing course', 'computer career school', 'best computer institute Pathankot', 'IT certification', 'programming courses'],
+  authors: [{ name: 'ETI Educom' }],
+  creator: 'ETI Educom',
+  publisher: 'ETI Educom',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://etieducom.com',
+    siteName: 'ETI Educom',
+    title: 'ETI Educom® | The Computer Career School',
+    description: 'India\'s leading Computer Career School offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support since 2017.',
+    images: [
+      {
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'ETI Educom - The Computer Career School',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ETI Educom® | The Computer Career School',
+    description: 'India\'s leading Computer Career School offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support.',
+    images: ['/images/og-image.jpg'],
+  },
+  verification: {
+    google: 'your-google-verification-code',
+  },
+  alternates: {
+    canonical: 'https://etieducom.com',
+  },
+  other: {
+    'geo.region': 'IN-PB',
+    'geo.placename': 'Pathankot',
+    'geo.position': '32.2643;75.6421',
+    'ICBM': '32.2643, 75.6421',
+  },
+};
+
+// JSON-LD Structured Data
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'EducationalOrganization',
+  name: 'ETI Educom',
+  alternateName: 'ETI Educom®',
+  url: 'https://etieducom.com',
+  logo: 'https://etieducom.com/images/logo-blue.png',
+  description: 'India\'s premier Computer Career School offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support since 2017.',
+  foundingDate: '2017',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: 'Jodhamal Colony, Dhangu Road',
+    addressLocality: 'Pathankot',
+    addressRegion: 'Punjab',
+    postalCode: '145001',
+    addressCountry: 'IN',
+  },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+91-9646727676',
+    contactType: 'customer service',
+    email: 'helpdesk@etieducom.com',
+    availableLanguage: ['English', 'Hindi', 'Punjabi'],
+  },
+  sameAs: [
+    'https://www.facebook.com/etieducom',
+    'https://www.instagram.com/etieducom/',
+    'https://www.linkedin.com/company/etieducom',
+    'https://www.youtube.com/@ETIEducomofficial',
+  ],
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <head>
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
+      <body className={inter.className}>
+        {children}
+      </body>
+    </html>
+  );
+}

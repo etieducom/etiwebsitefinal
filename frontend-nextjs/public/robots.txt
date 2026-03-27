@@ -1,0 +1,25 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://etieducom.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1
+
+# Disallow admin pages
+Disallow: /admin
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
