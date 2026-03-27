@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const API = process.env.REACT_APP_BACKEND_URL;
+const SITE_URL = 'https://etieducom.com';
 
 const SEO = ({ pageSlug = 'home' }) => {
   const [seoData, setSeoData] = useState(null);
+  const location = useLocation();
 
   // Default SEO values as fallback
   const defaults = {
@@ -176,28 +179,59 @@ const SEO = ({ pageSlug = 'home' }) => {
       }
     };
 
+    // Helper function to update or create link tag
+    const updateLinkTag = (rel, href) => {
+      if (!href) return;
+      
+      let tag = document.querySelector(`link[rel="${rel}"]`);
+      
+      if (tag) {
+        tag.setAttribute('href', href);
+      } else {
+        tag = document.createElement('link');
+        tag.setAttribute('rel', rel);
+        tag.setAttribute('href', href);
+        document.head.appendChild(tag);
+      }
+    };
+
     // Update meta tags
     updateMetaTag('description', currentSEO.description);
     updateMetaTag('keywords', currentSEO.keywords);
+    
+    // Canonical URL
+    const canonicalUrl = `${SITE_URL}${location.pathname}`;
+    updateLinkTag('canonical', canonicalUrl);
     
     // Open Graph tags
     updateMetaTag('og:title', currentSEO.ogTitle, true);
     updateMetaTag('og:description', currentSEO.ogDescription, true);
     updateMetaTag('og:type', 'website', true);
     updateMetaTag('og:site_name', 'ETI Educom®', true);
+    updateMetaTag('og:url', canonicalUrl, true);
+    updateMetaTag('og:locale', 'en_IN', true);
     if (currentSEO.ogImage) {
       updateMetaTag('og:image', currentSEO.ogImage, true);
+    } else {
+      updateMetaTag('og:image', `${SITE_URL}/og-image.jpg`, true);
     }
     
     // Twitter Card tags
     updateMetaTag('twitter:card', 'summary_large_image');
     updateMetaTag('twitter:title', currentSEO.ogTitle);
     updateMetaTag('twitter:description', currentSEO.ogDescription);
+    updateMetaTag('twitter:url', canonicalUrl);
     if (currentSEO.ogImage) {
       updateMetaTag('twitter:image', currentSEO.ogImage);
+    } else {
+      updateMetaTag('twitter:image', `${SITE_URL}/og-image.jpg`);
     }
+    
+    // Additional SEO meta tags
+    updateMetaTag('robots', 'index, follow');
+    updateMetaTag('author', 'ETI Educom');
 
-  }, [currentSEO]);
+  }, [currentSEO, location.pathname]);
 
   return null;
 };
