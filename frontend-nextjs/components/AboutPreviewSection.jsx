@@ -21,14 +21,14 @@ export default function AboutPreviewSection() {
               </div>
               
               {/* Decorative Elements */}
-              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-yellow-400 rounded-2xl -z-10"></div>
+              <div className="absolute -bottom-4 -right-4 w-32 h-32 bg-primary/20 rounded-2xl -z-10"></div>
             </div>
             
             {/* Stats Card */}
             <div className="absolute -bottom-8 -left-8 bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center">
-                  <Award className="w-7 h-7 text-green-600" />
+                <div className="w-14 h-14 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Award className="w-7 h-7 text-primary" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-gray-900">Since 2017</p>
@@ -45,26 +45,26 @@ export default function AboutPreviewSection() {
             </div>
             
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
-              Transforming Lives Through
-              <span className="text-primary"> Quality IT Education</span>
+              Building Careers Through
+              <span className="text-primary"> Industry-Ready Training</span>
             </h2>
             
             <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-              ETI Educom is Punjab&apos;s leading Computer Career School, dedicated to bridging the gap 
-              between academic knowledge and industry requirements. We don&apos;t just teach—we transform 
-              careers.
+              ETI Educom is a professionally managed Computer Career School committed to delivering 
+              high-quality IT education. Our structured approach combines theoretical knowledge with 
+              practical application, ensuring our graduates are fully prepared for industry demands.
             </p>
             
             {/* Key Points */}
             <div className="space-y-4 mb-8">
               {[
-                'CATC (Certiport Authorized Testing Center)',
-                'ISO Certified Institute with MSME Registration',
-                'Industry-aligned curriculum with practical training',
-                '100% placement assistance for eligible students'
+                'Certiport Authorized Testing Center (CATC) for global certifications',
+                'ISO 9001:2015 certified quality management system',
+                'Curriculum designed in collaboration with industry experts',
+                'Dedicated placement cell with strong corporate partnerships'
               ].map((point, index) => (
                 <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                   <span className="text-gray-700">{point}</span>
                 </div>
               ))}

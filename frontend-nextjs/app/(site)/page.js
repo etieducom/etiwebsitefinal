@@ -15,7 +15,10 @@ import {
   Briefcase,
   Clock,
   Phone,
-  Sparkles
+  ArrowRight,
+  Building2,
+  Target,
+  Zap
 } from 'lucide-react';
 import HeroForm from '@/components/HeroForm';
 import ReviewsSection from '@/components/ReviewsSection';
@@ -27,12 +30,12 @@ import AboutPreviewSection from '@/components/AboutPreviewSection';
 import WhatsAppButton from '@/components/WhatsAppButton';
 
 export const metadata = {
-  title: 'ETI Educom® | The Computer Career School - IT Training Institute',
-  description: 'ETI Educom® - India\'s premier Computer Career School since 2017. Offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support with 100% placement assistance.',
-  keywords: 'ETI Educom, computer institute, IT training, software development course, cybersecurity training, digital marketing course, computer career school, best computer institute Pathankot',
+  title: 'ETI Educom® | The Computer Career School - Professional IT Training Institute in India',
+  description: 'ETI Educom® is India\'s premier Computer Career School since 2017. We offer industry-certified training programs in Software Development, Cybersecurity, Digital Marketing & IT Support with guaranteed placement assistance.',
+  keywords: 'ETI Educom, computer training institute India, IT training, software development course, cybersecurity training, digital marketing course, professional IT training, best computer institute Punjab',
   openGraph: {
-    title: 'ETI Educom® | The Computer Career School',
-    description: 'India\'s leading Computer Career School offering certified training in Software Development, Cybersecurity, Digital Marketing & IT Support since 2017.',
+    title: 'ETI Educom® | Professional IT Training Institute',
+    description: 'India\'s leading Computer Career School offering industry-certified training in Software Development, Cybersecurity, Digital Marketing & IT Support since 2017.',
     url: 'https://etieducom.com',
     images: [{ url: '/images/og-image.jpg', width: 1200, height: 630 }],
   },
@@ -45,32 +48,32 @@ const careerTracks = [
   {
     id: 'it-foundation',
     title: 'IT Foundation',
-    shortDesc: 'Digital Literacy & Office',
-    fullDesc: 'Master essential computing skills, MS Office, and digital fundamentals for career readiness.',
+    shortDesc: 'Digital Literacy & Office Productivity',
+    fullDesc: 'Build a strong foundation in computing, MS Office Suite, and essential digital skills required for any modern workplace.',
     icon: Monitor,
     duration: '6 Months'
   },
   {
     id: 'digital-design',
     title: 'Design & Marketing',
-    shortDesc: 'Creative + Digital Strategy',
-    fullDesc: 'Learn Adobe tools, UI/UX design, SEO, and digital marketing for creative careers.',
+    shortDesc: 'Creative Design + Digital Strategy',
+    fullDesc: 'Master Adobe Creative Suite, UI/UX principles, SEO, and performance marketing for creative industry roles.',
     icon: Palette,
     duration: '9-12 Months'
   },
   {
     id: 'it-networking',
     title: 'IT & Cybersecurity',
-    shortDesc: 'Networks + Security',
-    fullDesc: 'Build expertise in IT support, networking, and cybersecurity protocols.',
+    shortDesc: 'Infrastructure + Security',
+    fullDesc: 'Develop expertise in network administration, system management, and cybersecurity operations.',
     icon: Network,
     duration: '9-12 Months'
   },
   {
     id: 'software-development',
     title: 'Software Development',
-    shortDesc: 'Code + Build Apps',
-    fullDesc: 'Master programming, web development, and software engineering principles.',
+    shortDesc: 'Programming + Application Development',
+    fullDesc: 'Learn industry-standard programming languages, frameworks, and software engineering best practices.',
     icon: Code,
     duration: '9-12 Months'
   }
@@ -78,92 +81,96 @@ const careerTracks = [
 
 const trendingSkills = [
   { id: 'digital-marketing', title: 'Digital Marketing', tag: 'High Demand', icon: TrendingUp },
-  { id: 'ethical-hacking', title: 'Ethical Hacking', tag: 'Hot', icon: Shield },
+  { id: 'ethical-hacking', title: 'Ethical Hacking', tag: 'Certification', icon: Shield },
   { id: 'soc-analyst', title: 'SOC Analyst', tag: 'Cybersecurity', icon: Network },
   { id: 'graphic-designing', title: 'Graphic Design', tag: 'Creative', icon: Palette },
-  { id: 'data-analytics', title: 'Data Analytics', tag: 'Trending', icon: Monitor },
-  { id: 'web-development', title: 'Full Stack Dev', tag: 'In Demand', icon: Code }
+  { id: 'data-analytics', title: 'Data Analytics', tag: 'Analytics', icon: Monitor },
+  { id: 'web-development', title: 'Full Stack Development', tag: 'Development', icon: Code }
 ];
 
 const whyChooseUs = [
-  { title: 'Industry-Aligned Curriculum', desc: 'Courses designed with current market requirements', icon: CheckCircle },
-  { title: 'International Certifications', desc: 'Microsoft, Adobe, EC-Council certifications', icon: Award },
-  { title: 'Practical Training', desc: 'Hands-on projects and real-world scenarios', icon: Code },
-  { title: 'Placement Support', desc: '100% placement assistance for eligible students', icon: Briefcase },
-  { title: 'Expert Faculty', desc: 'Learn from industry professionals', icon: Users },
-  { title: 'Flexible Batches', desc: 'Morning, evening, and weekend batches available', icon: Clock }
+  { title: 'Industry-Aligned Curriculum', desc: 'Programs designed in consultation with industry experts to match current market requirements', icon: Target },
+  { title: 'International Certifications', desc: 'Authorized testing center for Microsoft, Adobe, EC-Council, and Tally certifications', icon: Award },
+  { title: 'Hands-On Training', desc: 'Project-based learning with real-world scenarios and industry case studies', icon: Code },
+  { title: 'Placement Assistance', desc: 'Dedicated placement cell with 95% placement rate for eligible candidates', icon: Briefcase },
+  { title: 'Expert Faculty', desc: 'Learn from certified trainers with extensive industry experience', icon: Users },
+  { title: 'Flexible Learning', desc: 'Multiple batch options including morning, evening, and weekend schedules', icon: Clock }
 ];
 
-const highlights = [
-  'CATC Authorized Testing Center',
-  'ISO Certified Institute',
-  'MSME Registered',
-  '5000+ Alumni Network'
+const credentials = [
+  'Certiport Authorized Testing Center (CATC)',
+  'ISO 9001:2015 Certified Institute',
+  'MSME Registered Organization',
+  'Member - NASSCOM'
 ];
 
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary via-primary-dark to-primary py-16 lg:py-24 overflow-hidden">
-        {/* Background Pattern */}
+      {/* Hero Section - White/Light Background */}
+      <section className="relative bg-gradient-to-b from-gray-50 to-white py-16 lg:py-24 overflow-hidden">
+        {/* Subtle Background Pattern */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-white/5 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-white/5 rounded-full blur-[80px]"></div>
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-gray-200/50 rounded-full blur-[80px]"></div>
         </div>
         
         <div className="container-main relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div className="space-y-6 text-white">
+            <div className="space-y-6">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium border border-white/10">
-                <Sparkles className="w-4 h-4 text-yellow-400" />
-                <span>Punjab&apos;s Leading IT Training Institute</span>
+              <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm font-medium text-primary">
+                <Building2 className="w-4 h-4" />
+                <span>Established 2017 | Punjab, India</span>
               </div>
               
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">
-                Build Your Career in
-                <span className="block mt-2 text-yellow-400">Technology</span>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
+                Empowering Careers Through
+                <span className="block mt-2 text-primary">Professional IT Training</span>
               </h1>
               
-              <p className="text-lg text-blue-100 max-w-xl leading-relaxed">
-                Transform your future with industry-aligned IT training. From coding to cybersecurity, 
-                we prepare you for the careers of tomorrow with hands-on learning and placement support.
+              <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
+                ETI Educom is a premier Computer Career School dedicated to bridging the gap between 
+                academic education and industry requirements. We deliver structured, certification-focused 
+                training programs that prepare professionals for successful careers in technology.
               </p>
               
-              {/* Highlights */}
-              <div className="flex flex-wrap gap-3">
-                {highlights.map((item, index) => (
-                  <span key={index} className="inline-flex items-center gap-1.5 text-sm text-blue-100 bg-white/10 px-3 py-1.5 rounded-full border border-white/10">
-                    <CheckCircle className="w-3.5 h-3.5 text-yellow-400" />
-                    {item}
-                  </span>
+              {/* Credentials */}
+              <div className="grid grid-cols-2 gap-3">
+                {credentials.map((item, index) => (
+                  <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
+                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
+                    <span>{item}</span>
+                  </div>
                 ))}
               </div>
               
               <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/programs" className="inline-flex items-center gap-2 bg-white text-primary px-6 py-3 rounded-xl font-semibold transition-all hover:bg-blue-50 shadow-lg">
+                <Link href="/programs" className="btn-primary">
                   Explore Programs
                   <ChevronRight className="w-5 h-5" />
                 </Link>
-                <Link href="/free-counselling" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white px-6 py-3 rounded-xl font-semibold transition-all border border-white/20">
-                  Free Counselling
+                <Link href="/free-counselling" className="btn-secondary">
+                  Request Consultation
                 </Link>
               </div>
               
               {/* Trust Indicators */}
-              <div className="flex items-center gap-6 pt-4">
-                <div className="flex -space-x-3">
-                  {[1,2,3,4].map((i) => (
-                    <div key={i} className="w-10 h-10 rounded-full bg-white/20 border-2 border-white/30 flex items-center justify-center text-xs text-white font-medium">
-                      {['RS', 'PK', 'AK', 'SK'][i-1]}
-                    </div>
-                  ))}
+              <div className="flex items-center gap-6 pt-6 border-t border-gray-200">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-900">5000+</p>
+                  <p className="text-sm text-gray-500">Professionals Trained</p>
                 </div>
-                <div className="text-sm">
-                  <span className="text-white font-semibold">5000+ Students</span>
-                  <span className="text-blue-200 block">have transformed their careers</span>
+                <div className="w-px h-12 bg-gray-200"></div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-900">95%</p>
+                  <p className="text-sm text-gray-500">Placement Rate</p>
+                </div>
+                <div className="w-px h-12 bg-gray-200"></div>
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gray-900">50+</p>
+                  <p className="text-sm text-gray-500">Industry Programs</p>
                 </div>
               </div>
             </div>
@@ -185,11 +192,11 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
               <GraduationCap className="w-4 h-4" />
-              Structured Learning Paths
+              Structured Learning Pathways
             </div>
-            <h2 className="section-title">Career Tracks</h2>
+            <h2 className="section-title">Career-Focused Training Tracks</h2>
             <p className="section-subtitle mx-auto">
-              Structured pathways designed to take you from beginner to industry-ready professional
+              Comprehensive programs designed to take you from fundamentals to industry-ready expertise
             </p>
           </div>
           
@@ -200,9 +207,9 @@ export default function HomePage() {
                 <Link 
                   key={track.id}
                   href={`/programs/${track.id}`}
-                  className="group relative bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-primary/20"
+                  className="group relative bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-primary/30"
                 >
-                  <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-primary/20">
+                  <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300">
                     <IconComponent className="w-6 h-6" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
@@ -216,7 +223,7 @@ export default function HomePage() {
                       {track.duration}
                     </span>
                     <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                      Learn More <ChevronRight className="w-4 h-4" />
+                      Details <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
                 </Link>
@@ -239,11 +246,11 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
               <TrendingUp className="w-4 h-4" />
-              High Demand Skills
+              Market-Driven Skills
             </div>
-            <h2 className="section-title">Trending Skills</h2>
+            <h2 className="section-title">In-Demand Technology Skills</h2>
             <p className="section-subtitle mx-auto">
-              Learn the most in-demand skills in the IT industry
+              Specialized courses aligned with current industry requirements and job market trends
             </p>
           </div>
           
@@ -254,13 +261,13 @@ export default function HomePage() {
                 <Link 
                   key={skill.id}
                   href={`/programs/${skill.id}`}
-                  className="group bg-white rounded-2xl p-5 text-center hover:shadow-lg border border-gray-100 hover:border-primary/20 transition-all duration-300"
+                  className="group bg-white rounded-2xl p-5 text-center hover:shadow-lg border border-gray-200 hover:border-primary/30 transition-all duration-300"
                 >
                   <div className="w-14 h-14 mx-auto bg-primary/10 rounded-2xl flex items-center justify-center text-primary mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
                     <IconComponent className="w-6 h-6" />
                   </div>
                   <h3 className="font-bold text-gray-900 text-sm mb-2 group-hover:text-primary transition-colors">{skill.title}</h3>
-                  <span className="inline-block bg-primary/10 text-primary text-[10px] px-2 py-1 rounded-full font-medium">
+                  <span className="inline-block bg-gray-100 text-gray-600 text-[10px] px-2 py-1 rounded-full font-medium">
                     {skill.tag}
                   </span>
                 </Link>
@@ -279,11 +286,11 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
               <Award className="w-4 h-4" />
-              Our Advantages
+              Our Differentiators
             </div>
-            <h2 className="section-title">Why Choose ETI Educom?</h2>
+            <h2 className="section-title">Why Organizations Choose ETI Educom</h2>
             <p className="section-subtitle mx-auto">
-              Discover what makes us the preferred choice for IT education
+              A commitment to excellence that has made us the preferred training partner for individuals and corporates
             </p>
           </div>
           
@@ -291,7 +298,7 @@ export default function HomePage() {
             {whyChooseUs.map((item, index) => {
               const IconComponent = item.icon;
               return (
-                <div key={index} className="group flex gap-4 p-6 rounded-2xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-100">
+                <div key={index} className="group flex gap-4 p-6 rounded-2xl bg-white hover:shadow-lg transition-all duration-300 border border-gray-200">
                   <div className="w-14 h-14 flex-shrink-0 bg-primary/10 rounded-2xl flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
                     <IconComponent className="w-6 h-6" />
                   </div>
@@ -319,35 +326,34 @@ export default function HomePage() {
       <ReviewsSection />
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-primary-dark relative overflow-hidden">
-        {/* Background Effects */}
+      <section className="py-20 bg-primary relative overflow-hidden">
+        {/* Background Pattern */}
         <div className="absolute inset-0">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-[100px]"></div>
           <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-[80px]"></div>
         </div>
         
         <div className="container-main relative text-center">
-          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm font-medium text-white mb-6">
-            <Sparkles className="w-4 h-4 text-yellow-400" />
-            Start Your Journey Today
+          <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full text-sm font-medium text-white mb-6">
+            <Zap className="w-4 h-4" />
+            Begin Your Transformation
           </div>
           
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
-            Ready to Transform Your
-            <span className="block text-yellow-400">Career?</span>
+            Ready to Advance Your Career?
           </h2>
           <p className="text-blue-100 text-lg mb-10 max-w-2xl mx-auto">
-            Join thousands of successful students who have transformed their careers with ETI Educom.
-            Get free career counselling and discover the right path for you!
+            Join thousands of professionals who have successfully transitioned into rewarding IT careers 
+            with ETI Educom. Schedule a free consultation with our career advisors today.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <Link href="/free-counselling" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-bold rounded-xl transition-all hover:bg-blue-50 shadow-xl">
-              Get Free Counselling
+            <Link href="/free-counselling" className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-bold rounded-xl transition-all hover:bg-gray-100">
+              Schedule Free Consultation
               <ChevronRight className="w-5 h-5" />
             </Link>
-            <a href="tel:+919646727676" className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white font-bold rounded-xl transition-all border border-white/20">
+            <a href="tel:+919646727676" className="inline-flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all border border-white/20">
               <Phone className="w-5 h-5" />
-              Call Now
+              +91 9646-727676
             </a>
           </div>
         </div>

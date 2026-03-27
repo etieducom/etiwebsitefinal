@@ -10,27 +10,27 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 const sampleBlogs = [
   {
     id: '1',
-    title: 'Why Cybersecurity is the Most In-Demand Career in 2025',
-    excerpt: 'Discover why cybersecurity professionals are becoming increasingly valuable and how you can start your career in this field.',
-    category: 'Career',
+    title: 'The Growing Demand for Cybersecurity Professionals in India',
+    excerpt: 'With increasing digital threats, Indian organizations are investing heavily in cybersecurity talent. Learn about career opportunities in this rapidly expanding field.',
+    category: 'Industry Insights',
     image_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400',
     created_at: '2025-01-15',
     read_time: '5 min read'
   },
   {
     id: '2',
-    title: 'Top 10 Programming Languages to Learn in 2025',
-    excerpt: 'A comprehensive guide to the most popular and useful programming languages for beginners and experienced developers.',
-    category: 'Technology',
+    title: 'Essential Programming Languages for 2025: A Career Guide',
+    excerpt: 'A comprehensive analysis of programming languages driving hiring trends, including Python, JavaScript, and emerging technologies in the Indian IT sector.',
+    category: 'Career Guide',
     image_url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=400',
     created_at: '2025-01-10',
     read_time: '7 min read'
   },
   {
     id: '3',
-    title: 'How to Build a Successful Career in Digital Marketing',
-    excerpt: 'Learn the essential skills and strategies needed to thrive in the dynamic world of digital marketing.',
-    category: 'Marketing',
+    title: 'Digital Marketing Skills That Drive Business Growth',
+    excerpt: 'Explore the digital marketing competencies most valued by employers and how certification programs can accelerate your career progression.',
+    category: 'Digital Marketing',
     image_url: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?auto=format&fit=crop&q=80&w=400',
     created_at: '2025-01-05',
     read_time: '6 min read'
