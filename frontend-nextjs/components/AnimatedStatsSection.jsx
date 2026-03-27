@@ -94,7 +94,7 @@ function StatCard({ stat, index }) {
 
 export default function AnimatedStatsSection() {
   return (
-    <section className="py-16 bg-gradient-to-r from-primary via-primary-dark to-primary relative overflow-hidden">
+    <section className="py-16 bg-primary relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0">
         <div className="absolute top-0 left-0 w-72 h-72 bg-white/5 rounded-full -translate-x-1/2 -translate-y-1/2"></div>

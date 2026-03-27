@@ -45,12 +45,14 @@ export default function PartnersSection() {
   }, []);
 
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-16 bg-gray-50 overflow-hidden">
       <div className="container-main">
         {/* Certification Partners */}
         <div className="mb-16">
           <div className="flex items-center justify-center gap-3 mb-8">
-            <Award className="w-6 h-6 text-primary" />
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+              <Award className="w-5 h-5 text-primary" />
+            </div>
             <h3 className="text-xl font-bold text-gray-900">Certification Partners</h3>
           </div>
           
@@ -82,7 +84,9 @@ export default function PartnersSection() {
         {/* Placement Partners */}
         <div>
           <div className="flex items-center justify-center gap-3 mb-8">
-            <CheckCircle className="w-6 h-6 text-green-500" />
+            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-primary" />
+            </div>
             <h3 className="text-xl font-bold text-gray-900">Our Students Work At</h3>
           </div>
           
