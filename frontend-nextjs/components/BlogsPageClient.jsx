@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { 
@@ -12,71 +12,11 @@ import {
   Tag
 } from 'lucide-react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
-
-const sampleBlogs = [
-  {
-    id: '1',
-    title: 'Top 10 IT Skills in Demand for 2025',
-    slug: 'top-10-it-skills-2025',
-    excerpt: 'Discover the most sought-after IT skills that employers are looking for in 2025 and how you can acquire them.',
-    featured_image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=600',
-    category: 'Career Tips',
-    tags: ['IT Skills', 'Career', '2025'],
-    author: 'ETI Educom',
-    read_time: 5,
-    created_at: '2025-02-15'
-  },
-  {
-    id: '2',
-    title: 'How to Choose the Right Career Track',
-    slug: 'choose-right-career-track',
-    excerpt: 'A comprehensive guide to help you select the best career path based on your interests, skills, and goals.',
-    featured_image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600',
-    category: 'Career Guidance',
-    tags: ['Career', 'Guidance', 'Students'],
-    author: 'ETI Educom',
-    read_time: 7,
-    created_at: '2025-02-10'
-  },
-  {
-    id: '3',
-    title: 'The Future of Digital Marketing in India',
-    slug: 'future-digital-marketing-india',
-    excerpt: 'Explore the evolving landscape of digital marketing and the opportunities it presents for aspiring marketers.',
-    featured_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600',
-    category: 'Industry Insights',
-    tags: ['Digital Marketing', 'India', 'Trends'],
-    author: 'ETI Educom',
-    read_time: 6,
-    created_at: '2025-02-05'
-  }
-];
-
-export default function BlogsPageClient() {
-  const [blogs, setBlogs] = useState(sampleBlogs);
-  const [loading, setLoading] = useState(true);
+export default function BlogsPageClient({ initialBlogs = [] }) {
+  // Blogs are now passed from SSR - no loading state needed
+  const [blogs] = useState(initialBlogs);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const response = await fetch(`${API_URL}/api/blogs`);
-        if (response.ok) {
-          const data = await response.json();
-          if (data.length > 0) {
-            setBlogs(data);
-          }
-        }
-      } catch (error) {
-        console.log('Using sample blogs');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBlogs();
-  }, []);
 
   const categories = ['all', ...new Set(blogs.map(b => b.category))];
 
@@ -91,14 +31,6 @@ export default function BlogsPageClient() {
     const date = new Date(dateStr);
     return date.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
   };
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
 
   return (
     <>

@@ -14,7 +14,71 @@ export const metadata = {
   alternates: { canonical: 'https://etieducom.com/blogs' },
 };
 
-export default function BlogsPage() {
+// Sample blogs for fallback (SSR)
+const sampleBlogs = [
+  {
+    id: '1',
+    title: 'Top 10 IT Skills in Demand for 2025',
+    slug: 'top-10-it-skills-2025',
+    excerpt: 'Discover the most sought-after IT skills that employers are looking for in 2025 and how you can acquire them.',
+    featured_image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=600',
+    category: 'Career Tips',
+    tags: ['IT Skills', 'Career', '2025'],
+    author: 'ETI Educom',
+    read_time: 5,
+    created_at: '2025-02-15'
+  },
+  {
+    id: '2',
+    title: 'How to Choose the Right Career Track',
+    slug: 'choose-right-career-track',
+    excerpt: 'A comprehensive guide to help you select the best career path based on your interests, skills, and goals.',
+    featured_image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=600',
+    category: 'Career Guidance',
+    tags: ['Career', 'Guidance', 'Students'],
+    author: 'ETI Educom',
+    read_time: 7,
+    created_at: '2025-02-10'
+  },
+  {
+    id: '3',
+    title: 'The Future of Digital Marketing in India',
+    slug: 'future-digital-marketing-india',
+    excerpt: 'Explore the evolving landscape of digital marketing and the opportunities it presents for aspiring marketers.',
+    featured_image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=600',
+    category: 'Industry Insights',
+    tags: ['Digital Marketing', 'India', 'Trends'],
+    author: 'ETI Educom',
+    read_time: 6,
+    created_at: '2025-02-05'
+  }
+];
+
+// Server-side data fetching
+async function getBlogs() {
+  try {
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:8001';
+    const response = await fetch(`${apiUrl}/api/blogs`, {
+      next: { revalidate: 60 }, // Revalidate every 60 seconds
+      headers: { 'Content-Type': 'application/json' },
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (data && data.length > 0) {
+        return data;
+      }
+    }
+  } catch (error) {
+    console.log('Blogs SSR fetch error, using sample data');
+  }
+  return sampleBlogs;
+}
+
+export default async function BlogsPage() {
+  // Fetch blogs on the server
+  const blogs = await getBlogs();
+
   return (
     <div className="min-h-screen">
       {/* Hero */}
@@ -35,10 +99,10 @@ export default function BlogsPage() {
         </div>
       </section>
 
-      {/* Blogs */}
+      {/* Blogs - SSR with client-side interactivity */}
       <section className="section-padding bg-white">
         <div className="container-main">
-          <BlogsPageClient />
+          <BlogsPageClient initialBlogs={blogs} />
         </div>
       </section>
     </div>
