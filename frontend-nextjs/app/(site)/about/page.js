@@ -54,8 +54,8 @@ const values = [
 const stats = [
   { value: '2017', label: 'Founded' },
   { value: '5000+', label: 'Students Trained' },
-  { value: '95%', label: 'Placement Rate' },
-  { value: '50+', label: 'Programs' }
+  { value: '4', label: 'Career Tracks' },
+  { value: '40+', label: 'Certifications' }
 ];
 
 export default function AboutPage() {

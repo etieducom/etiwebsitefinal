@@ -82,10 +82,10 @@ const programCards = [
 ];
 
 const stats = [
-  { value: '500+', label: 'Students Enrolled', icon: Users },
+  { value: '5000+', label: 'Students Trained', icon: Users },
   { value: '15+', label: 'Partner Universities', icon: Building2 },
-  { value: '50+', label: 'Programs Available', icon: BookOpen },
-  { value: '95%', label: 'Placement Support', icon: TrendingUp }
+  { value: '40+', label: 'Programs Available', icon: BookOpen },
+  { value: '4', label: 'Career Tracks', icon: TrendingUp }
 ];
 
 const whyChoose = [
@@ -580,7 +580,7 @@ export default function EduConnectLanding() {
               </div>
               <div>
                 <span className="font-bold text-white">ETI EduConnect</span>
-                <p className="text-xs text-gray-400">A unit of ETI Educom®</p>
+                <p className="text-xs text-gray-400">A unit of ETI Career & Tech Solutions</p>
               </div>
             </div>
             <div className="flex items-center gap-6">
@@ -595,7 +595,7 @@ export default function EduConnectLanding() {
           </div>
           <div className="border-t border-gray-800 mt-6 pt-6 text-center">
             <p className="text-xs text-gray-500">
-              © {new Date().getFullYear()} ETI EduConnect. All rights reserved.
+              © {new Date().getFullYear()} ETI EduConnect. All rights reserved. A unit of ETI Career & Tech Solutions
             </p>
           </div>
         </div>

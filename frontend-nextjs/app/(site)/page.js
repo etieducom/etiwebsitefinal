@@ -143,17 +143,17 @@ export default function HomePage() {
               <div className="flex items-center gap-6 pt-6 border-t border-gray-200">
                 <div className="text-center">
                   <p className="text-3xl font-bold text-gray-900">5000+</p>
-                  <p className="text-sm text-gray-500">Professionals Trained</p>
+                  <p className="text-sm text-gray-500">Students Trained</p>
                 </div>
                 <div className="w-px h-12 bg-gray-200"></div>
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900">95%</p>
-                  <p className="text-sm text-gray-500">Placement Rate</p>
+                  <p className="text-3xl font-bold text-gray-900">4</p>
+                  <p className="text-sm text-gray-500">Career Tracks</p>
                 </div>
                 <div className="w-px h-12 bg-gray-200"></div>
                 <div className="text-center">
-                  <p className="text-3xl font-bold text-gray-900">50+</p>
-                  <p className="text-sm text-gray-500">Industry Programs</p>
+                  <p className="text-3xl font-bold text-gray-900">40+</p>
+                  <p className="text-sm text-gray-500">Certifications</p>
                 </div>
               </div>
             </div>

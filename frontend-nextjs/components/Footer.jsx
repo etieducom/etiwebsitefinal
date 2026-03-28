@@ -239,27 +239,27 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-gray-500 text-sm">
-            © {new Date().getFullYear()} ETI Educom®. All rights reserved.
-          </p>
+          <div className="text-center md:text-left">
+            <p className="text-gray-500 text-sm">
+              © {new Date().getFullYear()} ETI Educom®. All rights reserved.
+            </p>
+            <p className="text-gray-600 text-xs mt-1">
+              A unit of <span className="text-white font-medium">ETI Career & Tech Solutions</span>
+            </p>
+          </div>
           <div className="flex items-center gap-4 flex-wrap justify-center">
             <Link href="/privacy-policy" className="text-gray-500 text-sm hover:text-white transition-colors">
               Privacy Policy
+            </Link>
+            <span className="text-gray-500">|</span>
+            <Link href="/terms-and-conditions" className="text-gray-500 text-sm hover:text-white transition-colors">
+              Terms & Conditions
             </Link>
             <span className="text-gray-500">|</span>
             <Link href="/refer-and-earn" className="text-gray-500 text-sm hover:text-white transition-colors flex items-center gap-1">
               <Gift className="w-4 h-4" />
               Refer & Earn
             </Link>
-            <span className="text-gray-500">|</span>
-            <a 
-              href="https://www.wizbang.in" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-gray-500 text-sm hover:text-white transition-colors"
-            >
-              Designed & Developed by <span className="text-primary font-medium">Wizbang</span>
-            </a>
           </div>
         </div>
       </div>

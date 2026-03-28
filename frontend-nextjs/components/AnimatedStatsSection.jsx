@@ -5,9 +5,9 @@ import { Users, Briefcase, GraduationCap, Award } from 'lucide-react';
 
 const stats = [
   { value: 5000, suffix: '+', label: 'Students Trained', icon: Users },
-  { value: 95, suffix: '%', label: 'Placement Rate', icon: Briefcase },
-  { value: 50, suffix: '+', label: 'Courses Offered', icon: GraduationCap },
-  { value: 8, suffix: '+', label: 'Years Experience', icon: Award }
+  { value: 4, suffix: '', label: 'Career Tracks', icon: Briefcase },
+  { value: 40, suffix: '+', label: 'Certification Programs', icon: GraduationCap },
+  { value: 15, suffix: '+', label: 'Certification Partners', icon: Award }
 ];
 
 function useCountUp(end, duration = 2000, startOnView = true) {

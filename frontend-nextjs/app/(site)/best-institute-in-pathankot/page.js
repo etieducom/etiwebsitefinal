@@ -67,9 +67,9 @@ const popularPrograms = [
 
 const stats = [
   { icon: GraduationCap, value: '5000+', label: 'Students Trained' },
-  { icon: Award, value: 'CATC', label: 'Certified Center' },
-  { icon: Star, value: '95%', label: 'Placement Rate' },
-  { icon: Clock, value: '7+', label: 'Years Experience' }
+  { icon: Award, value: '15+', label: 'Certification Partners' },
+  { icon: Star, value: '4', label: 'Career Tracks' },
+  { icon: Clock, value: '40+', label: 'Certifications' }
 ];
 
 export default function PathankotBranchPage() {
