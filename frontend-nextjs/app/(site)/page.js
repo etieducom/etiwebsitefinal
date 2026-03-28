@@ -184,39 +184,62 @@ export default function HomePage() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {careerTracks.map((track) => {
+            {careerTracks.map((track, index) => {
               const IconComponent = track.icon;
               return (
                 <Link 
                   key={track.id}
                   href={`/programs/${track.id}`}
-                  className="group relative bg-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-primary/30"
+                  className="group relative bg-white rounded-3xl p-8 transition-all duration-500 border border-gray-100 hover:border-transparent hover:shadow-2xl overflow-hidden"
                 >
-                  <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center text-white mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <IconComponent className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                    {track.title}
-                  </h3>
-                  <p className="text-sm text-primary font-medium mb-2">{track.shortDesc}</p>
-                  <p className="text-gray-600 text-sm mb-4">{track.fullDesc}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500 flex items-center gap-1">
+                  {/* Background gradient on hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary to-blue-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  
+                  {/* Decorative circle */}
+                  <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/5 rounded-full group-hover:bg-white/10 transition-colors duration-500"></div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10">
+                    {/* Icon */}
+                    <div className="w-16 h-16 bg-primary/10 group-hover:bg-white/20 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110">
+                      <IconComponent className="w-8 h-8 text-primary group-hover:text-white transition-colors duration-500" />
+                    </div>
+                    
+                    {/* Duration badge */}
+                    <div className="inline-flex items-center gap-1 text-xs font-medium text-primary group-hover:text-white/90 bg-primary/10 group-hover:bg-white/20 px-3 py-1 rounded-full mb-4 transition-colors duration-500">
                       <Clock className="w-3 h-3" />
                       {track.duration}
-                    </span>
-                    <span className="text-primary text-sm font-medium flex items-center gap-1 group-hover:gap-2 transition-all">
-                      Details <ArrowRight className="w-4 h-4" />
-                    </span>
+                    </div>
+                    
+                    {/* Title */}
+                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-white mb-2 transition-colors duration-500">
+                      {track.title}
+                    </h3>
+                    
+                    {/* Short description */}
+                    <p className="text-sm font-medium text-primary group-hover:text-white/90 mb-3 transition-colors duration-500">
+                      {track.shortDesc}
+                    </p>
+                    
+                    {/* Full description */}
+                    <p className="text-gray-600 group-hover:text-white/80 text-sm mb-6 transition-colors duration-500 line-clamp-3">
+                      {track.fullDesc}
+                    </p>
+                    
+                    {/* CTA */}
+                    <div className="flex items-center text-primary group-hover:text-white font-semibold text-sm transition-colors duration-500">
+                      View Details
+                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                    </div>
                   </div>
                 </Link>
               );
             })}
           </div>
           
-          <div className="text-center mt-10">
-            <Link href="/programs" className="btn-secondary">
-              View All Programs
+          <div className="text-center mt-12">
+            <Link href="/programs" className="btn-primary">
+              Explore All Programs
               <ChevronRight className="w-5 h-5" />
             </Link>
           </div>
