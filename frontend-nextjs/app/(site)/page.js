@@ -97,13 +97,6 @@ const whyChooseUs = [
   { title: 'Flexible Learning', desc: 'Multiple batch options including morning, evening, and weekend schedules', icon: Clock }
 ];
 
-const credentials = [
-  'Certiport Authorized Testing Center (CATC)',
-  'ISO 9001:2015 Certified Institute',
-  'MSME Registered Organization',
-  'Member - NASSCOM'
-];
-
 export default function HomePage() {
   return (
     <div className="min-h-screen">
@@ -126,8 +119,8 @@ export default function HomePage() {
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
-                Empowering Careers Through
-                <span className="block mt-2 text-primary">Professional IT Training</span>
+                Building Careers in
+                <span className="block mt-2 text-primary">Technology</span>
               </h1>
               
               <p className="text-lg text-gray-600 max-w-xl leading-relaxed">
@@ -136,23 +129,13 @@ export default function HomePage() {
                 training programs that prepare professionals for successful careers in technology.
               </p>
               
-              {/* Credentials */}
-              <div className="grid grid-cols-2 gap-3">
-                {credentials.map((item, index) => (
-                  <div key={index} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
-                    <span>{item}</span>
-                  </div>
-                ))}
-              </div>
-              
               <div className="flex flex-wrap gap-4 pt-4">
-                <Link href="/programs" className="btn-primary">
-                  Explore Programs
+                <Link href="/free-counselling" className="btn-primary">
+                  Request Free Consultation
                   <ChevronRight className="w-5 h-5" />
                 </Link>
-                <Link href="/free-counselling" className="btn-secondary">
-                  Request Consultation
+                <Link href="/programs" className="btn-secondary">
+                  View Programs
                 </Link>
               </div>
               
@@ -288,9 +271,9 @@ export default function HomePage() {
               <Award className="w-4 h-4" />
               Our Differentiators
             </div>
-            <h2 className="section-title">Why Organizations Choose ETI Educom</h2>
+            <h2 className="section-title">Why ETI Educom is the First Choice of Students</h2>
             <p className="section-subtitle mx-auto">
-              A commitment to excellence that has made us the preferred training partner for individuals and corporates
+              A commitment to excellence that has made us the preferred training institute for aspiring IT professionals
             </p>
           </div>
           

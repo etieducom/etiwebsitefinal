@@ -1,32 +1,23 @@
-# ETI Educom - Complete Deployment Guide for Hostinger VPS
+# ETI Educom - Deployment Guide for Hostinger VPS
 
-## Directory Structure
-```
-/var/www/html/
-├── backend/          # FastAPI Backend
-│   ├── server.py
-│   ├── requirements.txt
-│   ├── .env
-│   └── venv/
-└── frontend/
-    └── build/        # React Production Build
-```
+## Prerequisites
+- Hostinger VPS with Ubuntu 20.04/22.04
+- SSH access to your server
+- Domain pointing to your VPS IP (etieducom.com)
 
 ---
 
-## STEP 1: Connect to Your VPS
+## Step 1: Connect to Your VPS
 
 ```bash
 ssh root@your-vps-ip
+# Or
+ssh root@etieducom.com
 ```
-
-Or use Hostinger's built-in terminal.
 
 ---
 
-## STEP 2: Install Required Software
-
-Run these commands one by one:
+## Step 2: Install Required Software
 
 ```bash
 # Update system
@@ -36,240 +27,215 @@ sudo apt update && sudo apt upgrade -y
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt install -y nodejs
 
-# Verify Node.js
-node -v
-npm -v
+# Install Yarn
+npm install -g yarn
 
-# Install Python 3.10+ and pip
+# Install PM2 (Process Manager)
+npm install -g pm2
+
+# Install Python 3 and pip
 sudo apt install -y python3 python3-pip python3-venv
 
-# Verify Python
-python3 --version
-
-# Install PM2 globally
-sudo npm install -g pm2
-
-# Install Nginx (if not already installed)
-sudo apt install -y nginx
-
-# Install MongoDB
+# Install MongoDB (if not using external MongoDB)
+# Skip if using MongoDB Atlas
 wget -qO - https://www.mongodb.org/static/pgp/server-6.0.asc | sudo apt-key add -
 echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-6.0.list
 sudo apt update
 sudo apt install -y mongodb-org
-
-# Start MongoDB
 sudo systemctl start mongod
 sudo systemctl enable mongod
 
-# Verify MongoDB is running
-sudo systemctl status mongod
-
-# Install unzip
-sudo apt install -y unzip
+# Install Nginx
+sudo apt install -y nginx
 ```
 
 ---
 
-## STEP 3: Prepare Directory
+## Step 3: Setup MongoDB Authentication
 
 ```bash
-# Go to web directory
-cd /var/www/html
+# Connect to MongoDB
+mongosh
 
-# Backup existing files (if any)
-sudo mkdir -p /var/www/backup
-sudo mv * /var/www/backup/ 2>/dev/null || true
+# Create admin user
+use admin
+db.createUser({
+  user: "etiAdmin",
+  pwd: "YourSecurePassword123",
+  roles: ["root"]
+})
+
+# Create database user
+use eti_educom
+db.createUser({
+  user: "etiUser",
+  pwd: "EtiSecure2025",
+  roles: [{ role: "readWrite", db: "eti_educom" }]
+})
+
+exit
+```
+
+Enable authentication in MongoDB:
+```bash
+sudo nano /etc/mongod.conf
+```
+
+Add/modify:
+```yaml
+security:
+  authorization: enabled
+```
+
+Restart MongoDB:
+```bash
+sudo systemctl restart mongod
 ```
 
 ---
 
-## STEP 4: Upload Your Code
+## Step 4: Upload Your Application
 
-**Option A - Using SCP from your local machine:**
+### Option A: Using Git (Recommended)
 ```bash
-scp etieducom_deploy.zip root@your-vps-ip:/var/www/html/
+cd /var/www
+git clone https://github.com/your-repo/etiwebsite.git
+cd etiwebsite
 ```
 
-**Option B - Using Hostinger File Manager:**
-1. Go to Hostinger Panel → File Manager
-2. Navigate to `/var/www/html/`
-3. Upload `etieducom_deploy.zip`
-
-**Option C - Using wget (if you have a download link):**
-```bash
-cd /var/www/html
-wget your-download-link/etieducom_deploy.zip
-```
+### Option B: Using SCP/SFTP
+Upload your files to `/var/www/etiwebsite/`
 
 ---
 
-## STEP 5: Extract Files
+## Step 5: Setup Backend
 
 ```bash
-cd /var/www/html
-unzip etieducom_deploy.zip
-ls -la
-# You should see: backend/ and frontend/
-```
+cd /var/www/etiwebsite/backend
 
----
-
-## STEP 6: Setup Backend
-
-```bash
-# Go to backend directory
-cd /var/www/html/backend
-
-# Create Python virtual environment
+# Create virtual environment
 python3 -m venv venv
-
-# Activate virtual environment
 source venv/bin/activate
 
-# Upgrade pip
-pip install --upgrade pip
-
-# Install Python dependencies
+# Install dependencies
 pip install -r requirements.txt
 
-# Install emergentintegrations (for AI chatbot)
-pip install emergentintegrations --extra-index-url https://d33sy5i8bnduwe.cloudfront.net/simple/
-
 # Create .env file
 nano .env
 ```
 
-**Add this content to .env file:**
-```
-MONGO_URL=mongodb://localhost:27017
-DB_NAME=etieducom
-ADMIN_PASSWORD=YourSecureAdminPassword123
-EMERGENT_API_KEY=your_emergent_key_here
+Add to `.env`:
+```env
+MONGO_URL=mongodb://etiUser:EtiSecure2025@localhost:27017/eti_educom?authSource=eti_educom
+DB_NAME=eti_educom
 ```
 
-Press `Ctrl+X`, then `Y`, then `Enter` to save.
-
-**Test backend manually:**
+Test backend:
 ```bash
-# Make sure venv is activated
 source venv/bin/activate
-
-# Test run
-python -m uvicorn server:app --host 127.0.0.1 --port 8001
-
-# You should see "Application startup complete"
-# Press Ctrl+C to stop
+uvicorn server:app --host 0.0.0.0 --port 8001
+# Press Ctrl+C after confirming it works
 ```
 
 ---
 
-## STEP 7: Setup Frontend
+## Step 6: Setup Frontend (Next.js)
 
 ```bash
-# Go to frontend directory
-cd /var/www/html/frontend
-
-# Install Node.js dependencies
-npm install
+cd /var/www/etiwebsite/frontend-nextjs
 
 # Create .env file
 nano .env
 ```
 
-**Add this content to .env file:**
-```
-REACT_APP_BACKEND_URL=https://etieducom.com
+Add to `.env`:
+```env
+NEXT_PUBLIC_API_URL=https://etieducom.com
 ```
 
-Press `Ctrl+X`, then `Y`, then `Enter` to save.
-
-**Build frontend for production:**
+Build the application:
 ```bash
-npm run build
+yarn install
+yarn build
 ```
-
-Wait for the build to complete. You'll see a `build/` folder created.
 
 ---
 
-## STEP 8: Configure PM2 for Backend
+## Step 7: Setup PM2 Process Manager
 
+Create PM2 ecosystem file:
 ```bash
-cd /var/www/html/backend
-
-# Create PM2 config file
-nano ecosystem.config.js
+nano /var/www/etiwebsite/ecosystem.config.js
 ```
 
-**Add this content:**
+Add:
 ```javascript
 module.exports = {
-  apps: [{
-    name: 'eti-backend',
-    script: '/var/www/html/backend/venv/bin/python',
-    args: '-m uvicorn server:app --host 127.0.0.1 --port 8001',
-    cwd: '/var/www/html/backend',
-    interpreter: 'none',
-    env: {
-      MONGO_URL: 'mongodb://localhost:27017',
-      DB_NAME: 'etieducom'
+  apps: [
+    {
+      name: 'eti-backend',
+      cwd: '/var/www/etiwebsite/backend',
+      script: 'venv/bin/uvicorn',
+      args: 'server:app --host 0.0.0.0 --port 8001',
+      interpreter: 'none',
+      env: {
+        MONGO_URL: 'mongodb://etiUser:EtiSecure2025@localhost:27017/eti_educom?authSource=eti_educom',
+        DB_NAME: 'eti_educom'
+      }
     },
-    autorestart: true,
-    watch: false,
-    max_memory_restart: '500M',
-    error_file: '/var/log/pm2/eti-backend-error.log',
-    out_file: '/var/log/pm2/eti-backend-out.log'
-  }]
+    {
+      name: 'eti-frontend',
+      cwd: '/var/www/etiwebsite/frontend-nextjs',
+      script: 'yarn',
+      args: 'start',
+      interpreter: 'none',
+      env: {
+        PORT: 3000,
+        NEXT_PUBLIC_API_URL: 'https://etieducom.com'
+      }
+    }
+  ]
 };
 ```
 
-Press `Ctrl+X`, then `Y`, then `Enter` to save.
-
-**Create log directory and start PM2:**
+Start applications:
 ```bash
-# Create log directory
-sudo mkdir -p /var/log/pm2
-
-# Start the backend
+cd /var/www/etiwebsite
 pm2 start ecosystem.config.js
-
-# Save PM2 configuration
 pm2 save
-
-# Setup PM2 to start on boot
 pm2 startup
-
-# Copy and run the command it gives you (something like):
-# sudo env PATH=$PATH:/usr/bin pm2 startup systemd -u root --hp /root
-
-# Verify it's running
-pm2 status
-pm2 logs eti-backend --lines 20
 ```
 
 ---
 
-## STEP 9: Configure Nginx
+## Step 8: Configure Nginx
 
+Create Nginx configuration:
 ```bash
-# Create Nginx config
 sudo nano /etc/nginx/sites-available/etieducom
 ```
 
-**Add this content (replace etieducom.com with your domain):**
+Add:
 ```nginx
 server {
     listen 80;
     server_name etieducom.com www.etieducom.com;
 
-    # Frontend - React build files
-    root /var/www/html/frontend/build;
-    index index.html;
+    # Redirect HTTP to HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name etieducom.com www.etieducom.com;
+
+    # SSL certificates (will be added by Certbot)
+    ssl_certificate /etc/letsencrypt/live/etieducom.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/etieducom.com/privkey.pem;
 
     # API routes - proxy to backend
     location /api/ {
-        proxy_pass http://127.0.0.1:8001/api/;
+        proxy_pass http://127.0.0.1:8001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -278,230 +244,162 @@ server {
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_cache_bypass $http_upgrade;
-        proxy_read_timeout 300s;
-        proxy_connect_timeout 75s;
     }
 
-    # Frontend routes - serve React app
+    # All other routes - proxy to Next.js
     location / {
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Static files caching
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
+        proxy_pass http://127.0.0.1:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
     }
 }
 ```
 
-Press `Ctrl+X`, then `Y`, then `Enter` to save.
-
-**Enable the site:**
+Enable the site:
 ```bash
-# Create symbolic link
-sudo ln -sf /etc/nginx/sites-available/etieducom /etc/nginx/sites-enabled/
-
-# Remove default site (important!)
-sudo rm -f /etc/nginx/sites-enabled/default
-
-# Test Nginx configuration
-sudo nginx -t
-
-# If test is OK, restart Nginx
+sudo ln -s /etc/nginx/sites-available/etieducom /etc/nginx/sites-enabled/
+sudo rm /etc/nginx/sites-enabled/default  # Remove default site
+sudo nginx -t  # Test configuration
 sudo systemctl restart nginx
-sudo systemctl enable nginx
 ```
 
 ---
 
-## STEP 10: Setup SSL (HTTPS)
+## Step 9: Setup SSL Certificate (Let's Encrypt)
 
 ```bash
 # Install Certbot
 sudo apt install -y certbot python3-certbot-nginx
 
-# Get SSL certificate (replace with your domain)
+# Get SSL certificate
 sudo certbot --nginx -d etieducom.com -d www.etieducom.com
 
-# Follow the prompts:
-# - Enter email
-# - Agree to terms
-# - Choose to redirect HTTP to HTTPS (option 2)
-
-# Test auto-renewal
-sudo certbot renew --dry-run
+# Auto-renewal is set up automatically
 ```
 
 ---
 
-## STEP 11: Verify Everything
+## Step 10: Configure Firewall
 
 ```bash
-# Check PM2 status
-pm2 status
-
-# Check backend logs
-pm2 logs eti-backend --lines 30
-
-# Check Nginx status
-sudo systemctl status nginx
-
-# Check MongoDB status
-sudo systemctl status mongod
-
-# Test API locally
-curl http://127.0.0.1:8001/api/health
-
-# Test website
-curl -I https://etieducom.com
+sudo ufw allow 22      # SSH
+sudo ufw allow 80      # HTTP
+sudo ufw allow 443     # HTTPS
+sudo ufw enable
 ```
 
 ---
 
-## STEP 12: Access Admin Panel
+## Verification Steps
 
-1. Open browser: `https://etieducom.com/admin`
-2. Enter password (the one you set in backend/.env as ADMIN_PASSWORD)
-3. Start adding content!
+1. **Check PM2 processes:**
+   ```bash
+   pm2 status
+   ```
 
----
+2. **Check backend logs:**
+   ```bash
+   pm2 logs eti-backend
+   ```
 
-## Useful Commands Reference
+3. **Check frontend logs:**
+   ```bash
+   pm2 logs eti-frontend
+   ```
 
-### Restart Services
-```bash
-pm2 restart eti-backend      # Restart backend
-sudo systemctl restart nginx # Restart Nginx
-sudo systemctl restart mongod # Restart MongoDB
-```
+4. **Test API:**
+   ```bash
+   curl https://etieducom.com/api/health
+   ```
 
-### View Logs
-```bash
-pm2 logs eti-backend         # Backend logs
-sudo tail -f /var/log/nginx/error.log   # Nginx errors
-sudo tail -f /var/log/nginx/access.log  # Nginx access
-```
-
-### Update Code
-```bash
-# Stop backend
-pm2 stop eti-backend
-
-# Upload new zip and extract
-cd /var/www/html
-unzip -o etieducom_deploy.zip
-
-# Update backend dependencies
-cd backend
-source venv/bin/activate
-pip install -r requirements.txt
-
-# Rebuild frontend
-cd ../frontend
-npm install
-npm run build
-
-# Restart backend
-pm2 restart eti-backend
-```
-
-### Check Status
-```bash
-pm2 status                   # PM2 processes
-sudo systemctl status nginx  # Nginx
-sudo systemctl status mongod # MongoDB
-```
+5. **Visit your website:**
+   Open https://etieducom.com in your browser
 
 ---
 
 ## Troubleshooting
 
-### Backend not starting?
-```bash
-# Check logs
-pm2 logs eti-backend --lines 100
-
-# Try running manually
-cd /var/www/html/backend
-source venv/bin/activate
-python -m uvicorn server:app --host 127.0.0.1 --port 8001
-
-# If error about missing module:
-pip install <module-name>
-```
-
-### Port 8001 already in use?
-```bash
-# Find process using port
-sudo lsof -i :8001
-
-# Kill it
-sudo kill -9 <PID>
-
-# Restart backend
-pm2 restart eti-backend
-```
-
-### Nginx showing wrong site?
-```bash
-# List enabled sites
-ls -la /etc/nginx/sites-enabled/
-
-# Remove unwanted sites
-sudo rm /etc/nginx/sites-enabled/unwanted-site
-
-# Restart Nginx
-sudo nginx -t && sudo systemctl restart nginx
-```
-
-### MongoDB not connecting?
+### MongoDB Connection Failed
 ```bash
 # Check MongoDB status
 sudo systemctl status mongod
 
-# Start MongoDB
-sudo systemctl start mongod
-
 # Check MongoDB logs
-sudo cat /var/log/mongodb/mongod.log | tail -50
+sudo tail -f /var/log/mongodb/mongod.log
+
+# Verify connection
+mongosh "mongodb://etiUser:EtiSecure2025@localhost:27017/eti_educom?authSource=eti_educom"
 ```
 
-### Frontend not loading?
+### Nginx Errors
 ```bash
-# Check if build exists
-ls -la /var/www/html/frontend/build/
+# Test config
+sudo nginx -t
 
-# Rebuild if needed
-cd /var/www/html/frontend
-npm run build
+# Check error logs
+sudo tail -f /var/log/nginx/error.log
+```
+
+### PM2 Issues
+```bash
+# Restart all apps
+pm2 restart all
+
+# View logs
+pm2 logs
+
+# Delete and restart
+pm2 delete all
+pm2 start ecosystem.config.js
 ```
 
 ---
 
-## Security Checklist
-
-- [ ] Change default admin password
-- [ ] Enable firewall (ufw)
-- [ ] Keep system updated
-- [ ] Backup database regularly
+## Updating the Application
 
 ```bash
-# Enable firewall
-sudo ufw allow ssh
-sudo ufw allow http
-sudo ufw allow https
-sudo ufw enable
+cd /var/www/etiwebsite
 
-# Backup MongoDB
-mongodump --db etieducom --out /backup/$(date +%Y%m%d)
+# Pull latest changes (if using Git)
+git pull
+
+# Rebuild frontend
+cd frontend-nextjs
+yarn install
+yarn build
+
+# Restart PM2
+pm2 restart all
 ```
+
+---
+
+## Quick Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `pm2 status` | Check running processes |
+| `pm2 logs` | View all logs |
+| `pm2 restart all` | Restart all apps |
+| `sudo systemctl restart nginx` | Restart Nginx |
+| `sudo systemctl restart mongod` | Restart MongoDB |
+| `sudo certbot renew` | Renew SSL certificates |
 
 ---
 
 ## Support
 
-If you face issues, share:
-1. `pm2 logs eti-backend --lines 100`
-2. `sudo nginx -t`
-3. `curl http://127.0.0.1:8001/api/health`
+If you face any issues, check:
+1. PM2 logs: `pm2 logs`
+2. Nginx logs: `sudo tail -f /var/log/nginx/error.log`
+3. MongoDB logs: `sudo tail -f /var/log/mongodb/mongod.log`
+
+---
+
+**Last Updated:** December 2025
