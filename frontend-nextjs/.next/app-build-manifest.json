@@ -12,16 +12,8 @@
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
-      "static/css/05ce3d033f15d57d.css",
+      "static/css/0216c561b4935605.css",
       "static/chunks/app/layout-c137f6d95d79a0fd.js"
-    ],
-    "/admin/page": [
-      "static/chunks/webpack-c0b8f3560ff62557.js",
-      "static/chunks/fd9d1056-211f0c774853bd6b.js",
-      "static/chunks/23-192786cc522ff36a.js",
-      "static/chunks/main-app-630830ae24790599.js",
-      "static/chunks/628-9264d384f2aa070f.js",
-      "static/chunks/app/admin/page-67b38b0fa6c1d472.js"
     ],
     "/educonnect/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -33,6 +25,15 @@
       "static/chunks/173-96a5a03c0368a3fe.js",
       "static/chunks/818-014cffbd51a271c3.js",
       "static/chunks/app/educonnect/page-f38f8e750945aa40.js"
+    ],
+    "/industrial-training/page": [
+      "static/chunks/webpack-c0b8f3560ff62557.js",
+      "static/chunks/fd9d1056-211f0c774853bd6b.js",
+      "static/chunks/23-192786cc522ff36a.js",
+      "static/chunks/main-app-630830ae24790599.js",
+      "static/chunks/231-ab99cc66df08e6b7.js",
+      "static/chunks/628-9264d384f2aa070f.js",
+      "static/chunks/app/industrial-training/page-ba9dc6f619feff49.js"
     ],
     "/free-counselling/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -54,15 +55,6 @@
       "static/chunks/173-96a5a03c0368a3fe.js",
       "static/chunks/app/summer-training/page-9a100bd84e1cc952.js"
     ],
-    "/industrial-training/page": [
-      "static/chunks/webpack-c0b8f3560ff62557.js",
-      "static/chunks/fd9d1056-211f0c774853bd6b.js",
-      "static/chunks/23-192786cc522ff36a.js",
-      "static/chunks/main-app-630830ae24790599.js",
-      "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/628-9264d384f2aa070f.js",
-      "static/chunks/app/industrial-training/page-ba9dc6f619feff49.js"
-    ],
     "/(site)/programs/[programId]/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
@@ -83,22 +75,14 @@
       "static/chunks/972-9932daf085e2d6c3.js",
       "static/chunks/app/(site)/layout-c945fcc332580a21.js"
     ],
-    "/(site)/about/page": [
+    "/(site)/blogs/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
       "static/chunks/173-96a5a03c0368a3fe.js",
-      "static/chunks/app/(site)/about/page-0ff51447dbe1377f.js"
-    ],
-    "/(site)/best-institute-in-pathankot/page": [
-      "static/chunks/webpack-c0b8f3560ff62557.js",
-      "static/chunks/fd9d1056-211f0c774853bd6b.js",
-      "static/chunks/23-192786cc522ff36a.js",
-      "static/chunks/main-app-630830ae24790599.js",
-      "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/app/(site)/best-institute-in-pathankot/page-3e557700e97d8d0f.js"
+      "static/chunks/app/(site)/blogs/page-24feb974cf133935.js"
     ],
     "/(site)/contact/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -109,12 +93,21 @@
       "static/chunks/628-9264d384f2aa070f.js",
       "static/chunks/app/(site)/contact/page-332afb3fe38e6e76.js"
     ],
+    "/(site)/about/page": [
+      "static/chunks/webpack-c0b8f3560ff62557.js",
+      "static/chunks/fd9d1056-211f0c774853bd6b.js",
+      "static/chunks/23-192786cc522ff36a.js",
+      "static/chunks/main-app-630830ae24790599.js",
+      "static/chunks/231-ab99cc66df08e6b7.js",
+      "static/chunks/173-96a5a03c0368a3fe.js",
+      "static/chunks/app/(site)/about/page-0ff51447dbe1377f.js"
+    ],
     "/(site)/eti-educonnect/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
-      "static/chunks/app/(site)/eti-educonnect/page-f0b048013b429162.js"
+      "static/chunks/app/(site)/eti-educonnect/page-fda96ff6c38fe0ec.js"
     ],
     "/(site)/events/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -125,15 +118,6 @@
       "static/chunks/173-96a5a03c0368a3fe.js",
       "static/chunks/app/(site)/events/page-110d3279fc16a813.js"
     ],
-    "/(site)/cyber-warriors/page": [
-      "static/chunks/webpack-c0b8f3560ff62557.js",
-      "static/chunks/fd9d1056-211f0c774853bd6b.js",
-      "static/chunks/23-192786cc522ff36a.js",
-      "static/chunks/main-app-630830ae24790599.js",
-      "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/628-9264d384f2aa070f.js",
-      "static/chunks/app/(site)/cyber-warriors/page-b30502e2c21f5b61.js"
-    ],
     "/(site)/faq/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
@@ -141,6 +125,15 @@
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
       "static/chunks/app/(site)/faq/page-d591afb7c6b6a1c9.js"
+    ],
+    "/(site)/founder/page": [
+      "static/chunks/webpack-c0b8f3560ff62557.js",
+      "static/chunks/fd9d1056-211f0c774853bd6b.js",
+      "static/chunks/23-192786cc522ff36a.js",
+      "static/chunks/main-app-630830ae24790599.js",
+      "static/chunks/231-ab99cc66df08e6b7.js",
+      "static/chunks/173-96a5a03c0368a3fe.js",
+      "static/chunks/app/(site)/founder/page-0be4d4708507eb82.js"
     ],
     "/(site)/franchise/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -151,14 +144,14 @@
       "static/chunks/628-9264d384f2aa070f.js",
       "static/chunks/app/(site)/franchise/page-f1b18a3bb4680f52.js"
     ],
-    "/(site)/founder/page": [
+    "/(site)/cyber-warriors/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/173-96a5a03c0368a3fe.js",
-      "static/chunks/app/(site)/founder/page-0be4d4708507eb82.js"
+      "static/chunks/628-9264d384f2aa070f.js",
+      "static/chunks/app/(site)/cyber-warriors/page-b30502e2c21f5b61.js"
     ],
     "/(site)/hire-from-us/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -178,23 +171,21 @@
       "static/chunks/628-9264d384f2aa070f.js",
       "static/chunks/app/(site)/join-team/page-16672426c8cb3cf1.js"
     ],
-    "/(site)/page": [
+    "/(site)/best-institute-in-pathankot/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/628-9264d384f2aa070f.js",
-      "static/chunks/173-96a5a03c0368a3fe.js",
-      "static/chunks/app/(site)/page-8c1df0643c1296fe.js"
+      "static/chunks/app/(site)/best-institute-in-pathankot/page-01f4c1f50e62a9ce.js"
     ],
-    "/(site)/programs/page": [
+    "/(site)/privacy-policy/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/app/(site)/programs/page-37252cf512d2b305.js"
+      "static/chunks/app/(site)/privacy-policy/page-f1a69b87744fcf79.js"
     ],
     "/(site)/team/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -213,14 +204,13 @@
       "static/chunks/628-9264d384f2aa070f.js",
       "static/chunks/app/(site)/refer-and-earn/page-00ece1b65f0a7090.js"
     ],
-    "/(site)/blogs/page": [
+    "/(site)/programs/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/173-96a5a03c0368a3fe.js",
-      "static/chunks/app/(site)/blogs/page-24feb974cf133935.js"
+      "static/chunks/app/(site)/programs/page-62b3a961c9963696.js"
     ],
     "/(site)/terms-and-conditions/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
@@ -228,15 +218,32 @@
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/app/(site)/terms-and-conditions/page-cae0ad7e2cc2832d.js"
+      "static/chunks/app/(site)/terms-and-conditions/page-df0fbc8af20d2204.js"
     ],
-    "/(site)/privacy-policy/page": [
+    "/(site)/page": [
       "static/chunks/webpack-c0b8f3560ff62557.js",
       "static/chunks/fd9d1056-211f0c774853bd6b.js",
       "static/chunks/23-192786cc522ff36a.js",
       "static/chunks/main-app-630830ae24790599.js",
       "static/chunks/231-ab99cc66df08e6b7.js",
-      "static/chunks/app/(site)/privacy-policy/page-f1a69b87744fcf79.js"
+      "static/chunks/628-9264d384f2aa070f.js",
+      "static/chunks/173-96a5a03c0368a3fe.js",
+      "static/chunks/app/(site)/page-8c1df0643c1296fe.js"
+    ],
+    "/admin/page": [
+      "static/chunks/webpack-c0b8f3560ff62557.js",
+      "static/chunks/fd9d1056-211f0c774853bd6b.js",
+      "static/chunks/23-192786cc522ff36a.js",
+      "static/chunks/main-app-630830ae24790599.js",
+      "static/chunks/628-9264d384f2aa070f.js",
+      "static/chunks/app/admin/page-2318803b8f80b76b.js"
+    ],
+    "/admin/layout": [
+      "static/chunks/webpack-c0b8f3560ff62557.js",
+      "static/chunks/fd9d1056-211f0c774853bd6b.js",
+      "static/chunks/23-192786cc522ff36a.js",
+      "static/chunks/main-app-630830ae24790599.js",
+      "static/chunks/app/admin/layout-7647cf4115b010a5.js"
     ]
   }
 }
