@@ -45,7 +45,6 @@ const programCards = [
     subtitle: 'Start Your Career Journey',
     duration: '3 Years',
     programs: ['BBA', 'BCA', 'B.Com', 'BA', 'B.Sc'],
-    color: 'from-blue-600 to-blue-800',
     icon: BookOpen,
     features: ['No Entrance Exam', '10+2 Eligible', 'EMI Available'],
     popular: 'BBA & BCA'
@@ -56,7 +55,6 @@ const programCards = [
     subtitle: 'Advance Your Career',
     duration: '2 Years',
     programs: ['MBA', 'MCA', 'M.Com', 'MA', 'M.Sc'],
-    color: 'from-indigo-600 to-purple-700',
     icon: GraduationCap,
     features: ['Work & Study', 'Global Recognition', 'Career Support'],
     popular: 'MBA'
@@ -67,7 +65,6 @@ const programCards = [
     subtitle: 'Quick Skill Upgrade',
     duration: '1 Year',
     programs: ['PGDM', 'PG Diploma in IT', 'Diploma in Management'],
-    color: 'from-emerald-600 to-teal-700',
     icon: Award,
     features: ['Industry Focused', 'Fast Track', 'Job Ready'],
     popular: 'PGDM'
@@ -78,7 +75,6 @@ const programCards = [
     subtitle: 'Specialized Skills',
     duration: '6 Months',
     programs: ['Digital Marketing', 'Data Analytics', 'Cyber Security'],
-    color: 'from-orange-500 to-red-600',
     icon: Star,
     features: ['Trending Skills', 'High Demand', 'Quick ROI'],
     popular: 'Digital Marketing'
@@ -195,13 +191,13 @@ export default function EduConnectLanding() {
             {/* Left Content */}
             <div className="text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
-                <Sparkles className="w-4 h-4 text-yellow-400" />
+                <Sparkles className="w-4 h-4 text-blue-300" />
                 <span className="text-sm font-medium text-white">Distance Learning Made Easy</span>
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
                 Get Your Degree
-                <span className="block bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
+                <span className="block text-blue-300">
                   From Top Universities
                 </span>
               </h1>
@@ -397,11 +393,12 @@ export default function EduConnectLanding() {
               return (
                 <div 
                   key={index}
-                  className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 hover:border-transparent hover:-translate-y-2"
+                  className="group relative bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200 hover:border-primary/30 hover:-translate-y-2"
                 >
-                  {/* Gradient Header */}
-                  <div className={`bg-gradient-to-br ${card.color} p-6 relative overflow-hidden`}>
+                  {/* Blue Gradient Header */}
+                  <div className="bg-gradient-to-br from-primary to-blue-800 p-6 relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                    <div className="absolute bottom-0 left-0 w-20 h-20 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
                     <div className="relative">
                       <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                         <Icon className="w-7 h-7 text-white" />
@@ -410,7 +407,7 @@ export default function EduConnectLanding() {
                         {card.duration}
                       </div>
                       <h3 className="text-xl font-bold text-white">{card.title}</h3>
-                      <p className="text-white/80 text-sm">{card.subtitle}</p>
+                      <p className="text-blue-100 text-sm">{card.subtitle}</p>
                     </div>
                   </div>
 
@@ -419,7 +416,7 @@ export default function EduConnectLanding() {
                     {/* Popular Badge */}
                     <div className="flex items-center gap-2 mb-4">
                       <span className="text-xs font-medium text-gray-500">Most Popular:</span>
-                      <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full text-xs font-bold">
+                      <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-xs font-bold">
                         {card.popular}
                       </span>
                     </div>
@@ -428,7 +425,7 @@ export default function EduConnectLanding() {
                     <div className="space-y-2 mb-6">
                       {card.programs.map((program, i) => (
                         <div key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          <CheckCircle className="w-4 h-4 text-primary flex-shrink-0" />
                           {program}
                         </div>
                       ))}
@@ -446,7 +443,7 @@ export default function EduConnectLanding() {
                     {/* CTA */}
                     <button 
                       onClick={scrollToForm}
-                      className={`w-full bg-gradient-to-r ${card.color} text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 opacity-90 hover:opacity-100 transition-opacity group-hover:shadow-lg`}
+                      className="w-full bg-primary hover:bg-primary-dark text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all group-hover:shadow-lg"
                     >
                       Enquire Now
                       <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
