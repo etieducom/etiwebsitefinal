@@ -228,7 +228,7 @@ function AllLeadsTab() {
           fetch(`${API_URL}/api/summer-training-leads`).then(r => r.json()).catch(() => []),
           fetch(`${API_URL}/api/industrial-training-leads`).then(r => r.json()).catch(() => []),
           fetch(`${API_URL}/api/contact`).then(r => r.json()).catch(() => []),
-          fetch(`${API_URL}/api/service-enquiries`).then(r => r.json()).catch(() => [])
+          fetch(`${API_URL}/api/service-enquiry`).then(r => r.json()).catch(() => [])
         ]);
         
         const allLeads = [

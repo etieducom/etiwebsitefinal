@@ -23,13 +23,13 @@ export default function HeroForm() {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/enquiries`, {
+      const response = await fetch(`${API_URL}/api/counselling-leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name: formData.name,
           phone: formData.phone,
-          interest: formData.interest,
+          preferred_track: formData.interest,
           source: 'homepage_hero'
         })
       });
