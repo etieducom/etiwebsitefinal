@@ -177,7 +177,7 @@ class MSG91SettingsUpdate(BaseModel):
 # ============ WhatsApp Utility Function ============
 
 async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enquiry"):
-    """Send WhatsApp thank you message via MSG91"""
+    """Send WhatsApp thank you message via MSG91 using 'webenq' template"""
     try:
         # Get MSG91 settings from database
         settings = await db.msg91_settings.find_one({}, {"_id": 0})
@@ -190,19 +190,20 @@ async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enqui
         if not clean_phone.startswith("91") and len(clean_phone) == 10:
             clean_phone = "91" + clean_phone
         
+        # Use the exact payload format from MSG91 webenq template
         payload = {
-            "integrated_number": settings.get("integrated_number", "918728054145"),
+            "integrated_number": "918728054145",
             "content_type": "template",
             "payload": {
                 "messaging_product": "whatsapp",
                 "type": "template",
                 "template": {
-                    "name": settings.get("template_name", "eti_certificate"),
+                    "name": "webenq",
                     "language": {
                         "code": "en",
                         "policy": "deterministic"
                     },
-                    "namespace": settings.get("template_namespace", "73fda5e9_77e9_445f_82ac_9c2e532b32f4"),
+                    "namespace": "73fda5e9_77e9_445f_82ac_9c2e532b32f4",
                     "to_and_components": [
                         {
                             "to": [clean_phone],
@@ -210,14 +211,6 @@ async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enqui
                                 "body_1": {
                                     "type": "text",
                                     "value": name
-                                },
-                                "body_2": {
-                                    "type": "text",
-                                    "value": form_type
-                                },
-                                "body_3": {
-                                    "type": "text",
-                                    "value": settings.get("thank_you_message", "Thank you for your enquiry!")
                                 }
                             }
                         }
@@ -238,7 +231,7 @@ async def send_whatsapp_thank_you(phone: str, name: str, form_type: str = "enqui
             )
             
             if response.status_code == 200:
-                logging.info(f"WhatsApp sent successfully to {clean_phone}")
+                logging.info(f"WhatsApp sent successfully to {clean_phone} for {form_type}")
                 return True
             else:
                 logging.error(f"WhatsApp failed: {response.status_code} - {response.text}")
@@ -952,6 +945,11 @@ async def create_contact_enquiry(input: ContactEnquiryCreate):
         doc = enquiry_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.contact_enquiries.insert_one(doc)
+        
+        # Send WhatsApp notification
+        if input.phone:
+            await send_whatsapp_thank_you(input.phone, input.name, "Contact Enquiry")
+        
         return ContactEnquiryResponse(
             id=doc['id'], name=doc['name'], email=doc['email'],
             phone=doc['phone'], enquiry_type=doc['enquiry_type'],
@@ -1539,6 +1537,10 @@ async def create_hire_request(input: HireRequestCreate):
         doc = hire_obj.model_dump()
         doc['created_at'] = doc['created_at'].isoformat()
         await db.hire_requests.insert_one(doc)
+        
+        # Send WhatsApp notification
+        await send_whatsapp_thank_you(input.phone, input.contact_person, "Hire Request")
+        
         return HireRequestResponse(
             id=doc['id'], company_name=doc['company_name'],
             contact_person=doc['contact_person'], email=doc['email'],
