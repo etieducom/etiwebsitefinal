@@ -8,7 +8,10 @@ import {
   Instagram,
   Linkedin,
   Youtube,
-  Send
+  Send,
+  Newspaper,
+  Handshake,
+  Users
 } from 'lucide-react';
 import ContactForm from '@/components/ContactForm';
 
@@ -31,19 +34,19 @@ const contactInfo = [
   {
     icon: Phone,
     title: 'Phone',
-    details: ['+91 9646727676', '+91 9876543210'],
+    details: ['+91 9646727676'],
     link: 'tel:+919646727676'
   },
   {
     icon: Mail,
-    title: 'Email',
-    details: ['helpdesk@etieducom.com', 'admissions@etieducom.com'],
+    title: 'General Enquiries',
+    details: ['helpdesk@etieducom.com'],
     link: 'mailto:helpdesk@etieducom.com'
   },
   {
     icon: MapPin,
-    title: 'Address',
-    details: ['ETI Educom, Jodhamal Colony', 'Dhangu Road, Pathankot - 145001'],
+    title: 'Head Office',
+    details: ['ETI Educom, Jodhamal Colony', 'Dhangu Road, Pathankot - 145001', 'Punjab, India'],
     link: 'https://maps.google.com/?q=ETI+Educom+Pathankot'
   },
   {
@@ -51,6 +54,27 @@ const contactInfo = [
     title: 'Working Hours',
     details: ['Mon - Sat: 9:00 AM - 6:00 PM', 'Sunday: Closed'],
     link: null
+  }
+];
+
+const departmentEmails = [
+  {
+    icon: Newspaper,
+    title: 'Media Enquiries',
+    email: 'media@etieducom.com',
+    description: 'For press releases, interviews, and media coverage'
+  },
+  {
+    icon: Users,
+    title: 'Franchisee & Founder Connect',
+    email: 'krishna@etieducom.com',
+    description: 'For franchise enquiries or to connect with our founder'
+  },
+  {
+    icon: Handshake,
+    title: 'Partnerships',
+    email: 'partnerships@etieducom.com',
+    description: 'For corporate partnerships, collaborations, and tie-ups'
   }
 ];
 
@@ -116,6 +140,35 @@ export default function ContactPage() {
                 })}
               </div>
 
+              {/* Department Emails */}
+              <div className="mt-8 pt-8 border-t border-gray-200">
+                <h3 className="font-bold text-gray-900 mb-4">Department Contacts</h3>
+                <div className="space-y-4">
+                  {departmentEmails.map((dept, index) => {
+                    const IconComponent = dept.icon;
+                    return (
+                      <div key={index} className="bg-gray-50 rounded-xl p-4 hover:bg-gray-100 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <div className="w-10 h-10 flex-shrink-0 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                            <IconComponent className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 className="font-semibold text-gray-900">{dept.title}</h4>
+                            <a 
+                              href={`mailto:${dept.email}`}
+                              className="text-primary hover:underline font-medium"
+                            >
+                              {dept.email}
+                            </a>
+                            <p className="text-sm text-gray-500 mt-1">{dept.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
               {/* Social Links */}
               <div className="mt-8 pt-8 border-t border-gray-200">
                 <h3 className="font-bold text-gray-900 mb-4">Follow Us</h3>
@@ -135,23 +188,6 @@ export default function ContactPage() {
                       </a>
                     );
                   })}
-                </div>
-              </div>
-
-              {/* Map */}
-              <div className="mt-8">
-                <h3 className="font-bold text-gray-900 mb-4">Find Us</h3>
-                <div className="rounded-2xl overflow-hidden border border-gray-200">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3394.5!2d75.6421!3d32.2643!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzLCsDE1JzUxLjUiTiA3NcKwMzgnMzEuNiJF!5e0!3m2!1sen!2sin!4v1234567890"
-                    width="100%"
-                    height="300"
-                    style={{ border: 0 }}
-                    allowFullScreen=""
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="ETI Educom Location"
-                  ></iframe>
                 </div>
               </div>
             </div>

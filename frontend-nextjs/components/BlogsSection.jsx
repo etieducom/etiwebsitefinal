@@ -14,16 +14,16 @@ const sampleBlogs = [
     excerpt: 'With increasing digital threats, Indian organizations are investing heavily in cybersecurity talent. Learn about career opportunities in this rapidly expanding field.',
     category: 'Industry Insights',
     image_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=400',
-    created_at: '2025-01-15',
+    created_at: '2026-01-15',
     read_time: '5 min read'
   },
   {
     id: '2',
-    title: 'Essential Programming Languages for 2025: A Career Guide',
+    title: 'Essential Programming Languages for 2026: A Career Guide',
     excerpt: 'A comprehensive analysis of programming languages driving hiring trends, including Python, JavaScript, and emerging technologies in the Indian IT sector.',
     category: 'Career Guide',
     image_url: 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&q=80&w=400',
-    created_at: '2025-01-10',
+    created_at: '2026-01-10',
     read_time: '7 min read'
   },
   {
@@ -32,7 +32,7 @@ const sampleBlogs = [
     excerpt: 'Explore the digital marketing competencies most valued by employers and how certification programs can accelerate your career progression.',
     category: 'Digital Marketing',
     image_url: 'https://images.unsplash.com/photo-1432888622747-4eb9a8efeb07?auto=format&fit=crop&q=80&w=400',
-    created_at: '2025-01-05',
+    created_at: '2026-01-05',
     read_time: '6 min read'
   }
 ];

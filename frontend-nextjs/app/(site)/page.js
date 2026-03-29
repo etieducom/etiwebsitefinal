@@ -112,12 +112,6 @@ export default function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-6">
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-primary/10 px-4 py-2 rounded-full text-sm font-medium text-primary">
-                <Building2 className="w-4 h-4" />
-                <span>Established 2017 | Punjab, India</span>
-              </div>
-              
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight text-gray-900">
                 Building Careers in
                 <span className="block mt-2 text-primary">Technology</span>

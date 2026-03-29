@@ -11,7 +11,7 @@ const sampleEvents = [
     id: '1',
     title: 'Career Guidance Workshop',
     description: 'Expert career counseling session covering IT industry trends',
-    event_date: '2025-02-15',
+    event_date: '2026-02-15',
     event_time: '10:00 AM',
     location: 'ETI Educom, Pathankot'
   },
@@ -19,7 +19,7 @@ const sampleEvents = [
     id: '2',
     title: 'Cybersecurity Awareness Seminar',
     description: 'Learn about the latest cybersecurity threats and protection',
-    event_date: '2025-02-20',
+    event_date: '2026-02-20',
     event_time: '2:00 PM',
     location: 'ETI Educom, Pathankot'
   }

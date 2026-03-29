@@ -18,7 +18,7 @@ const sampleEvents = [
     id: '1',
     title: 'Career Guidance Workshop',
     description: 'Join our expert counsellors for a comprehensive career guidance session covering IT industry trends and opportunities.',
-    event_date: '2025-02-15',
+    event_date: '2026-02-15',
     event_time: '10:00 AM',
     location: 'ETI Educom Head Office',
     image_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&q=80&w=600'
@@ -27,7 +27,7 @@ const sampleEvents = [
     id: '2',
     title: 'Web Development Bootcamp',
     description: 'A hands-on bootcamp introducing the fundamentals of web development using modern technologies.',
-    event_date: '2025-02-22',
+    event_date: '2026-02-22',
     event_time: '9:00 AM',
     location: 'Online',
     image_url: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&q=80&w=600'
@@ -36,7 +36,7 @@ const sampleEvents = [
     id: '3',
     title: 'Cybersecurity Awareness Seminar',
     description: 'Learn about the latest cybersecurity threats and best practices to protect yourself and your organization.',
-    event_date: '2025-03-05',
+    event_date: '2026-03-05',
     event_time: '2:00 PM',
     location: 'ETI Educom Head Office',
     image_url: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=600'
