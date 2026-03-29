@@ -23,6 +23,7 @@ import {
   Building2
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackEduConnectEnquiry } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 const PHONE_NUMBER = '8699391076';
@@ -141,6 +142,11 @@ export default function EduConnectLanding() {
         body: JSON.stringify(formData)
       });
       if (response.ok) {
+        // Track conversion event
+        trackEduConnectEnquiry({ 
+          program: formData.program_interest,
+          qualification: formData.qualification 
+        });
         setSubmitted(true);
         toast.success('Enquiry submitted! We\'ll contact you soon.');
       } else {

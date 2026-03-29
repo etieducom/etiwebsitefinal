@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send, CheckCircle, Phone } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackCounsellingLead } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -40,6 +41,11 @@ export default function FreeCounsellingForm() {
       });
       
       if (response.ok) {
+        // Track conversion event
+        trackCounsellingLead({ 
+          education: formData.education, 
+          preferred_track: formData.preferred_track 
+        });
         setSubmitted(true);
         toast.success('Thank you! Our counsellor will contact you within 24 hours.');
       } else {

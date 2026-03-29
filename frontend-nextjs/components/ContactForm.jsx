@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackContactEnquiry } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -38,6 +39,8 @@ export default function ContactForm() {
       });
       
       if (response.ok) {
+        // Track conversion event
+        trackContactEnquiry({ subject: formData.subject || 'General Enquiry' });
         toast.success('Message sent successfully! We will contact you soon.');
         setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
       } else {

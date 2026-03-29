@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackHiringApplication } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -41,6 +42,11 @@ export default function HiringForm() {
       });
       
       if (response.ok) {
+        // Track conversion event
+        trackHiringApplication({ 
+          company: formData.company_name, 
+          hiring_for: formData.hiring_for 
+        });
         toast.success('Thank you! Our placement team will contact you soon.');
         setFormData({
           company_name: '',

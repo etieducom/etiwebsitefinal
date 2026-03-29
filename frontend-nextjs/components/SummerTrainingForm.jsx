@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Send, CheckCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { trackSummerTraining } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -48,6 +49,11 @@ export default function SummerTrainingForm() {
       });
 
       if (response.ok) {
+        // Track conversion event
+        trackSummerTraining({ 
+          program: formData.program_interest,
+          duration: formData.duration 
+        });
         setSubmitted(true);
         toast.success('Registration submitted! We\'ll contact you soon.');
       } else {

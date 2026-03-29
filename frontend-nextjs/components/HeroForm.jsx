@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send, Users, Award } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackHeroFormSubmission } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -35,6 +36,8 @@ export default function HeroForm() {
       });
       
       if (response.ok) {
+        // Track conversion event
+        trackHeroFormSubmission({ interest: formData.interest });
         toast.success('Thank you! We will contact you shortly.');
         setFormData({ name: '', phone: '', interest: '' });
       } else {

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { trackFranchiseEnquiry } from '@/lib/analytics';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -42,6 +43,8 @@ export default function FranchiseForm() {
       });
       
       if (response.ok) {
+        // Track conversion event
+        trackFranchiseEnquiry({ city: formData.city, investment: formData.investment });
         toast.success('Thank you for your interest! Our team will contact you soon.');
         setFormData({ name: '', email: '', phone: '', city: '', investment: '', message: '' });
       } else {
