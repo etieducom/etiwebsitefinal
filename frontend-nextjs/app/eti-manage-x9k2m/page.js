@@ -711,6 +711,216 @@ function UniversitiesTab() {
 }
 
 // Security Tab
+// MSG91 WhatsApp Settings Tab
+function MSG91SettingsTab() {
+  const [settings, setSettings] = useState({
+    auth_key: '',
+    is_enabled: false,
+    integrated_number: '918728054145',
+    template_name: 'webenq',
+    template_namespace: '73fda5e9_77e9_445f_82ac_9c2e532b32f4'
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [testPhone, setTestPhone] = useState('');
+  const [testing, setTesting] = useState(false);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/msg91-settings`);
+        if (res.ok) {
+          const data = await res.json();
+          setSettings({
+            auth_key: data.auth_key || '',
+            is_enabled: data.is_enabled || false,
+            integrated_number: data.integrated_number || '918728054145',
+            template_name: data.template_name || 'webenq',
+            template_namespace: data.template_namespace || '73fda5e9_77e9_445f_82ac_9c2e532b32f4'
+          });
+        }
+      } catch (error) {
+        console.error('Failed to fetch MSG91 settings');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSettings();
+  }, []);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch(`${API_URL}/api/msg91-settings`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      });
+      if (res.ok) {
+        toast.success('MSG91 settings saved successfully!');
+      } else {
+        throw new Error('Failed to save');
+      }
+    } catch (error) {
+      toast.error('Failed to save settings');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleTest = async () => {
+    if (!testPhone || testPhone.length < 10) {
+      toast.error('Please enter a valid phone number');
+      return;
+    }
+    setTesting(true);
+    try {
+      const res = await fetch(`${API_URL}/api/msg91-settings/test?phone=${testPhone}&name=Test User`, {
+        method: 'POST'
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success('Test WhatsApp sent successfully!');
+      } else {
+        toast.error(data.message || 'Failed to send test message');
+      }
+    } catch (error) {
+      toast.error('Failed to send test message');
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  if (loading) return <Spinner />;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900">MSG91 WhatsApp Settings</h2>
+        <Badge variant={settings.is_enabled ? 'success' : 'danger'}>
+          {settings.is_enabled ? 'Enabled' : 'Disabled'}
+        </Badge>
+      </div>
+
+      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
+        <div className="flex items-start gap-3">
+          <MessageSquare className="w-5 h-5 text-blue-600 mt-0.5" />
+          <div>
+            <h3 className="font-semibold text-blue-800">WhatsApp Notifications</h3>
+            <p className="text-sm text-blue-700 mt-1">
+              When enabled, users will receive a WhatsApp message when they submit any form 
+              (Free Counselling, Summer/Industrial Training, Contact, EduConnect, etc.)
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
+        <div className="flex items-center justify-between pb-4 border-b">
+          <div>
+            <h3 className="font-semibold text-gray-900">Enable WhatsApp Notifications</h3>
+            <p className="text-sm text-gray-500">Toggle to enable/disable all WhatsApp messages</p>
+          </div>
+          <button
+            onClick={() => setSettings({ ...settings, is_enabled: !settings.is_enabled })}
+            className={`relative w-14 h-7 rounded-full transition-colors ${settings.is_enabled ? 'bg-green-500' : 'bg-gray-300'}`}
+          >
+            <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-transform ${settings.is_enabled ? 'translate-x-8' : 'translate-x-1'}`} />
+          </button>
+        </div>
+
+        <div>
+          <label className="form-label">MSG91 Auth Key *</label>
+          <input
+            type="password"
+            value={settings.auth_key}
+            onChange={(e) => setSettings({ ...settings, auth_key: e.target.value })}
+            placeholder="Enter your MSG91 auth key"
+            className="form-input"
+          />
+          <p className="text-xs text-gray-500 mt-1">Get your auth key from MSG91 dashboard</p>
+        </div>
+
+        <div>
+          <label className="form-label">Integrated Number</label>
+          <input
+            type="text"
+            value={settings.integrated_number}
+            onChange={(e) => setSettings({ ...settings, integrated_number: e.target.value })}
+            placeholder="918728054145"
+            className="form-input"
+          />
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          <div>
+            <label className="form-label">Template Name</label>
+            <input
+              type="text"
+              value={settings.template_name}
+              onChange={(e) => setSettings({ ...settings, template_name: e.target.value })}
+              placeholder="webenq"
+              className="form-input"
+            />
+          </div>
+          <div>
+            <label className="form-label">Template Namespace</label>
+            <input
+              type="text"
+              value={settings.template_namespace}
+              onChange={(e) => setSettings({ ...settings, template_namespace: e.target.value })}
+              placeholder="73fda5e9_77e9_445f_82ac_9c2e532b32f4"
+              className="form-input"
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="btn-primary w-full justify-center"
+        >
+          {saving ? (
+            <span className="flex items-center gap-2">
+              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              Saving...
+            </span>
+          ) : (
+            <>
+              <Save className="w-4 h-4" />
+              Save Settings
+            </>
+          )}
+        </button>
+      </div>
+
+      {/* Test Section */}
+      <div className="bg-white rounded-xl border border-gray-200 p-6">
+        <h3 className="font-semibold text-gray-900 mb-4">Test WhatsApp Message</h3>
+        <div className="flex gap-3">
+          <input
+            type="tel"
+            value={testPhone}
+            onChange={(e) => setTestPhone(e.target.value)}
+            placeholder="Enter phone number (e.g., 9876543210)"
+            className="form-input flex-1"
+          />
+          <button
+            onClick={handleTest}
+            disabled={testing || !settings.is_enabled}
+            className="btn-secondary"
+          >
+            {testing ? 'Sending...' : 'Send Test'}
+          </button>
+        </div>
+        {!settings.is_enabled && (
+          <p className="text-sm text-yellow-600 mt-2">Enable WhatsApp notifications first to send test messages</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function SecurityTab({ loginLogs }) {
   return (
     <div className="space-y-4">
@@ -929,6 +1139,7 @@ export default function SecureAdminPage() {
     { id: 'events', label: 'Events', icon: Calendar },
     { id: 'partners', label: 'Partners', icon: Handshake },
     { id: 'universities', label: 'Universities', icon: Building2 },
+    { id: 'msg91', label: 'WhatsApp', icon: MessageSquare },
     { id: 'security', label: 'Security', icon: Shield },
   ];
 
@@ -943,6 +1154,7 @@ export default function SecureAdminPage() {
       case 'events': return <EventsTab />;
       case 'partners': return <PartnersTab />;
       case 'universities': return <UniversitiesTab />;
+      case 'msg91': return <MSG91SettingsTab />;
       case 'security': return <SecurityTab loginLogs={loginLogs} />;
       default: return <DashboardTab />;
     }
