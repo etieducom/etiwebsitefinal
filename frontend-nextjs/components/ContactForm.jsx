@@ -25,12 +25,15 @@ export default function ContactForm() {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/leads`, {
+      const response = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          source: 'contact_page'
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          enquiry_type: formData.subject || 'General Enquiry',
+          message: formData.message
         })
       });
       

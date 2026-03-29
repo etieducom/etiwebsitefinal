@@ -26,12 +26,18 @@ export default function FranchiseForm() {
     
     setLoading(true);
     try {
-      const response = await fetch(`${API_URL}/api/leads`, {
+      const response = await fetch(`${API_URL}/api/franchise-enquiry`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...formData,
-          source: 'franchise_enquiry'
+          name: formData.name,
+          email: formData.email || 'not-provided@example.com',
+          phone: formData.phone,
+          location: formData.city,
+          city: formData.city,
+          experience: formData.message || 'Not specified',
+          investment_budget: formData.investment || 'Not specified',
+          why_franchise: formData.message || 'Interested in franchise opportunity'
         })
       });
       

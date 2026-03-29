@@ -28,10 +28,16 @@ export default function HiringForm() {
 
     setSubmitting(true);
     try {
-      const response = await fetch(`${API_URL}/api/hiring-enquiries`, {
+      const response = await fetch(`${API_URL}/api/hire-request`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          company_name: formData.company_name,
+          contact_person: formData.contact_person,
+          email: formData.email,
+          phone: formData.phone,
+          requirements: formData.requirements || `Hiring for: ${formData.hiring_for || 'Not specified'}`
+        })
       });
       
       if (response.ok) {

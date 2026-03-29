@@ -29,8 +29,8 @@ export default function HeroForm() {
         body: JSON.stringify({
           name: formData.name,
           phone: formData.phone,
-          preferred_track: formData.interest,
-          source: 'homepage_hero'
+          education: 'Not specified',
+          preferred_track: formData.interest
         })
       });
       
