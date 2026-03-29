@@ -8,4 +8,4 @@
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */let a=(0,r(1066).Z)("Send",[["path",{d:"m22 2-7 20-4-9-9-4Z",key:"1q3vgg"}],["path",{d:"M22 2 11 13",key:"nzbqef"}]])},7138:function(e,t,r){"use strict";r.d(t,{default:function(){return n.a}});var a=r(231),n=r.n(a)}},function(e){e.O(0,[231,968,971,23,744],function(){return e(e.s=4635)}),_N_E=e.O()}]);
+ */let a=(0,r(1066).Z)("Send",[["path",{d:"m22 2-7 20-4-9-9-4Z",key:"1q3vgg"}],["path",{d:"M22 2 11 13",key:"nzbqef"}]])},7138:function(e,t,r){"use strict";r.d(t,{default:function(){return n.a}});var a=r(231),n=r.n(a)}},function(e){e.O(0,[231,628,971,23,744],function(){return e(e.s=4635)}),_N_E=e.O()}]);

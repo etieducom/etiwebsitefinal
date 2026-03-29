@@ -98,4 +98,4 @@
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */let i=(0,r(6478).Z)("Zap",[["polygon",{points:"13 2 3 14 12 14 11 22 21 10 12 10 13 2",key:"45s27k"}]])},7371:(e,t,r)=>{"use strict";r.d(t,{default:()=>s.a});var i=r(1812),s=r.n(i)},1812:(e,t,r)=>{"use strict";let{createProxy:i}=r(8570);e.exports=i("/app/frontend-nextjs/node_modules/next/dist/client/link.js")},7272:()=>{}};var t=require("../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),i=t.X(0,[88,856,404],()=>r(384));module.exports=i})();
+ */let i=(0,r(6478).Z)("Zap",[["polygon",{points:"13 2 3 14 12 14 11 22 21 10 12 10 13 2",key:"45s27k"}]])},7371:(e,t,r)=>{"use strict";r.d(t,{default:()=>s.a});var i=r(1812),s=r.n(i)},1812:(e,t,r)=>{"use strict";let{createProxy:i}=r(8570);e.exports=i("/app/frontend-nextjs/node_modules/next/dist/client/link.js")},7272:()=>{}};var t=require("../../webpack-runtime.js");t.C(e);var r=e=>t(t.s=e),i=t.X(0,[88,404,856],()=>r(384));module.exports=i})();
