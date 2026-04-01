@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { 
   Shield, 
   Users, 
@@ -15,6 +16,8 @@ import {
   Globe
 } from 'lucide-react';
 import CyberWarriorsForm from '@/components/CyberWarriorsForm';
+
+const CYBER_WARRIORS_LOGO = '/images/cyber-warriors-logo.png';
 
 export const metadata = {
   title: 'Cyber Warriors | Free Cybersecurity Awareness Program',
@@ -94,9 +97,15 @@ export default function CyberWarriorsPage() {
         <div className="container-main relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
-              <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                <Shield className="w-4 h-4" />
-                Free Initiative
+              {/* Logo */}
+              <div className="mb-6">
+                <Image 
+                  src={CYBER_WARRIORS_LOGO} 
+                  alt="Cyber Warriors by ETI Educom" 
+                  width={280} 
+                  height={80}
+                  className="h-20 w-auto object-contain"
+                />
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">

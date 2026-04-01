@@ -23,6 +23,23 @@ import {
 import { toast } from 'sonner';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const CYBER_WARRIORS_LOGO = '/images/cyber-warriors-logo.png';
+
+// Indian phone validation - must be 10 digits starting with 6, 7, 8, or 9
+const validateIndianPhone = (phone) => {
+  const cleanPhone = phone.replace(/\D/g, '');
+  // Must be exactly 10 digits and start with 6, 7, 8, or 9
+  return /^[6-9]\d{9}$/.test(cleanPhone);
+};
+
+// Format phone number for display (e.g., 98765 43210)
+const formatIndianPhone = (phone) => {
+  const cleanPhone = phone.replace(/\D/g, '');
+  if (cleanPhone.length === 10) {
+    return `${cleanPhone.slice(0, 5)} ${cleanPhone.slice(5)}`;
+  }
+  return phone;
+};
 
 // 10 Cybersecurity Quiz Questions
 const quizQuestions = [
@@ -160,10 +177,9 @@ export default function WarriorsAssessmentClient() {
       return;
     }
 
-    // Validate phone
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!phoneRegex.test(studentData.phone.replace(/\D/g, ''))) {
-      toast.error('Please enter a valid 10-digit phone number');
+    // Validate Indian phone number
+    if (!validateIndianPhone(studentData.phone)) {
+      toast.error('Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9)');
       return;
     }
 
@@ -289,16 +305,16 @@ export default function WarriorsAssessmentClient() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <span className="font-bold text-gray-900 text-lg">Cyber Warriors</span>
-                <span className="text-xs text-gray-500 block">by ETI Educom</span>
-              </div>
+              <Image 
+                src={CYBER_WARRIORS_LOGO} 
+                alt="Cyber Warriors by ETI Educom" 
+                width={180} 
+                height={50}
+                className="h-12 w-auto object-contain"
+              />
             </Link>
             <Link href="/cyber-warriors" className="text-sm text-gray-600 hover:text-primary transition-colors">
               ← Back to Cyber Warriors
@@ -357,12 +373,22 @@ export default function WarriorsAssessmentClient() {
                   <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="tel"
-                    placeholder="Phone Number *"
+                    placeholder="Mobile Number (10 digits) *"
                     value={studentData.phone}
-                    onChange={(e) => setStudentData({ ...studentData, phone: e.target.value })}
+                    onChange={(e) => {
+                      // Only allow digits and limit to 10
+                      const value = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      setStudentData({ ...studentData, phone: value });
+                    }}
                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                     required
+                    maxLength={10}
                   />
+                  {studentData.phone && (
+                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs text-gray-400">
+                      {studentData.phone.length}/10
+                    </span>
+                  )}
                 </div>
 
                 <div className="relative">
@@ -531,11 +557,15 @@ export default function WarriorsAssessmentClient() {
                   style={{ aspectRatio: '1.414' }}
                 >
                   <div className="border-4 border-primary/20 rounded-xl p-6 h-full flex flex-col bg-gradient-to-br from-white to-blue-50">
-                    {/* Certificate Header */}
+                    {/* Certificate Header with Logo */}
                     <div className="text-center mb-4">
-                      <div className="flex items-center justify-center gap-2 mb-2">
-                        <Shield className="w-8 h-8 text-primary" />
-                        <span className="text-2xl font-bold text-primary">ETI Educom®</span>
+                      <div className="flex items-center justify-center mb-2">
+                        <img 
+                          src={CYBER_WARRIORS_LOGO} 
+                          alt="Cyber Warriors by ETI Educom" 
+                          className="h-16 w-auto object-contain"
+                          crossOrigin="anonymous"
+                        />
                       </div>
                       <p className="text-xs text-gray-500 uppercase tracking-wider">presents this</p>
                     </div>
