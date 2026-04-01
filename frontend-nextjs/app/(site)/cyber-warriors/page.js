@@ -199,6 +199,28 @@ export default function CyberWarriorsPage() {
         </div>
       </section>
 
+      {/* Assessment CTA */}
+      <section className="py-16 bg-primary">
+        <div className="container-main text-center">
+          <Award className="w-16 h-16 text-white mx-auto mb-6" />
+          <h2 className="text-3xl font-bold text-white mb-4">
+            Test Your Cyber Knowledge
+          </h2>
+          <p className="text-white/80 text-lg mb-8 max-w-2xl mx-auto">
+            Take our free 10-question assessment and earn your Cyber Warrior Certificate! 
+            Score 7 or more to prove your cybersecurity awareness.
+          </p>
+          <Link 
+            href="/warriors" 
+            className="inline-flex items-center gap-2 px-8 py-4 bg-white text-primary font-bold rounded-xl hover:bg-gray-100 transition-colors"
+          >
+            <Target className="w-5 h-5" />
+            Take Free Assessment
+            <ChevronRight className="w-5 h-5" />
+          </Link>
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="py-16 bg-gradient-to-r from-gray-900 to-gray-800">
         <div className="container-main text-center">

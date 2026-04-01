@@ -773,6 +773,46 @@ class CyberWarriorsRegistrationResponse(BaseModel):
     created_at: str
 
 
+# ============ Cyber Warriors Assessment Models ============
+
+class CyberWarriorsAssessment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: str
+    college: Optional[str] = None
+    score: int
+    total: int = 10
+    passed: bool
+    certificate_id: Optional[str] = None
+    completed_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CyberWarriorsAssessmentCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    email: str
+    phone: str = Field(..., min_length=10)
+    college: Optional[str] = None
+    score: int = Field(..., ge=0, le=10)
+    total: int = 10
+    passed: bool
+    completed_at: Optional[str] = None
+
+
+class CyberWarriorsAssessmentResponse(BaseModel):
+    id: str
+    name: str
+    email: str
+    phone: str
+    college: Optional[str]
+    score: int
+    total: int
+    passed: bool
+    certificate_id: Optional[str]
+    completed_at: str
+
+
 # ============ Team Member Models ============
 
 class TeamMember(BaseModel):
@@ -2730,6 +2770,70 @@ async def delete_cyber_warriors_event(event_id: str):
     if result.deleted_count == 0:
         raise HTTPException(status_code=404, detail="Event not found")
     return {"message": "Event deleted successfully"}
+
+
+# ============ Cyber Warriors Assessment Routes ============
+
+@api_router.post("/cyber-warriors/assessment", response_model=CyberWarriorsAssessmentResponse)
+async def create_cyber_warriors_assessment(input: CyberWarriorsAssessmentCreate):
+    try:
+        assessment_dict = input.model_dump()
+        
+        # Generate certificate ID if passed
+        certificate_id = None
+        if input.passed:
+            certificate_id = f"CW-{str(uuid.uuid4())[:8].upper()}"
+        
+        assessment_obj = CyberWarriorsAssessment(
+            name=input.name,
+            email=input.email,
+            phone=input.phone,
+            college=input.college,
+            score=input.score,
+            total=input.total,
+            passed=input.passed,
+            certificate_id=certificate_id
+        )
+        doc = assessment_obj.model_dump()
+        doc['completed_at'] = doc['completed_at'].isoformat()
+        await db.cyber_warriors_assessments.insert_one(doc)
+        
+        # Send WhatsApp congratulations if passed
+        if input.passed:
+            await send_whatsapp_thank_you(input.phone, input.name, "Cyber Warriors Assessment - Congratulations!")
+        
+        return CyberWarriorsAssessmentResponse(**{**doc, 'completed_at': doc['completed_at']})
+    except Exception as e:
+        logging.error(f"Error creating cyber warriors assessment: {e}")
+        raise HTTPException(status_code=500, detail="Failed to submit assessment")
+
+
+@api_router.get("/cyber-warriors/assessments", response_model=List[CyberWarriorsAssessmentResponse])
+async def get_cyber_warriors_assessments(passed_only: bool = False):
+    query = {"passed": True} if passed_only else {}
+    assessments = await db.cyber_warriors_assessments.find(query, {"_id": 0}).sort("completed_at", -1).to_list(1000)
+    return [
+        CyberWarriorsAssessmentResponse(
+            id=a['id'], name=a['name'], email=a['email'], phone=a['phone'],
+            college=a.get('college'), score=a['score'], total=a.get('total', 10),
+            passed=a['passed'], certificate_id=a.get('certificate_id'),
+            completed_at=a['completed_at'] if isinstance(a['completed_at'], str) else a['completed_at'].isoformat()
+        ) for a in assessments
+    ]
+
+
+@api_router.get("/cyber-warriors/assessments/stats")
+async def get_cyber_warriors_assessment_stats():
+    total = await db.cyber_warriors_assessments.count_documents({})
+    passed = await db.cyber_warriors_assessments.count_documents({"passed": True})
+    failed = total - passed
+    pass_rate = round((passed / total * 100), 1) if total > 0 else 0
+    return {
+        "total_attempts": total,
+        "passed": passed,
+        "failed": failed,
+        "pass_rate": pass_rate
+    }
 
 
 # ============ Admin Auth Routes ============
