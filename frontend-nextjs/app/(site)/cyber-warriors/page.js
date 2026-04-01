@@ -87,8 +87,28 @@ const audiences = [
 export default function CyberWarriorsPage() {
   return (
     <div className="min-h-screen">
+      {/* Cyber Warriors Navbar */}
+      <div className="bg-gray-900 border-b border-gray-800">
+        <div className="container-main py-4">
+          <div className="flex items-center justify-between">
+            <img 
+              src={CYBER_WARRIORS_LOGO} 
+              alt="Cyber Warriors by ETI Educom" 
+              className="h-20 w-auto object-contain"
+            />
+            <Link 
+              href="/warriors" 
+              className="hidden sm:flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
+            >
+              <Target className="w-5 h-5" />
+              Take Free Assessment
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-20 lg:py-28 overflow-hidden">
+      <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl"></div>
           <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-500/10 rounded-full blur-3xl"></div>
@@ -97,15 +117,9 @@ export default function CyberWarriorsPage() {
         <div className="container-main relative">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="text-white">
-              {/* Logo */}
-              <div className="mb-6">
-                <Image 
-                  src={CYBER_WARRIORS_LOGO} 
-                  alt="Cyber Warriors by ETI Educom" 
-                  width={280} 
-                  height={80}
-                  className="h-20 w-auto object-contain"
-                />
+              <div className="inline-flex items-center gap-2 bg-red-500/20 text-red-400 px-4 py-2 rounded-full text-sm font-medium mb-6">
+                <Shield className="w-4 h-4" />
+                Free Initiative
               </div>
               
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight">

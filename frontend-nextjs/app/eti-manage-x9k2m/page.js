@@ -921,6 +921,201 @@ function MSG91SettingsTab() {
   );
 }
 
+// Cyber Warriors Tab - Assessments & Bookings
+function CyberWarriorsTab() {
+  const [assessments, setAssessments] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [stats, setStats] = useState({ total_attempts: 0, passed: 0, failed: 0, pass_rate: 0 });
+  const [loading, setLoading] = useState(true);
+  const [activeSubTab, setActiveSubTab] = useState('assessments');
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [assessRes, bookingsRes, statsRes] = await Promise.all([
+        fetch(`${API_URL}/api/cyber-warriors/assessments`),
+        fetch(`${API_URL}/api/cyber-warriors/registrations`),
+        fetch(`${API_URL}/api/cyber-warriors/assessments/stats`)
+      ]);
+      
+      if (assessRes.ok) setAssessments(await assessRes.json());
+      if (bookingsRes.ok) setBookings(await bookingsRes.json());
+      if (statsRes.ok) setStats(await statsRes.json());
+    } catch (error) {
+      console.error('Error fetching cyber warriors data:', error);
+    }
+    setLoading(false);
+  };
+
+  const exportCSV = (data, filename) => {
+    if (data.length === 0) return toast.error('No data to export');
+    const headers = Object.keys(data[0]).join(',');
+    const rows = data.map(item => Object.values(item).map(v => `"${v || ''}"`).join(','));
+    const csv = [headers, ...rows].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    toast.success('CSV exported successfully!');
+  };
+
+  if (loading) return <Spinner />;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <Shield className="w-6 h-6 text-primary" />
+          Cyber Warriors
+        </h2>
+        <button onClick={fetchData} className="btn-secondary flex items-center gap-2">
+          <RefreshCw className="w-4 h-4" /> Refresh
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <StatCard label="Total Assessments" value={stats.total_attempts} icon={Users} color="text-blue-600" />
+        <StatCard label="Passed" value={stats.passed} icon={CheckCircle} color="text-green-600" />
+        <StatCard label="Failed" value={stats.failed} icon={AlertTriangle} color="text-red-600" />
+        <StatCard label="Pass Rate" value={`${stats.pass_rate}%`} icon={TrendingUp} color="text-primary" />
+      </div>
+
+      {/* Sub Tabs */}
+      <div className="flex gap-2 border-b">
+        <button
+          onClick={() => setActiveSubTab('assessments')}
+          className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            activeSubTab === 'assessments' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Assessments ({assessments.length})
+        </button>
+        <button
+          onClick={() => setActiveSubTab('bookings')}
+          className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+            activeSubTab === 'bookings' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Session Bookings ({bookings.length})
+        </button>
+      </div>
+
+      {/* Assessments Tab */}
+      {activeSubTab === 'assessments' && (
+        <div className="bg-white rounded-xl border">
+          <div className="p-4 border-b flex justify-between items-center">
+            <h3 className="font-semibold">Assessment Results</h3>
+            <button onClick={() => exportCSV(assessments, 'cyber_warriors_assessments')} className="btn-secondary text-sm">
+              <Download className="w-4 h-4 mr-1" /> Export CSV
+            </button>
+          </div>
+          {assessments.length === 0 ? (
+            <p className="p-6 text-gray-500 text-center">No assessments yet</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">College</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {assessments.map((a, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 font-medium">{a.name}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{a.email}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{a.phone}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{a.college || '-'}</td>
+                      <td className="px-4 py-3 text-sm font-medium">{a.score}/{a.total}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={a.passed ? 'success' : 'danger'}>
+                          {a.passed ? 'Passed' : 'Failed'}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-500">
+                        {new Date(a.completed_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Bookings Tab */}
+      {activeSubTab === 'bookings' && (
+        <div className="bg-white rounded-xl border">
+          <div className="p-4 border-b flex justify-between items-center">
+            <h3 className="font-semibold">Session Booking Requests</h3>
+            <button onClick={() => exportCSV(bookings, 'cyber_warriors_bookings')} className="btn-secondary text-sm">
+              <Download className="w-4 h-4 mr-1" /> Export CSV
+            </button>
+          </div>
+          {bookings.length === 0 ? (
+            <p className="p-6 text-gray-500 text-center">No session bookings yet</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Organization</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preferred Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  {bookings.map((b, i) => (
+                    <tr key={i} className="hover:bg-gray-50">
+                      <td className="px-4 py-3">
+                        <Badge variant={b.registration_type === 'institution' ? 'primary' : 'info'}>
+                          {b.registration_type === 'institution' ? 'Institution' : 'Individual'}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 font-medium">{b.name}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{b.organization_name || '-'}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{b.contact_number}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{b.email}</td>
+                      <td className="px-4 py-3 text-sm text-gray-600">{b.preferred_date || '-'}</td>
+                      <td className="px-4 py-3">
+                        <Badge variant={b.status === 'pending' ? 'warning' : b.status === 'confirmed' ? 'success' : 'default'}>
+                          {b.status}
+                        </Badge>
+                      </td>
+                      <td className="px-4 py-3 text-sm text-gray-500">
+                        {new Date(b.created_at).toLocaleDateString()}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function SecurityTab({ loginLogs }) {
   return (
     <div className="space-y-4">
@@ -1133,6 +1328,7 @@ export default function SecureAdminPage() {
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'all-leads', label: 'All Leads', icon: Users },
     { id: 'educonnect-leads', label: 'EduConnect', icon: GraduationCap },
+    { id: 'cyber-warriors', label: 'Cyber Warriors', icon: Shield },
     { id: 'referrals', label: 'Referrals', icon: Gift },
     { id: 'blogs', label: 'Blogs', icon: FileText },
     { id: 'reviews', label: 'Reviews', icon: Star },
@@ -1140,7 +1336,7 @@ export default function SecureAdminPage() {
     { id: 'partners', label: 'Partners', icon: Handshake },
     { id: 'universities', label: 'Universities', icon: Building2 },
     { id: 'msg91', label: 'WhatsApp', icon: MessageSquare },
-    { id: 'security', label: 'Security', icon: Shield },
+    { id: 'security', label: 'Security', icon: Key },
   ];
 
   const renderTab = () => {
@@ -1148,6 +1344,7 @@ export default function SecureAdminPage() {
       case 'dashboard': return <DashboardTab />;
       case 'all-leads': return <AllLeadsTab />;
       case 'educonnect-leads': return <EduConnectLeadsTab />;
+      case 'cyber-warriors': return <CyberWarriorsTab />;
       case 'referrals': return <ReferralsTab />;
       case 'blogs': return <BlogsTab />;
       case 'reviews': return <ReviewsTab />;
