@@ -550,119 +550,101 @@ export default function WarriorsAssessmentClient() {
                   You&apos;ve demonstrated excellent cybersecurity awareness. Download your certificate below!
                 </p>
 
-                {/* Certificate - Landscape Format */}
+                {/* Certificate - A4 Landscape Format (297mm x 210mm) */}
                 <div 
                   ref={certificateRef}
-                  className="bg-white rounded-2xl p-4 mx-auto mb-8 shadow-2xl border border-gray-200"
-                  style={{ width: '800px', minHeight: '566px' }}
+                  className="bg-white rounded-lg mx-auto mb-8 shadow-2xl border border-gray-300 overflow-hidden"
+                  style={{ width: '842px', height: '595px', padding: '0' }}
                 >
-                  <div className="border-4 border-primary rounded-xl p-6 h-full flex flex-col bg-gradient-to-br from-white via-blue-50/30 to-white relative overflow-hidden">
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-5">
-                      <div className="absolute top-4 left-4 w-20 h-20 border-4 border-primary rounded-full"></div>
-                      <div className="absolute bottom-4 right-4 w-20 h-20 border-4 border-primary rounded-full"></div>
-                    </div>
+                  <div className="w-full h-full border-8 border-primary/20 p-6 flex flex-col bg-gradient-to-br from-white via-blue-50/20 to-white relative">
+                    {/* Decorative Corners */}
+                    <div className="absolute top-3 left-3 w-12 h-12 border-t-4 border-l-4 border-primary/40 rounded-tl-lg"></div>
+                    <div className="absolute top-3 right-3 w-12 h-12 border-t-4 border-r-4 border-primary/40 rounded-tr-lg"></div>
+                    <div className="absolute bottom-3 left-3 w-12 h-12 border-b-4 border-l-4 border-primary/40 rounded-bl-lg"></div>
+                    <div className="absolute bottom-3 right-3 w-12 h-12 border-b-4 border-r-4 border-primary/40 rounded-br-lg"></div>
 
                     {/* Header with Logo */}
-                    <div className="text-center mb-4 relative">
+                    <div className="text-center mb-2">
                       <img 
                         src={CYBER_WARRIORS_LOGO} 
                         alt="Cyber Warriors by ETI Educom" 
-                        className="h-16 w-auto object-contain mx-auto mb-2"
+                        className="h-12 w-auto object-contain mx-auto mb-1"
                         crossOrigin="anonymous"
                       />
-                      <h1 className="text-2xl font-black text-gray-900 tracking-wide">CYBER WARRIORS INITIATIVE</h1>
-                      <p className="text-sm text-gray-600 italic">(A Program by ETI Educom)</p>
+                      <h1 className="text-2xl font-black text-gray-900 tracking-wider uppercase">Cyber Warriors Initiative</h1>
+                      <p className="text-xs text-gray-500 italic">(A Program by ETI Educom)</p>
                     </div>
 
                     {/* Divider */}
-                    <div className="flex items-center justify-center gap-3 mb-4">
-                      <div className="h-px w-24 bg-primary"></div>
-                      <Shield className="w-5 h-5 text-primary" />
-                      <div className="h-px w-24 bg-primary"></div>
+                    <div className="flex items-center justify-center gap-3 mb-2">
+                      <div className="h-0.5 w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
+                      <Shield className="w-4 h-4 text-primary" />
+                      <div className="h-0.5 w-32 bg-gradient-to-r from-transparent via-primary to-transparent"></div>
                     </div>
 
                     {/* Certificate Title */}
-                    <div className="text-center mb-4">
-                      <h2 className="text-xl font-bold text-primary uppercase tracking-widest">Certificate of Completion</h2>
+                    <div className="text-center mb-3">
+                      <h2 className="text-xl font-bold text-primary uppercase tracking-[0.3em]">Certificate of Completion</h2>
                     </div>
 
                     {/* Recipient Section */}
-                    <div className="text-center mb-4 flex-1">
-                      <p className="text-gray-600 text-sm mb-2">This is to proudly certify that</p>
-                      <h3 className="text-3xl font-bold text-gray-900 mb-3 border-b-2 border-primary pb-2 inline-block mx-auto px-6">
+                    <div className="text-center flex-1 flex flex-col justify-center">
+                      <p className="text-gray-600 text-sm mb-1">This is to proudly certify that</p>
+                      <h3 className="text-4xl font-bold text-gray-900 mb-2 font-serif">
                         {studentData.name}
                       </h3>
-                      <p className="text-gray-700 text-sm max-w-xl mx-auto leading-relaxed mt-2">
+                      <div className="w-64 h-0.5 bg-primary mx-auto mb-3"></div>
+                      <p className="text-gray-700 text-sm max-w-2xl mx-auto leading-relaxed">
                         has successfully participated in the <strong>Cyber Warriors Awareness Session</strong> and completed the <strong>Cyber Security Assessment</strong> conducted by <strong>ETI Educom</strong>
                       </p>
                     </div>
 
-                    {/* Topics Covered - Horizontal Layout */}
-                    <div className="bg-gray-50 rounded-lg p-3 mb-4">
-                      <p className="text-xs text-gray-600 text-center mb-2">During this session, the participant gained knowledge of:</p>
-                      <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-700">
-                        <div className="flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          <span>Online Safety & Cyber Hygiene</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          <span>Social Media Risks & Protection</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          <span>Cyber Threat Awareness</span>
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-green-500 flex-shrink-0" />
-                          <span>Introduction to Ethical Hacking</span>
-                        </div>
+                    {/* Topics Covered - Single Line */}
+                    <div className="bg-gray-50/80 rounded-lg py-2 px-4 mb-3">
+                      <p className="text-[10px] text-gray-500 text-center mb-1">Knowledge Areas Covered:</p>
+                      <div className="flex justify-center gap-6 text-xs text-gray-700">
+                        <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Online Safety</span>
+                        <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Social Media Protection</span>
+                        <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Cyber Threats</span>
+                        <span className="flex items-center gap-1"><CheckCircle className="w-3 h-3 text-green-500" /> Ethical Hacking</span>
                       </div>
                     </div>
 
                     {/* Appreciation */}
-                    <p className="text-center text-xs text-gray-600 italic mb-4">
-                      We appreciate their interest in becoming a responsible digital citizen and taking a step towards a secure digital future.
+                    <p className="text-center text-[11px] text-gray-500 italic mb-3">
+                      We appreciate their commitment to becoming a responsible digital citizen and taking a step towards a secure digital future.
                     </p>
 
                     {/* Footer Section - 3 Column Layout */}
-                    <div className="flex items-end justify-between pt-3 border-t border-gray-200">
+                    <div className="flex items-end justify-between pt-2 border-t border-gray-200">
                       {/* Date & Location */}
-                      <div className="text-left text-sm">
-                        <p className="text-gray-700">
-                          📅 <strong>{currentDate}</strong>
-                        </p>
+                      <div className="text-left text-xs w-1/3">
+                        <p className="text-gray-700 font-medium">📅 {currentDate}</p>
                         {studentData.college && (
-                          <p className="text-gray-700 mt-1">
-                            📍 <strong>{studentData.college}</strong>
-                          </p>
+                          <p className="text-gray-600 mt-0.5">📍 {studentData.college}</p>
                         )}
+                        <p className="text-gray-400 text-[10px] mt-1">ID: {certificateId}</p>
                       </div>
 
                       {/* Signature Section */}
-                      <div className="text-center">
-                        <div className="border-b border-gray-400 w-36 mx-auto mb-1"></div>
-                        <p className="text-base font-bold text-gray-900">Mr. Krishna Mahajan</p>
+                      <div className="text-center w-1/3">
+                        <div className="border-b-2 border-gray-400 w-40 mx-auto mb-1"></div>
+                        <p className="text-sm font-bold text-gray-900">Mr. Krishna Mahajan</p>
                         <p className="text-xs text-primary font-medium">Cyber Security Researcher</p>
                       </div>
 
-                      {/* Contact & ID */}
-                      <div className="text-right text-sm">
-                        <p className="font-medium text-primary">www.etieducom.com</p>
-                        <p className="text-gray-500 text-xs">ID: {certificateId}</p>
+                      {/* Contact */}
+                      <div className="text-right text-xs w-1/3">
+                        <p className="font-semibold text-primary">www.etieducom.com</p>
+                        <p className="text-gray-500 text-[10px]">+91 8699391076</p>
                       </div>
                     </div>
 
-                    {/* Quote */}
-                    <p className="text-center text-[10px] text-gray-500 italic mt-3 pt-2 border-t border-gray-100">
-                      "Don't Just Use Technology — Secure It."
-                    </p>
-
-                    {/* Final Credentials Line */}
-                    <div className="mt-2 pt-2 border-t border-primary/30">
-                      <p className="text-center text-[9px] text-gray-600 leading-relaxed">
-                        <strong className="text-gray-800">Mr. Krishna Mahajan</strong> — Cyber Security Researcher | Cyber Crime Educator | Helping People & Institutions prevent cyber fraud in India | Founder, ETI EDUCOM
+                    {/* Bottom Section with Quote and Credentials */}
+                    <div className="mt-2 pt-2 border-t border-primary/20 text-center">
+                      <p className="text-[10px] text-gray-500 italic mb-1">"Don't Just Use Technology — Secure It."</p>
+                      <p className="text-[8px] text-gray-500 leading-relaxed">
+                        <strong className="text-gray-700">Mr. Krishna Mahajan</strong> — Cyber Security Researcher | Cyber Crime Educator | Helping People & Institutions prevent cyber fraud in India | Founder, ETI EDUCOM
                       </p>
                     </div>
                   </div>
