@@ -21,7 +21,6 @@ import {
   Sparkles
 } from 'lucide-react';
 import { toast } from 'sonner';
-import html2canvas from 'html2canvas';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -151,6 +150,7 @@ export default function WarriorsAssessmentClient() {
   const [answers, setAnswers] = useState({});
   const [score, setScore] = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [certificateId, setCertificateId] = useState('');
   const certificateRef = useRef(null);
 
   const handleRegister = async (e) => {
@@ -215,6 +215,10 @@ export default function WarriorsAssessmentClient() {
     });
     setScore(correctCount);
 
+    // Generate certificate ID
+    const certId = `CW-${Date.now().toString(36).toUpperCase()}`;
+    setCertificateId(certId);
+
     // Save to database
     try {
       await fetch(`${API_URL}/api/cyber-warriors/assessment`, {
@@ -242,10 +246,14 @@ export default function WarriorsAssessmentClient() {
     toast.loading('Generating certificate...');
     
     try {
+      // Dynamically import html2canvas
+      const html2canvas = (await import('html2canvas')).default;
+      
       const canvas = await html2canvas(certificateRef.current, {
         scale: 2,
         backgroundColor: '#ffffff',
-        useCORS: true
+        useCORS: true,
+        logging: false
       });
       
       const link = document.createElement('a');
@@ -256,6 +264,7 @@ export default function WarriorsAssessmentClient() {
       toast.dismiss();
       toast.success('Certificate downloaded!');
     } catch (error) {
+      console.error('Certificate generation error:', error);
       toast.dismiss();
       toast.error('Failed to generate certificate. Please try again.');
     }
@@ -267,6 +276,7 @@ export default function WarriorsAssessmentClient() {
     setCurrentQuestion(0);
     setAnswers({});
     setScore(0);
+    setCertificateId('');
   };
 
   const currentDate = new Date().toLocaleDateString('en-IN', {
@@ -276,9 +286,9 @@ export default function WarriorsAssessmentClient() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-900">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-black/30 backdrop-blur-sm border-b border-white/10">
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
@@ -286,11 +296,11 @@ export default function WarriorsAssessmentClient() {
                 <Shield className="w-6 h-6 text-white" />
               </div>
               <div>
-                <span className="font-bold text-white text-lg">Cyber Warriors</span>
-                <span className="text-xs text-gray-400 block">by ETI Educom</span>
+                <span className="font-bold text-gray-900 text-lg">Cyber Warriors</span>
+                <span className="text-xs text-gray-500 block">by ETI Educom</span>
               </div>
             </Link>
-            <Link href="/cyber-warriors" className="text-sm text-gray-400 hover:text-white transition-colors">
+            <Link href="/cyber-warriors" className="text-sm text-gray-600 hover:text-primary transition-colors">
               ← Back to Cyber Warriors
             </Link>
           </div>
@@ -302,21 +312,21 @@ export default function WarriorsAssessmentClient() {
         {/* Registration Step */}
         {step === 'register' && (
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 bg-primary/20 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Sparkles className="w-4 h-4" />
               Free Assessment
             </div>
             
-            <h1 className="text-4xl sm:text-5xl font-bold text-white mb-4">
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">
               Cyber Warrior Assessment
             </h1>
-            <p className="text-gray-400 text-lg mb-10 max-w-2xl mx-auto">
+            <p className="text-gray-600 text-lg mb-10 max-w-2xl mx-auto">
               Test your cybersecurity knowledge with our 10-question quiz. 
               Score 7 or more to earn your Cyber Warrior Certificate!
             </p>
 
-            <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10 max-w-lg mx-auto">
-              <h2 className="text-2xl font-bold text-white mb-6">Enter Your Details</h2>
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100 max-w-lg mx-auto">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Enter Your Details</h2>
               
               <form onSubmit={handleRegister} className="space-y-4">
                 <div className="relative">
@@ -326,7 +336,7 @@ export default function WarriorsAssessmentClient() {
                     placeholder="Your Full Name *"
                     value={studentData.name}
                     onChange={(e) => setStudentData({ ...studentData, name: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                     required
                   />
                 </div>
@@ -338,7 +348,7 @@ export default function WarriorsAssessmentClient() {
                     placeholder="Email Address *"
                     value={studentData.email}
                     onChange={(e) => setStudentData({ ...studentData, email: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                     required
                   />
                 </div>
@@ -350,7 +360,7 @@ export default function WarriorsAssessmentClient() {
                     placeholder="Phone Number *"
                     value={studentData.phone}
                     onChange={(e) => setStudentData({ ...studentData, phone: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                     required
                   />
                 </div>
@@ -362,20 +372,20 @@ export default function WarriorsAssessmentClient() {
                     placeholder="College/Organization Name (Optional)"
                     value={studentData.college}
                     onChange={(e) => setStudentData({ ...studentData, college: e.target.value })}
-                    className="w-full pl-12 pr-4 py-4 bg-white/10 border border-white/20 rounded-xl text-white placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
+                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] mt-6"
+                  className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all hover:scale-[1.02] mt-6 shadow-lg shadow-primary/25"
                 >
                   Start Assessment
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </form>
 
-              <div className="flex items-center justify-center gap-6 mt-6 text-sm text-gray-400">
+              <div className="flex items-center justify-center gap-6 mt-6 text-sm text-gray-500">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
                   ~5 minutes
@@ -394,11 +404,11 @@ export default function WarriorsAssessmentClient() {
           <div>
             {/* Progress Bar */}
             <div className="mb-8">
-              <div className="flex items-center justify-between text-sm text-gray-400 mb-2">
+              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
                 <span>Question {currentQuestion + 1} of {quizQuestions.length}</span>
                 <span>{Math.round(((currentQuestion + 1) / quizQuestions.length) * 100)}% Complete</span>
               </div>
-              <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+              <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
                 <div 
                   className="h-full bg-primary transition-all duration-300"
                   style={{ width: `${((currentQuestion + 1) / quizQuestions.length) * 100}%` }}
@@ -407,12 +417,12 @@ export default function WarriorsAssessmentClient() {
             </div>
 
             {/* Question Card */}
-            <div className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 border border-white/10">
+            <div className="bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
               <div className="flex items-start gap-4 mb-8">
-                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center text-primary font-bold text-lg flex-shrink-0">
+                <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center text-white font-bold text-lg flex-shrink-0">
                   {currentQuestion + 1}
                 </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-white">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
                   {quizQuestions[currentQuestion].question}
                 </h2>
               </div>
@@ -424,15 +434,15 @@ export default function WarriorsAssessmentClient() {
                     onClick={() => handleAnswer(quizQuestions[currentQuestion].id, index)}
                     className={`w-full text-left p-4 rounded-xl border-2 transition-all ${
                       answers[quizQuestions[currentQuestion].id] === index
-                        ? 'bg-primary/20 border-primary text-white'
-                        : 'bg-white/5 border-white/10 text-gray-300 hover:border-white/30 hover:bg-white/10'
+                        ? 'bg-primary/10 border-primary text-gray-900'
+                        : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-primary/50 hover:bg-gray-100'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 ${
                         answers[quizQuestions[currentQuestion].id] === index
                           ? 'border-primary bg-primary'
-                          : 'border-gray-500'
+                          : 'border-gray-300'
                       }`}>
                         {answers[quizQuestions[currentQuestion].id] === index && (
                           <CheckCircle className="w-4 h-4 text-white" />
@@ -445,11 +455,11 @@ export default function WarriorsAssessmentClient() {
               </div>
 
               {/* Navigation */}
-              <div className="flex items-center justify-between mt-8 pt-6 border-t border-white/10">
+              <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-100">
                 <button
                   onClick={handlePrevious}
                   disabled={currentQuestion === 0}
-                  className="px-6 py-3 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-6 py-3 text-gray-500 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   ← Previous
                 </button>
@@ -457,7 +467,7 @@ export default function WarriorsAssessmentClient() {
                 {currentQuestion < quizQuestions.length - 1 ? (
                   <button
                     onClick={handleNext}
-                    className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl flex items-center gap-2 transition-all"
+                    className="px-8 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary/25"
                   >
                     Next
                     <ChevronRight className="w-5 h-5" />
@@ -466,7 +476,7 @@ export default function WarriorsAssessmentClient() {
                   <button
                     onClick={handleSubmitQuiz}
                     disabled={submitting}
-                    className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl flex items-center gap-2 transition-all disabled:opacity-70"
+                    className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl flex items-center gap-2 transition-all disabled:opacity-70 shadow-lg shadow-green-600/25"
                   >
                     {submitting ? 'Submitting...' : 'Submit Quiz'}
                     <Award className="w-5 h-5" />
@@ -483,10 +493,10 @@ export default function WarriorsAssessmentClient() {
                   onClick={() => setCurrentQuestion(index)}
                   className={`w-10 h-10 rounded-lg font-semibold text-sm transition-all ${
                     currentQuestion === index
-                      ? 'bg-primary text-white'
+                      ? 'bg-primary text-white shadow-lg'
                       : answers[quizQuestions[index].id] !== undefined
-                      ? 'bg-green-600/20 text-green-400 border border-green-600/50'
-                      : 'bg-white/10 text-gray-400 hover:bg-white/20'
+                      ? 'bg-green-100 text-green-700 border border-green-300'
+                      : 'bg-white text-gray-500 border border-gray-200 hover:border-primary'
                   }`}
                 >
                   {index + 1}
@@ -501,26 +511,26 @@ export default function WarriorsAssessmentClient() {
           <div className="text-center">
             {score >= 7 ? (
               <>
-                <div className="w-24 h-24 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Trophy className="w-12 h-12 text-green-400" />
+                <div className="w-24 h-24 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Trophy className="w-12 h-12 text-green-600" />
                 </div>
-                <h1 className="text-4xl font-bold text-white mb-4">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
                   Congratulations, Cyber Warrior!
                 </h1>
-                <p className="text-gray-400 text-lg mb-2">
-                  You scored <span className="text-green-400 font-bold">{score}/10</span>
+                <p className="text-gray-600 text-lg mb-2">
+                  You scored <span className="text-green-600 font-bold">{score}/10</span>
                 </p>
-                <p className="text-gray-400 mb-8">
+                <p className="text-gray-500 mb-8">
                   You&apos;ve demonstrated excellent cybersecurity awareness. Download your certificate below!
                 </p>
 
                 {/* Certificate */}
                 <div 
                   ref={certificateRef}
-                  className="bg-white rounded-2xl p-8 mx-auto mb-8 max-w-2xl text-gray-900"
+                  className="bg-white rounded-2xl p-8 mx-auto mb-8 max-w-2xl shadow-2xl border border-gray-200"
                   style={{ aspectRatio: '1.414' }}
                 >
-                  <div className="border-4 border-primary/30 rounded-xl p-6 h-full flex flex-col">
+                  <div className="border-4 border-primary/20 rounded-xl p-6 h-full flex flex-col bg-gradient-to-br from-white to-blue-50">
                     {/* Certificate Header */}
                     <div className="text-center mb-4">
                       <div className="flex items-center justify-center gap-2 mb-2">
@@ -542,7 +552,7 @@ export default function WarriorsAssessmentClient() {
 
                     {/* Cyber Warrior Badge */}
                     <div className="text-center mb-4">
-                      <span className="inline-block bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-bold">
+                      <span className="inline-block bg-primary text-white px-4 py-2 rounded-full text-sm font-bold">
                         CYBER WARRIOR
                       </span>
                     </div>
@@ -563,7 +573,7 @@ export default function WarriorsAssessmentClient() {
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
                       <div className="text-left">
                         <p className="text-xs text-gray-500">Date</p>
-                        <p className="text-sm font-semibold">{currentDate}</p>
+                        <p className="text-sm font-semibold text-gray-900">{currentDate}</p>
                       </div>
                       <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-1 flex items-center justify-center">
@@ -573,7 +583,7 @@ export default function WarriorsAssessmentClient() {
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-gray-500">Certificate ID</p>
-                        <p className="text-sm font-semibold">CW-{Date.now().toString(36).toUpperCase()}</p>
+                        <p className="text-sm font-semibold text-gray-900">{certificateId}</p>
                       </div>
                     </div>
                   </div>
@@ -582,14 +592,14 @@ export default function WarriorsAssessmentClient() {
                 <div className="flex flex-wrap justify-center gap-4">
                   <button
                     onClick={downloadCertificate}
-                    className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl flex items-center gap-2 transition-all"
+                    className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary/25"
                   >
                     <Download className="w-5 h-5" />
                     Download Certificate
                   </button>
                   <button
                     onClick={restartAssessment}
-                    className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl flex items-center gap-2 transition-all"
+                    className="px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl flex items-center gap-2 transition-all"
                   >
                     <RotateCcw className="w-5 h-5" />
                     Take Again
@@ -598,23 +608,23 @@ export default function WarriorsAssessmentClient() {
               </>
             ) : (
               <>
-                <div className="w-24 h-24 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <XCircle className="w-12 h-12 text-red-400" />
+                <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <XCircle className="w-12 h-12 text-red-500" />
                 </div>
-                <h1 className="text-4xl font-bold text-white mb-4">
+                <h1 className="text-4xl font-bold text-gray-900 mb-4">
                   Keep Learning!
                 </h1>
-                <p className="text-gray-400 text-lg mb-2">
-                  You scored <span className="text-red-400 font-bold">{score}/10</span>
+                <p className="text-gray-600 text-lg mb-2">
+                  You scored <span className="text-red-500 font-bold">{score}/10</span>
                 </p>
-                <p className="text-gray-400 mb-8">
+                <p className="text-gray-500 mb-8">
                   You need 7 or more correct answers to earn the Cyber Warrior certificate. 
                   Don&apos;t worry, you can try again!
                 </p>
 
                 {/* Show Correct Answers */}
-                <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 text-left mb-8 max-w-2xl mx-auto">
-                  <h3 className="text-lg font-bold text-white mb-4">Review Your Answers:</h3>
+                <div className="bg-white rounded-2xl p-6 shadow-xl border border-gray-100 text-left mb-8 max-w-2xl mx-auto">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Review Your Answers:</h3>
                   <div className="space-y-3 max-h-64 overflow-y-auto">
                     {quizQuestions.map((q, index) => (
                       <div key={q.id} className="flex items-start gap-3 text-sm">
@@ -628,9 +638,9 @@ export default function WarriorsAssessmentClient() {
                           )}
                         </div>
                         <div>
-                          <p className="text-gray-300">Q{index + 1}: {q.question}</p>
+                          <p className="text-gray-700">Q{index + 1}: {q.question}</p>
                           {answers[q.id] !== q.correct && (
-                            <p className="text-green-400 text-xs mt-1">
+                            <p className="text-green-600 text-xs mt-1">
                               Correct: {q.options[q.correct]}
                             </p>
                           )}
@@ -643,14 +653,14 @@ export default function WarriorsAssessmentClient() {
                 <div className="flex flex-wrap justify-center gap-4">
                   <button
                     onClick={restartAssessment}
-                    className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl flex items-center gap-2 transition-all"
+                    className="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl flex items-center gap-2 transition-all shadow-lg shadow-primary/25"
                   >
                     <RotateCcw className="w-5 h-5" />
                     Try Again
                   </button>
                   <Link
                     href="/cyber-warriors"
-                    className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl flex items-center gap-2 transition-all"
+                    className="px-8 py-4 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl flex items-center gap-2 transition-all"
                   >
                     Learn More
                     <ChevronRight className="w-5 h-5" />
@@ -663,7 +673,7 @@ export default function WarriorsAssessmentClient() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 py-6 mt-12">
+      <footer className="bg-white border-t border-gray-200 py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <p className="text-sm text-gray-500">
             © {new Date().getFullYear()} ETI Educom® | Cyber Warriors Initiative
