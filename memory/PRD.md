@@ -23,7 +23,16 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 - **Database:** MongoDB
 - **Old Frontend:** `/app/frontend` (Deprecated CRA app)
 
-### Latest Session Updates (March 29, 2026)
+### Latest Session Updates (April 1, 2026)
+
+#### Cyber Warriors Logo in Main Navbar
+| Feature | Status | Details |
+|---------|--------|---------|
+| **Logo in Main Navbar** | ✅ Done | Cyber Warriors logo displays alongside ETI logo only on `/cyber-warriors` page |
+| **Sub-navbar Removed** | ✅ Done | Removed redundant sub-navbar from page |
+| **Conditional Rendering** | ✅ Done | Uses `usePathname()` to show logo only on cyber-warriors route |
+
+### Previous Session Updates (March 29, 2026)
 
 #### Cyber Warriors Assessment System (NEW)
 | Feature | Status | Details |
@@ -186,4 +195,4 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 - Connect actual company video for About section
 
 ## Last Updated
-December 27, 2025
+April 1, 2026

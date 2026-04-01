@@ -87,26 +87,6 @@ const audiences = [
 export default function CyberWarriorsPage() {
   return (
     <div className="min-h-screen">
-      {/* Cyber Warriors Navbar */}
-      <div className="bg-gray-900 border-b border-gray-800">
-        <div className="container-main py-4">
-          <div className="flex items-center justify-between">
-            <img 
-              src={CYBER_WARRIORS_LOGO} 
-              alt="Cyber Warriors by ETI Educom" 
-              className="h-20 w-auto object-contain"
-            />
-            <Link 
-              href="/warriors" 
-              className="hidden sm:flex items-center gap-2 bg-primary hover:bg-primary-dark text-white px-6 py-3 rounded-lg font-medium transition-colors"
-            >
-              <Target className="w-5 h-5" />
-              Take Free Assessment
-            </Link>
-          </div>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 py-16 lg:py-24 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">

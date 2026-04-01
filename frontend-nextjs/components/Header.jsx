@@ -131,6 +131,17 @@ export default function Header() {
                 priority
               />
             </Link>
+            
+            {/* Cyber Warriors Logo - Only on /cyber-warriors page */}
+            {pathname === '/cyber-warriors' && (
+              <div className="flex items-center gap-3 ml-4 pl-4 border-l-2 border-gray-200" data-testid="cyber-warriors-logo">
+                <img 
+                  src="/images/cyber-warriors-logo.png" 
+                  alt="Cyber Warriors" 
+                  className="h-14 w-auto object-contain"
+                />
+              </div>
+            )}
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1" data-testid="desktop-nav">
