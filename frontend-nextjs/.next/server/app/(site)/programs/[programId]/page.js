@@ -8,7 +8,7 @@
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */let n=(0,i(6557).Z)("Send",[["path",{d:"m22 2-7 20-4-9-9-4Z",key:"1q3vgg"}],["path",{d:"M22 2 11 13",key:"nzbqef"}]])},5287:(e,t,i)=>{"use strict";i.r(t),i.d(t,{default:()=>O,generateMetadata:()=>L});var n=i(9510),a=i(7371),r=i(8585),o=i(1116),s=i(603),l=i(7731),c=i(7097),d=i(7666),p=i(6359),u=i(8278),m=i(3218),g=i(3113),h=i(89),y=i(6707),f=i(3944),v=i(4120),x=i(3058),b=i(394),k=i(7799),S=i(4494),w=i(5064);/**
+ */let n=(0,i(6557).Z)("Send",[["path",{d:"m22 2-7 20-4-9-9-4Z",key:"1q3vgg"}],["path",{d:"M22 2 11 13",key:"nzbqef"}]])},5287:(e,t,i)=>{"use strict";i.r(t),i.d(t,{default:()=>O,generateMetadata:()=>L});var n=i(9510),a=i(7371),r=i(8585),o=i(1116),s=i(603),l=i(7731),c=i(7097),d=i(7666),p=i(6359),u=i(8278),m=i(3218),g=i(3113),h=i(89),y=i(6707),f=i(3944),v=i(4120),x=i(3058),b=i(394),k=i(7799),S=i(4494),w=i(5002);/**
  * @license lucide-react v0.344.0 - ISC
  *
  * This source code is licensed under the ISC license.
@@ -23,7 +23,7 @@
  *
  * This source code is licensed under the ISC license.
  * See the LICENSE file in the root directory of this source tree.
- */let n=(0,i(6478).Z)("Briefcase",[["rect",{width:"20",height:"14",x:"2",y:"7",rx:"2",ry:"2",key:"eto64e"}],["path",{d:"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16",key:"zwj3tp"}]])},5064:(e,t,i)=>{"use strict";i.d(t,{Z:()=>n});/**
+ */let n=(0,i(6478).Z)("Briefcase",[["rect",{width:"20",height:"14",x:"2",y:"7",rx:"2",ry:"2",key:"eto64e"}],["path",{d:"M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16",key:"zwj3tp"}]])},5002:(e,t,i)=>{"use strict";i.d(t,{Z:()=>n});/**
  * @license lucide-react v0.344.0 - ISC
  *
  * This source code is licensed under the ISC license.
