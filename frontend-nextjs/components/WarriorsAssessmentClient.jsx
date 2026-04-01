@@ -553,10 +553,10 @@ export default function WarriorsAssessmentClient() {
                 {/* Certificate - A4 Landscape Format (297mm x 210mm) */}
                 <div 
                   ref={certificateRef}
-                  className="bg-white rounded-lg mx-auto mb-8 shadow-2xl border border-gray-300 overflow-hidden"
+                  className="bg-white rounded-lg mx-auto mb-8 shadow-2xl border border-gray-300 overflow-visible"
                   style={{ width: '842px', height: '595px', padding: '0' }}
                 >
-                  <div className="w-full h-full border-8 border-primary/20 p-6 flex flex-col bg-gradient-to-br from-white via-blue-50/20 to-white relative">
+                  <div className="w-full h-full border-8 border-primary/20 p-5 flex flex-col bg-gradient-to-br from-white via-blue-50/20 to-white relative">
                     {/* Decorative Corners */}
                     <div className="absolute top-3 left-3 w-12 h-12 border-t-4 border-l-4 border-primary/40 rounded-tl-lg"></div>
                     <div className="absolute top-3 right-3 w-12 h-12 border-t-4 border-r-4 border-primary/40 rounded-tr-lg"></div>
@@ -564,14 +564,14 @@ export default function WarriorsAssessmentClient() {
                     <div className="absolute bottom-3 right-3 w-12 h-12 border-b-4 border-r-4 border-primary/40 rounded-br-lg"></div>
 
                     {/* Header with Logo */}
-                    <div className="text-center mb-2">
+                    <div className="text-center mb-3">
                       <img 
                         src={CYBER_WARRIORS_LOGO} 
                         alt="Cyber Warriors by ETI Educom" 
                         className="h-12 w-auto object-contain mx-auto mb-1"
                         crossOrigin="anonymous"
                       />
-                      <h1 className="text-2xl font-black text-gray-900 tracking-wider uppercase">Cyber Warriors Initiative</h1>
+                      <h1 className="text-xl font-black text-gray-900 tracking-wider uppercase">Cyber Warriors Initiative</h1>
                       <p className="text-xs text-gray-500 italic">(A Program by ETI Educom)</p>
                     </div>
 
@@ -584,22 +584,23 @@ export default function WarriorsAssessmentClient() {
 
                     {/* Certificate Title */}
                     <div className="text-center mb-3">
-                      <h2 className="text-xl font-bold text-primary uppercase tracking-[0.3em]">Certificate of Completion</h2>
+                      <h2 className="text-lg font-bold text-primary uppercase tracking-[0.25em]">Certificate of Completion</h2>
                     </div>
 
                     {/* Recipient Section */}
                     <div className="text-center flex-1 flex flex-col justify-center">
-                      <p className="text-gray-600 text-sm mb-1">This is to proudly certify that</p>
+                      <p className="text-gray-600 text-sm mb-2">This is to proudly certify that</p>
                       <h3 className="text-4xl font-bold text-gray-900 mb-2 font-serif">
                         {studentData.name}
                       </h3>
-                      <div className="w-64 h-0.5 bg-primary mx-auto mb-3"></div>
-                      <p className="text-gray-700 text-sm max-w-2xl mx-auto leading-relaxed">
-                        has successfully participated in the <strong>Cyber Warriors Awareness Session</strong> and completed the <strong>Cyber Security Assessment</strong> conducted by <strong>ETI Educom</strong>
+                      <div className="w-56 h-0.5 bg-primary mx-auto mb-3"></div>
+                      <p className="text-gray-700 text-sm max-w-xl mx-auto leading-relaxed">
+                        has successfully participated in the <strong>Cyber Warriors Awareness Session</strong><br/>
+                        and completed the <strong>Cyber Security Assessment</strong> conducted by <strong>ETI Educom</strong>
                       </p>
                     </div>
 
-                    {/* Topics Covered - Single Line */}
+                    {/* Topics Covered */}
                     <div className="bg-gray-50/80 rounded-lg py-2 px-4 mb-3">
                       <p className="text-[10px] text-gray-500 text-center mb-1">Knowledge Areas Covered:</p>
                       <div className="flex justify-center gap-6 text-xs text-gray-700">
@@ -611,40 +612,29 @@ export default function WarriorsAssessmentClient() {
                     </div>
 
                     {/* Appreciation */}
-                    <p className="text-center text-[11px] text-gray-500 italic mb-3">
+                    <p className="text-center text-[11px] text-gray-500 italic mb-2">
                       We appreciate their commitment to becoming a responsible digital citizen and taking a step towards a secure digital future.
                     </p>
 
-                    {/* Footer Section - 3 Column Layout */}
-                    <div className="flex items-end justify-between pt-2 border-t border-gray-200">
-                      {/* Date & Location */}
-                      <div className="text-left text-xs w-1/3">
-                        <p className="text-gray-700 font-medium">📅 {currentDate}</p>
-                        {studentData.college && (
-                          <p className="text-gray-600 mt-0.5">📍 {studentData.college}</p>
-                        )}
-                        <p className="text-gray-400 text-[10px] mt-1">ID: {certificateId}</p>
-                      </div>
-
-                      {/* Signature Section */}
-                      <div className="text-center w-1/3">
-                        <div className="border-b-2 border-gray-400 w-40 mx-auto mb-1"></div>
-                        <p className="text-sm font-bold text-gray-900">Mr. Krishna Mahajan</p>
-                        <p className="text-xs text-primary font-medium">Cyber Security Researcher</p>
-                      </div>
-
-                      {/* Contact */}
-                      <div className="text-right text-xs w-1/3">
-                        <p className="font-semibold text-primary">www.etieducom.com</p>
-                        <p className="text-gray-500 text-[10px]">+91 8699391076</p>
-                      </div>
+                    {/* Signature Section */}
+                    <div className="text-center mb-2">
+                      <div className="border-b-2 border-gray-400 w-40 mx-auto mb-1"></div>
+                      <p className="text-sm font-bold text-gray-900">Mr. Krishna Mahajan</p>
+                      <p className="text-xs text-primary font-medium">Cyber Security Researcher</p>
                     </div>
 
-                    {/* Bottom Section with Quote and Credentials */}
-                    <div className="mt-2 pt-2 border-t border-primary/20 text-center">
-                      <p className="text-[10px] text-gray-500 italic mb-1">"Don't Just Use Technology — Secure It."</p>
-                      <p className="text-[8px] text-gray-500 leading-relaxed">
-                        <strong className="text-gray-700">Mr. Krishna Mahajan</strong> — Cyber Security Researcher | Cyber Crime Educator | Helping People & Institutions prevent cyber fraud in India | Founder, ETI EDUCOM
+                    {/* Quote */}
+                    <p className="text-center text-[10px] text-gray-500 italic mb-2">
+                      "Don't Just Use Technology — Secure It."
+                    </p>
+
+                    {/* Footer with Address */}
+                    <div className="text-center pt-2 border-t border-primary/20">
+                      <p className="text-[9px] text-gray-600">
+                        <strong>Registered Address:</strong> ETI Educom, Jodhamal Colony, Dhangu Road, Pathankot
+                      </p>
+                      <p className="text-[9px] text-gray-600">
+                        <span className="text-primary font-medium">www.etieducom.com</span> | helpdesk@etieducom.com | 9646727676
                       </p>
                     </div>
                   </div>
