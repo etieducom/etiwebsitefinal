@@ -44,27 +44,27 @@ export default function FounderPage() {
       </section>
 
       {/* Founder Message */}
-      <section className="section-padding bg-white">
+      <section className="py-16 lg:py-24 bg-white">
         <div className="container-main">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            {/* Image */}
-            <div className="lg:sticky lg:top-32 space-y-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+            {/* Image - Sticky on desktop */}
+            <div className="lg:sticky lg:top-24 lg:self-start space-y-6">
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-xl">
                   <Image
                     src="/images/founder.jpg"
-                    alt="Founder - ETI Educom"
-                    width={600}
-                    height={700}
-                    className="w-full h-auto object-cover"
+                    alt="Krishna Mahajan - Founder ETI Educom"
+                    width={500}
+                    height={600}
+                    className="w-full h-auto object-cover max-h-[500px] object-top"
                   />
                 </div>
-                <div className="absolute -bottom-4 -right-4 bg-primary text-white p-6 rounded-xl shadow-lg hidden md:block">
-                  <p className="text-2xl font-bold">Since 2017</p>
+                <div className="absolute -bottom-4 -right-4 bg-primary text-white p-5 rounded-xl shadow-lg hidden md:block">
+                  <p className="text-xl font-bold">Since 2017</p>
                   <p className="text-blue-100 text-sm">Building Computer Careers</p>
                 </div>
               </div>
-              <div className="text-center lg:text-left">
+              <div className="text-center lg:text-left pt-2">
                 <h3 className="text-2xl font-bold text-gray-900">Krishna Mahajan</h3>
                 <p className="text-lg text-primary font-medium">Founder & Managing Director</p>
                 <p className="text-gray-600">ETI Educom®</p>
