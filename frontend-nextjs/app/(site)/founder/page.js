@@ -48,12 +48,12 @@ export default function FounderPage() {
         <div className="container-main">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             {/* Image */}
-            <div className="lg:sticky lg:top-32">
+            <div className="lg:sticky lg:top-32 space-y-8">
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-xl">
                   <Image
-                    src="https://images.pexels.com/photos/7581115/pexels-photo-7581115.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
-                    alt="Founder"
+                    src="/images/founder-session.jpg"
+                    alt="Founder conducting session with students"
                     width={600}
                     height={400}
                     className="w-full h-auto object-cover"
@@ -64,7 +64,7 @@ export default function FounderPage() {
                   <p className="text-blue-100 text-sm">Building Computer Careers</p>
                 </div>
               </div>
-              <div className="mt-8 text-center lg:text-left">
+              <div className="text-center lg:text-left">
                 <h3 className="text-xl font-bold text-gray-900">Founder & Managing Director</h3>
                 <p className="text-gray-600">ETI Educom®</p>
               </div>
