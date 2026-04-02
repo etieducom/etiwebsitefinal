@@ -65,7 +65,8 @@ export default function FounderPage() {
                 </div>
               </div>
               <div className="text-center lg:text-left">
-                <h3 className="text-xl font-bold text-gray-900">Founder & Managing Director</h3>
+                <h3 className="text-2xl font-bold text-gray-900">Krishna Mahajan</h3>
+                <p className="text-lg text-primary font-medium">Founder & Managing Director</p>
                 <p className="text-gray-600">ETI Educom®</p>
               </div>
             </div>
