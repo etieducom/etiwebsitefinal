@@ -220,31 +220,48 @@ function AllLeadsTab() {
   const [filter, setFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const fetchAllLeads = async () => {
+    setLoading(true);
+    try {
+      const [counselling, summer, industrial, contact, service] = await Promise.all([
+        fetch(`${API_URL}/api/counselling-leads`).then(r => r.json()).catch(() => []),
+        fetch(`${API_URL}/api/summer-training-leads`).then(r => r.json()).catch(() => []),
+        fetch(`${API_URL}/api/industrial-training-leads`).then(r => r.json()).catch(() => []),
+        fetch(`${API_URL}/api/contact`).then(r => r.json()).catch(() => []),
+        fetch(`${API_URL}/api/service-enquiry`).then(r => r.json()).catch(() => [])
+      ]);
+      
+      const allLeads = [
+        ...(Array.isArray(counselling) ? counselling : []).map(l => ({ ...l, source: 'Free Counselling', sourceColor: 'info', deleteEndpoint: 'counselling-leads' })),
+        ...(Array.isArray(summer) ? summer : []).map(l => ({ ...l, source: 'Summer Training', sourceColor: 'success', deleteEndpoint: 'summer-training-leads' })),
+        ...(Array.isArray(industrial) ? industrial : []).map(l => ({ ...l, source: 'Industrial Training', sourceColor: 'primary', deleteEndpoint: 'industrial-training-leads' })),
+        ...(Array.isArray(contact) ? contact : []).map(l => ({ ...l, source: 'Contact Form', sourceColor: 'default', deleteEndpoint: 'contact' })),
+        ...(Array.isArray(service) ? service : []).map(l => ({ ...l, name: l.contact_person || l.name, source: 'Service Enquiry', sourceColor: 'warning', deleteEndpoint: 'service-enquiry' }))
+      ].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+      
+      setLeads(allLeads);
+    } catch (error) { toast.error('Failed to load leads'); }
+    finally { setLoading(false); }
+  };
+
   useEffect(() => {
-    const fetchAllLeads = async () => {
-      try {
-        const [counselling, summer, industrial, contact, service] = await Promise.all([
-          fetch(`${API_URL}/api/counselling-leads`).then(r => r.json()).catch(() => []),
-          fetch(`${API_URL}/api/summer-training-leads`).then(r => r.json()).catch(() => []),
-          fetch(`${API_URL}/api/industrial-training-leads`).then(r => r.json()).catch(() => []),
-          fetch(`${API_URL}/api/contact`).then(r => r.json()).catch(() => []),
-          fetch(`${API_URL}/api/service-enquiry`).then(r => r.json()).catch(() => [])
-        ]);
-        
-        const allLeads = [
-          ...(Array.isArray(counselling) ? counselling : []).map(l => ({ ...l, source: 'Free Counselling', sourceColor: 'info' })),
-          ...(Array.isArray(summer) ? summer : []).map(l => ({ ...l, source: 'Summer Training', sourceColor: 'success' })),
-          ...(Array.isArray(industrial) ? industrial : []).map(l => ({ ...l, source: 'Industrial Training', sourceColor: 'primary' })),
-          ...(Array.isArray(contact) ? contact : []).map(l => ({ ...l, source: 'Contact Form', sourceColor: 'default' })),
-          ...(Array.isArray(service) ? service : []).map(l => ({ ...l, name: l.contact_person || l.name, source: 'Service Enquiry', sourceColor: 'warning' }))
-        ].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
-        
-        setLeads(allLeads);
-      } catch (error) { toast.error('Failed to load leads'); }
-      finally { setLoading(false); }
-    };
     fetchAllLeads();
   }, []);
+
+  const handleDeleteLead = async (lead) => {
+    if (!confirm(`Are you sure you want to delete this ${lead.source} lead?`)) return;
+    try {
+      const res = await fetch(`${API_URL}/api/${lead.deleteEndpoint}/${lead.id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Lead deleted successfully');
+        fetchAllLeads();
+      } else {
+        toast.error('Failed to delete lead');
+      }
+    } catch (error) {
+      toast.error('Error deleting lead');
+    }
+  };
 
   if (loading) return <Spinner />;
 
@@ -294,6 +311,7 @@ function AllLeadsTab() {
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Interest</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Source</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Date</th>
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -307,6 +325,15 @@ function AllLeadsTab() {
                     <td className="px-4 py-3 text-sm text-gray-600">{lead.preferred_track || lead.program_interest || '-'}</td>
                     <td className="px-4 py-3"><Badge variant={lead.sourceColor}>{lead.source}</Badge></td>
                     <td className="px-4 py-3 text-sm text-gray-500">{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3">
+                      <button 
+                        onClick={() => handleDeleteLead(lead)}
+                        className="text-red-600 hover:text-red-800 p-1"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -323,9 +350,29 @@ function EduConnectLeadsTab() {
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchLeads = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/educonnect/enquiries`);
+      if (res.ok) setLeads(await res.json());
+    } catch (e) {}
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetch(`${API_URL}/api/educonnect/enquiries`).then(r => r.json()).then(setLeads).catch(() => {}).finally(() => setLoading(false));
+    fetchLeads();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this lead?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/educonnect/enquiries/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Lead deleted');
+        fetchLeads();
+      }
+    } catch { toast.error('Failed to delete'); }
+  };
 
   if (loading) return <Spinner />;
 
@@ -343,15 +390,21 @@ function EduConnectLeadsTab() {
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Contact</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Program</th>
                 <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Date</th>
+                <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {leads.map((lead, i) => (
-                <tr key={i} className="hover:bg-gray-50">
+              {leads.map((lead) => (
+                <tr key={lead.id} className="hover:bg-gray-50">
                   <td className="px-4 py-3 font-medium text-gray-900">{lead.name}</td>
                   <td className="px-4 py-3"><div>{lead.phone}</div><div className="text-sm text-gray-500">{lead.email}</div></td>
                   <td className="px-4 py-3"><Badge variant="primary">{lead.program_interest || '-'}</Badge></td>
                   <td className="px-4 py-3 text-sm text-gray-500">{lead.created_at ? new Date(lead.created_at).toLocaleDateString() : '-'}</td>
+                  <td className="px-4 py-3">
+                    <button onClick={() => handleDelete(lead.id)} className="text-red-600 hover:text-red-800 p-1" title="Delete">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -367,8 +420,17 @@ function ReferralsTab() {
   const [referrals, setReferrals] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchReferrals = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/referrals`);
+      if (res.ok) setReferrals(await res.json());
+    } catch (e) {}
+    setLoading(false);
+  };
+
   useEffect(() => {
-    fetch(`${API_URL}/api/referrals`).then(r => r.json()).then(setReferrals).catch(() => {}).finally(() => setLoading(false));
+    fetchReferrals();
   }, []);
 
   const updateStatus = async (id, status) => {
@@ -377,6 +439,17 @@ function ReferralsTab() {
       toast.success('Status updated');
       setReferrals(referrals.map(r => r.id === id ? { ...r, status } : r));
     } catch { toast.error('Failed'); }
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this referral?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/referrals/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Referral deleted');
+        fetchReferrals();
+      }
+    } catch { toast.error('Failed to delete'); }
   };
 
   if (loading) return <Spinner />;
@@ -404,11 +477,16 @@ function ReferralsTab() {
                   <td className="px-4 py-3"><div>{ref.friend_name}</div><div className="text-sm text-gray-500">{ref.friend_phone}</div></td>
                   <td className="px-4 py-3"><Badge variant={ref.status === 'converted' ? 'success' : ref.status === 'contacted' ? 'warning' : 'default'}>{ref.status || 'pending'}</Badge></td>
                   <td className="px-4 py-3">
-                    <select value={ref.status || 'pending'} onChange={(e) => updateStatus(ref.id, e.target.value)} className="text-sm border rounded-lg px-2 py-1">
-                      <option value="pending">Pending</option>
-                      <option value="contacted">Contacted</option>
-                      <option value="converted">Converted</option>
-                    </select>
+                    <div className="flex items-center gap-2">
+                      <select value={ref.status || 'pending'} onChange={(e) => updateStatus(ref.id, e.target.value)} className="text-sm border rounded-lg px-2 py-1">
+                        <option value="pending">Pending</option>
+                        <option value="contacted">Contacted</option>
+                        <option value="converted">Converted</option>
+                      </select>
+                      <button onClick={() => handleDelete(ref.id)} className="text-red-600 hover:text-red-800 p-1" title="Delete">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -1007,6 +1085,32 @@ function CyberWarriorsTab() {
     }
   };
 
+  const handleDeleteAssessment = async (id) => {
+    if (!confirm('Are you sure you want to delete this assessment record?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/cyber-warriors/assessments/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Assessment deleted');
+        fetchData();
+      }
+    } catch (error) {
+      toast.error('Error deleting assessment');
+    }
+  };
+
+  const handleDeleteBooking = async (id) => {
+    if (!confirm('Are you sure you want to delete this booking?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/cyber-warriors/registrations/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Booking deleted');
+        fetchData();
+      }
+    } catch (error) {
+      toast.error('Error deleting booking');
+    }
+  };
+
   const handleToggleVideo = async (id) => {
     try {
       const res = await fetch(`${API_URL}/api/cyber-warriors/video-reviews/${id}/toggle`, { method: 'PUT' });
@@ -1099,6 +1203,7 @@ function CyberWarriorsTab() {
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Score</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -1116,6 +1221,15 @@ function CyberWarriorsTab() {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {new Date(a.completed_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button 
+                          onClick={() => handleDeleteAssessment(a.id)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -1150,6 +1264,7 @@ function CyberWarriorsTab() {
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Preferred Date</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Submitted</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -1172,6 +1287,15 @@ function CyberWarriorsTab() {
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-500">
                         {new Date(b.created_at).toLocaleDateString()}
+                      </td>
+                      <td className="px-4 py-3">
+                        <button 
+                          onClick={() => handleDeleteBooking(b.id)}
+                          className="text-red-600 hover:text-red-800 p-1"
+                          title="Delete"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </td>
                     </tr>
                   ))}

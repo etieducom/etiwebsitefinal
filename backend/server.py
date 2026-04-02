@@ -1013,6 +1013,14 @@ async def get_contact_enquiries():
     ]
 
 
+@api_router.delete("/contact/{contact_id}")
+async def delete_contact_enquiry(contact_id: str):
+    result = await db.contact_enquiries.delete_one({"id": contact_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Contact enquiry not found")
+    return {"message": "Contact enquiry deleted successfully"}
+
+
 # Event Routes
 @api_router.post("/events", response_model=EventResponse)
 async def create_event(input: EventCreate):
@@ -2834,6 +2842,14 @@ async def get_cyber_warriors_assessment_stats():
         "failed": failed,
         "pass_rate": pass_rate
     }
+
+
+@api_router.delete("/cyber-warriors/assessments/{assessment_id}")
+async def delete_cyber_warriors_assessment(assessment_id: str):
+    result = await db.cyber_warriors_assessments.delete_one({"id": assessment_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Assessment not found")
+    return {"message": "Assessment deleted successfully"}
 
 
 # ============ Cyber Warriors Video Reviews Models ============
