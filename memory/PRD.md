@@ -25,12 +25,19 @@ Build and enhance the official website for "ETI Educom®" - a comprehensive IT t
 
 ### Latest Session Updates (April 1, 2026)
 
-#### Cyber Warriors Logo in Main Navbar
+#### Cyber Warriors Page Redesign (Complete Overhaul)
 | Feature | Status | Details |
 |---------|--------|---------|
 | **Logo in Main Navbar** | ✅ Done | Cyber Warriors logo displays alongside ETI logo only on `/cyber-warriors` page |
-| **Sub-navbar Removed** | ✅ Done | Removed redundant sub-navbar from page |
-| **Conditional Rendering** | ✅ Done | Uses `usePathname()` to show logo only on cyber-warriors route |
+| **Trust Badges** | ✅ Done | Punjab Police Collaboration, NASSCOM Member, ISO 9001:2015, MSME Registered |
+| **Impact Statistics** | ✅ Done | 10,000+ Citizens, 500+ Sessions, 150+ Institutions, 5+ Years |
+| **Workshop Modules** | ✅ Done | 6 detailed modules with duration and learning points |
+| **Session Formats** | ✅ Done | Individual, School/College, Corporate, Community formats |
+| **Testimonials** | ✅ Done | Real quotes from School Principal, HR Manager, IT Professional |
+| **Expert Trainers** | ✅ Done | Certified professionals section |
+| **FAQ Section** | ✅ Done | 5 common questions with answers |
+| **Mission Statement** | ✅ Done | Clear CSR initiative messaging |
+| **Assessment CTA** | ✅ Done | Prominent link to `/warriors` quiz page |
 
 ### Previous Session Updates (March 29, 2026)
 
