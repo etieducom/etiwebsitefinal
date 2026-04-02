@@ -52,10 +52,10 @@ export default function FounderPage() {
               <div className="relative">
                 <div className="rounded-2xl overflow-hidden shadow-xl">
                   <Image
-                    src="/images/founder-session.jpg"
-                    alt="Founder conducting session with students"
+                    src="/images/founder.jpg"
+                    alt="Founder - ETI Educom"
                     width={600}
-                    height={400}
+                    height={700}
                     className="w-full h-auto object-cover"
                   />
                 </div>
