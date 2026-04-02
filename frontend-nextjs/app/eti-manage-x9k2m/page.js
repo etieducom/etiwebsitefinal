@@ -6,7 +6,7 @@ import {
   MessageSquare, Gift, GraduationCap, Plus, Trash2, Edit, Eye, Save, X, 
   Star, Building2, Award, Phone, Mail, CheckCircle, Clock, TrendingUp, 
   Handshake, Search, Download, RefreshCw, ExternalLink, Shield, AlertTriangle,
-  Smartphone, Key
+  Smartphone, Key, Video
 } from 'lucide-react';
 import { toast, Toaster } from 'sonner';
 
@@ -925,9 +925,12 @@ function MSG91SettingsTab() {
 function CyberWarriorsTab() {
   const [assessments, setAssessments] = useState([]);
   const [bookings, setBookings] = useState([]);
+  const [videoReviews, setVideoReviews] = useState([]);
   const [stats, setStats] = useState({ total_attempts: 0, passed: 0, failed: 0, pass_rate: 0 });
   const [loading, setLoading] = useState(true);
   const [activeSubTab, setActiveSubTab] = useState('assessments');
+  const [showAddVideo, setShowAddVideo] = useState(false);
+  const [newVideo, setNewVideo] = useState({ name: '', designation: '', location: '', video_url: '' });
 
   useEffect(() => {
     fetchData();
@@ -936,15 +939,17 @@ function CyberWarriorsTab() {
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [assessRes, bookingsRes, statsRes] = await Promise.all([
+      const [assessRes, bookingsRes, statsRes, videosRes] = await Promise.all([
         fetch(`${API_URL}/api/cyber-warriors/assessments`),
         fetch(`${API_URL}/api/cyber-warriors/registrations`),
-        fetch(`${API_URL}/api/cyber-warriors/assessments/stats`)
+        fetch(`${API_URL}/api/cyber-warriors/assessments/stats`),
+        fetch(`${API_URL}/api/cyber-warriors/video-reviews?active_only=false`)
       ]);
       
       if (assessRes.ok) setAssessments(await assessRes.json());
       if (bookingsRes.ok) setBookings(await bookingsRes.json());
       if (statsRes.ok) setStats(await statsRes.json());
+      if (videosRes.ok) setVideoReviews(await videosRes.json());
     } catch (error) {
       console.error('Error fetching cyber warriors data:', error);
     }
@@ -963,6 +968,62 @@ function CyberWarriorsTab() {
     a.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     toast.success('CSV exported successfully!');
+  };
+
+  const handleAddVideo = async () => {
+    if (!newVideo.name || !newVideo.designation || !newVideo.video_url) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+    try {
+      const res = await fetch(`${API_URL}/api/cyber-warriors/video-reviews`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newVideo)
+      });
+      if (res.ok) {
+        toast.success('Video review added successfully!');
+        setNewVideo({ name: '', designation: '', location: '', video_url: '' });
+        setShowAddVideo(false);
+        fetchData();
+      } else {
+        toast.error('Failed to add video review');
+      }
+    } catch (error) {
+      toast.error('Error adding video review');
+    }
+  };
+
+  const handleDeleteVideo = async (id) => {
+    if (!confirm('Are you sure you want to delete this video review?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/cyber-warriors/video-reviews/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Video review deleted');
+        fetchData();
+      }
+    } catch (error) {
+      toast.error('Error deleting video review');
+    }
+  };
+
+  const handleToggleVideo = async (id) => {
+    try {
+      const res = await fetch(`${API_URL}/api/cyber-warriors/video-reviews/${id}/toggle`, { method: 'PUT' });
+      if (res.ok) {
+        toast.success('Video review status updated');
+        fetchData();
+      }
+    } catch (error) {
+      toast.error('Error updating video review');
+    }
+  };
+
+  // Extract YouTube video ID for thumbnail
+  const getYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=|shorts\/)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
   };
 
   if (loading) return <Spinner />;
@@ -988,10 +1049,10 @@ function CyberWarriorsTab() {
       </div>
 
       {/* Sub Tabs */}
-      <div className="flex gap-2 border-b">
+      <div className="flex gap-2 border-b overflow-x-auto">
         <button
           onClick={() => setActiveSubTab('assessments')}
-          className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+          className={`px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap ${
             activeSubTab === 'assessments' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
@@ -999,11 +1060,19 @@ function CyberWarriorsTab() {
         </button>
         <button
           onClick={() => setActiveSubTab('bookings')}
-          className={`px-4 py-2 font-medium border-b-2 transition-colors ${
+          className={`px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap ${
             activeSubTab === 'bookings' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
           }`}
         >
           Session Bookings ({bookings.length})
+        </button>
+        <button
+          onClick={() => setActiveSubTab('videos')}
+          className={`px-4 py-2 font-medium border-b-2 transition-colors whitespace-nowrap ${
+            activeSubTab === 'videos' ? 'border-primary text-primary' : 'border-transparent text-gray-500 hover:text-gray-700'
+          }`}
+        >
+          Video Reviews ({videoReviews.length})
         </button>
       </div>
 
@@ -1110,6 +1179,143 @@ function CyberWarriorsTab() {
               </table>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Video Reviews Tab */}
+      {activeSubTab === 'videos' && (
+        <div className="space-y-4">
+          {/* Add Video Form */}
+          {showAddVideo ? (
+            <div className="bg-white rounded-xl border p-6">
+              <h3 className="font-semibold mb-4 flex items-center gap-2">
+                <Video className="w-5 h-5 text-primary" />
+                Add Video Review (Reel Format)
+              </h3>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                  <input
+                    type="text"
+                    value={newVideo.name}
+                    onChange={(e) => setNewVideo({...newVideo, name: e.target.value})}
+                    placeholder="Reviewer's Name"
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Designation *</label>
+                  <input
+                    type="text"
+                    value={newVideo.designation}
+                    onChange={(e) => setNewVideo({...newVideo, designation: e.target.value})}
+                    placeholder="e.g., Principal, Govt. School"
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                  <input
+                    type="text"
+                    value={newVideo.location}
+                    onChange={(e) => setNewVideo({...newVideo, location: e.target.value})}
+                    placeholder="e.g., Pathankot, Punjab"
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">YouTube Video URL *</label>
+                  <input
+                    type="url"
+                    value={newVideo.video_url}
+                    onChange={(e) => setNewVideo({...newVideo, video_url: e.target.value})}
+                    placeholder="https://youtube.com/shorts/... or https://youtu.be/..."
+                    className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  />
+                </div>
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Tip: Upload vertical videos (9:16 ratio) to YouTube Shorts for best results
+              </p>
+              <div className="flex gap-2 mt-4">
+                <button onClick={handleAddVideo} className="btn-primary">
+                  <Plus className="w-4 h-4 mr-1" /> Add Video
+                </button>
+                <button onClick={() => setShowAddVideo(false)} className="btn-secondary">
+                  Cancel
+                </button>
+              </div>
+            </div>
+          ) : (
+            <button onClick={() => setShowAddVideo(true)} className="btn-primary">
+              <Plus className="w-4 h-4 mr-1" /> Add Video Review
+            </button>
+          )}
+
+          {/* Video Reviews List */}
+          <div className="bg-white rounded-xl border">
+            <div className="p-4 border-b">
+              <h3 className="font-semibold">Video Reviews ({videoReviews.length})</h3>
+              <p className="text-sm text-gray-500">These video testimonials appear on the Cyber Warriors page in reel format</p>
+            </div>
+            {videoReviews.length === 0 ? (
+              <p className="p-6 text-gray-500 text-center">No video reviews yet. Add your first video testimonial!</p>
+            ) : (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
+                {videoReviews.map((video) => {
+                  const videoId = getYouTubeId(video.video_url);
+                  const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
+                  return (
+                    <div key={video.id} className={`border rounded-xl overflow-hidden ${!video.is_active ? 'opacity-60' : ''}`}>
+                      {/* Thumbnail */}
+                      <div className="relative aspect-video bg-gray-100">
+                        {thumbnail ? (
+                          <img src={thumbnail} alt={video.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                            <Video className="w-10 h-10 text-gray-400" />
+                          </div>
+                        )}
+                        {!video.is_active && (
+                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                            <span className="text-white text-sm font-medium">Hidden</span>
+                          </div>
+                        )}
+                      </div>
+                      {/* Info */}
+                      <div className="p-4">
+                        <h4 className="font-semibold text-gray-900">{video.name}</h4>
+                        <p className="text-sm text-gray-600">{video.designation}</p>
+                        {video.location && <p className="text-xs text-gray-500 mt-1">{video.location}</p>}
+                        <div className="flex gap-2 mt-3">
+                          <a 
+                            href={video.video_url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-xs text-primary hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink className="w-3 h-3" /> View
+                          </a>
+                          <button 
+                            onClick={() => handleToggleVideo(video.id)}
+                            className={`text-xs ${video.is_active ? 'text-yellow-600' : 'text-green-600'} hover:underline`}
+                          >
+                            {video.is_active ? 'Hide' : 'Show'}
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteVideo(video.id)}
+                            className="text-xs text-red-600 hover:underline"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>

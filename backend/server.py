@@ -2836,6 +2836,87 @@ async def get_cyber_warriors_assessment_stats():
     }
 
 
+# ============ Cyber Warriors Video Reviews Models ============
+
+class CyberWarriorsVideoReview(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    designation: str
+    location: Optional[str] = None
+    video_url: str  # YouTube/Instagram reel URL
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+
+class CyberWarriorsVideoReviewCreate(BaseModel):
+    name: str = Field(..., min_length=2, max_length=100)
+    designation: str = Field(..., min_length=2, max_length=200)
+    location: Optional[str] = None
+    video_url: str = Field(..., min_length=10)
+
+
+class CyberWarriorsVideoReviewResponse(BaseModel):
+    id: str
+    name: str
+    designation: str
+    location: Optional[str]
+    video_url: str
+    is_active: bool
+    created_at: str
+
+
+# ============ Cyber Warriors Video Reviews Routes ============
+
+@api_router.get("/cyber-warriors/video-reviews", response_model=List[CyberWarriorsVideoReviewResponse])
+async def get_cyber_warriors_video_reviews(active_only: bool = True):
+    query = {"is_active": True} if active_only else {}
+    reviews = await db.cyber_warriors_video_reviews.find(query, {"_id": 0}).sort("created_at", -1).to_list(50)
+    return [
+        CyberWarriorsVideoReviewResponse(
+            id=r['id'], name=r['name'], designation=r['designation'],
+            location=r.get('location'), video_url=r['video_url'],
+            is_active=r.get('is_active', True),
+            created_at=r['created_at'] if isinstance(r['created_at'], str) else r['created_at'].isoformat()
+        ) for r in reviews
+    ]
+
+
+@api_router.post("/cyber-warriors/video-reviews", response_model=CyberWarriorsVideoReviewResponse)
+async def create_cyber_warriors_video_review(input: CyberWarriorsVideoReviewCreate):
+    try:
+        review_dict = input.model_dump()
+        review_obj = CyberWarriorsVideoReview(**review_dict)
+        doc = review_obj.model_dump()
+        doc['created_at'] = doc['created_at'].isoformat()
+        await db.cyber_warriors_video_reviews.insert_one(doc)
+        return CyberWarriorsVideoReviewResponse(**{**doc, 'created_at': doc['created_at']})
+    except Exception as e:
+        logging.error(f"Error creating video review: {e}")
+        raise HTTPException(status_code=500, detail="Failed to create video review")
+
+
+@api_router.delete("/cyber-warriors/video-reviews/{review_id}")
+async def delete_cyber_warriors_video_review(review_id: str):
+    result = await db.cyber_warriors_video_reviews.delete_one({"id": review_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Video review not found")
+    return {"message": "Video review deleted successfully"}
+
+
+@api_router.put("/cyber-warriors/video-reviews/{review_id}/toggle")
+async def toggle_cyber_warriors_video_review(review_id: str):
+    review = await db.cyber_warriors_video_reviews.find_one({"id": review_id})
+    if not review:
+        raise HTTPException(status_code=404, detail="Video review not found")
+    new_status = not review.get('is_active', True)
+    await db.cyber_warriors_video_reviews.update_one(
+        {"id": review_id},
+        {"$set": {"is_active": new_status}}
+    )
+    return {"message": f"Video review {'activated' if new_status else 'deactivated'} successfully", "is_active": new_status}
+
+
 # ============ Admin Auth Routes ============
 
 @api_router.post("/admin/login", response_model=AdminLoginResponse)
