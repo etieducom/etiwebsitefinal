@@ -1492,6 +1492,256 @@ function SecurityTab({ loginLogs }) {
 }
 
 // Main Admin Component
+// Team Management Tab
+function TeamTab() {
+  const [members, setMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [editingMember, setEditingMember] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '', title: '', bio: '', photo_url: '', linkedin_url: '', twitter_url: '', email: '', order: 0
+  });
+
+  const fetchMembers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/team?active_only=false`);
+      if (res.ok) setMembers(await res.json());
+    } catch (e) { console.error(e); }
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchMembers(); }, []);
+
+  const resetForm = () => {
+    setFormData({ name: '', title: '', bio: '', photo_url: '', linkedin_url: '', twitter_url: '', email: '', order: 0 });
+    setEditingMember(null);
+    setShowForm(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!formData.name || !formData.title) return toast.error('Name and title are required');
+    
+    try {
+      const url = editingMember 
+        ? `${API_URL}/api/team/${editingMember.id}` 
+        : `${API_URL}/api/team`;
+      const method = editingMember ? 'PUT' : 'POST';
+      
+      const res = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
+      
+      if (res.ok) {
+        toast.success(editingMember ? 'Team member updated!' : 'Team member added!');
+        resetForm();
+        fetchMembers();
+      } else {
+        toast.error('Failed to save team member');
+      }
+    } catch (e) {
+      toast.error('Error saving team member');
+    }
+  };
+
+  const handleEdit = (member) => {
+    setEditingMember(member);
+    setFormData({
+      name: member.name || '',
+      title: member.title || '',
+      bio: member.bio || '',
+      photo_url: member.photo_url || '',
+      linkedin_url: member.linkedin_url || '',
+      twitter_url: member.twitter_url || '',
+      email: member.email || '',
+      order: member.order || 0
+    });
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (!confirm('Are you sure you want to delete this team member?')) return;
+    try {
+      const res = await fetch(`${API_URL}/api/team/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        toast.success('Team member deleted');
+        fetchMembers();
+      }
+    } catch (e) { toast.error('Error deleting'); }
+  };
+
+  const handleToggleActive = async (member) => {
+    try {
+      const res = await fetch(`${API_URL}/api/team/${member.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ is_active: !member.is_active })
+      });
+      if (res.ok) {
+        toast.success(`Team member ${member.is_active ? 'hidden' : 'visible'}`);
+        fetchMembers();
+      }
+    } catch (e) { toast.error('Error updating'); }
+  };
+
+  if (loading) return <Spinner />;
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <Users className="w-6 h-6 text-primary" />
+          Team Members ({members.length})
+        </h2>
+        <button onClick={() => { resetForm(); setShowForm(true); }} className="btn-primary">
+          <Plus className="w-4 h-4 mr-1" /> Add Member
+        </button>
+      </div>
+
+      {/* Add/Edit Form */}
+      {showForm && (
+        <div className="bg-white rounded-xl border p-6">
+          <h3 className="font-semibold mb-4">{editingMember ? 'Edit Team Member' : 'Add New Team Member'}</h3>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  placeholder="Full Name"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Title/Role *</label>
+                <input
+                  type="text"
+                  value={formData.title}
+                  onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  placeholder="e.g., Software Trainer, HR Manager"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  placeholder="email@etieducom.com"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Photo URL</label>
+                <input
+                  type="url"
+                  value={formData.photo_url}
+                  onChange={(e) => setFormData({...formData, photo_url: e.target.value})}
+                  placeholder="https://example.com/photo.jpg"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
+                <input
+                  type="url"
+                  value={formData.linkedin_url}
+                  onChange={(e) => setFormData({...formData, linkedin_url: e.target.value})}
+                  placeholder="https://linkedin.com/in/username"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Display Order</label>
+                <input
+                  type="number"
+                  value={formData.order}
+                  onChange={(e) => setFormData({...formData, order: parseInt(e.target.value) || 0})}
+                  placeholder="0"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+              <textarea
+                value={formData.bio}
+                onChange={(e) => setFormData({...formData, bio: e.target.value})}
+                placeholder="Brief description about this team member..."
+                rows={3}
+                className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button type="submit" className="btn-primary">
+                <Save className="w-4 h-4 mr-1" /> {editingMember ? 'Update' : 'Add'} Member
+              </button>
+              <button type="button" onClick={resetForm} className="btn-secondary">Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Team Members Grid */}
+      {members.length === 0 ? (
+        <div className="text-center py-12 bg-gray-50 rounded-xl">
+          <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500">No team members yet. Add your first team member!</p>
+        </div>
+      ) : (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {members.map((member) => (
+            <div key={member.id} className={`bg-white rounded-xl border overflow-hidden ${!member.is_active ? 'opacity-60' : ''}`}>
+              {/* Photo */}
+              <div className="h-48 bg-gray-100 relative">
+                {member.photo_url ? (
+                  <img src={member.photo_url} alt={member.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <Users className="w-16 h-16 text-gray-300" />
+                  </div>
+                )}
+                {!member.is_active && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="bg-red-500 text-white text-xs px-2 py-1 rounded">Hidden</span>
+                  </div>
+                )}
+              </div>
+              {/* Info */}
+              <div className="p-4">
+                <h3 className="font-bold text-gray-900">{member.name}</h3>
+                <p className="text-sm text-primary font-medium">{member.title}</p>
+                {member.email && <p className="text-xs text-gray-500 mt-1">{member.email}</p>}
+                {member.bio && <p className="text-sm text-gray-600 mt-2 line-clamp-2">{member.bio}</p>}
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t">
+                  <button onClick={() => handleEdit(member)} className="text-blue-600 hover:text-blue-800 text-sm flex items-center gap-1">
+                    <Edit className="w-3 h-3" /> Edit
+                  </button>
+                  <button onClick={() => handleToggleActive(member)} className={`text-sm flex items-center gap-1 ${member.is_active ? 'text-yellow-600 hover:text-yellow-800' : 'text-green-600 hover:text-green-800'}`}>
+                    <Eye className="w-3 h-3" /> {member.is_active ? 'Hide' : 'Show'}
+                  </button>
+                  <button onClick={() => handleDelete(member.id)} className="text-red-600 hover:text-red-800 text-sm flex items-center gap-1 ml-auto">
+                    <Trash2 className="w-3 h-3" /> Delete
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 export default function SecureAdminPage() {
   const [authState, setAuthState] = useState('loading'); // loading, login, otp, authenticated
   const [password, setPassword] = useState('');
@@ -1660,6 +1910,7 @@ export default function SecureAdminPage() {
     { id: 'educonnect-leads', label: 'EduConnect', icon: GraduationCap },
     { id: 'cyber-warriors', label: 'Cyber Warriors', icon: Shield },
     { id: 'referrals', label: 'Referrals', icon: Gift },
+    { id: 'team', label: 'Team', icon: Users },
     { id: 'blogs', label: 'Blogs', icon: FileText },
     { id: 'reviews', label: 'Reviews', icon: Star },
     { id: 'events', label: 'Events', icon: Calendar },
@@ -1676,6 +1927,7 @@ export default function SecureAdminPage() {
       case 'educonnect-leads': return <EduConnectLeadsTab />;
       case 'cyber-warriors': return <CyberWarriorsTab />;
       case 'referrals': return <ReferralsTab />;
+      case 'team': return <TeamTab />;
       case 'blogs': return <BlogsTab />;
       case 'reviews': return <ReviewsTab />;
       case 'events': return <EventsTab />;
